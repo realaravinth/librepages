@@ -26,6 +26,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
+            /var/lib/docker
             ~/.cargo/registry
             ~/.cargo/git
             target
