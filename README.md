@@ -1,5 +1,4 @@
 <div align="center">
-<img width="120px" src="./static/cache/img/logo.svg" alt="pages logo">
 <h1> Pages </h1>
 <p>
 
