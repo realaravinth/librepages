@@ -44,7 +44,11 @@ async fn update(payload: web::Json<DeployEvent>) -> impl Responder {
     let mut found = false;
     for page in SETTINGS.pages.iter() {
         if page.secret == payload.secret {
-            page.fetch_upstream(&page.branch);
+            web::block(|| {
+                page.fetch_upstream(&page.branch);
+            })
+            .await
+            .unwrap();
             found = true;
         }
     }

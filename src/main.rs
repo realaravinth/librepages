@@ -71,9 +71,8 @@ async fn main() -> std::io::Result<()> {
                 actix_middleware::TrailingSlash::Trim,
             ))
             .configure(services)
-        //        .app_data(data.clone())
     })
-    .workers(SETTINGS.server.workers.unwrap_or(num_cpus::get()))
+    .workers(SETTINGS.server.workers.unwrap_or_else(num_cpus::get))
     .bind(SETTINGS.server.get_ip())
     .unwrap()
     .run()
