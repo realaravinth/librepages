@@ -926,6 +926,7 @@ dependencies = [
  "git2",
  "lazy_static",
  "log",
+ "num_cpus",
  "pretty_env_logger",
  "serde 1.0.130",
  "serde_json",

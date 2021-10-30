@@ -30,6 +30,7 @@ pub struct Server {
     pub domain: String,
     pub ip: String,
     pub proxy_has_tls: bool,
+    pub workers: Option<usize>,
 }
 
 impl Server {

@@ -67,14 +67,13 @@ async fn main() -> std::io::Result<()> {
                 actix_middleware::DefaultHeaders::new()
                     .header("Permissions-Policy", "interest-cohort=()"),
             )
-            //       .wrap(get_survey_session())
-            //       .wrap(get_identity_service())
             .wrap(actix_middleware::NormalizePath::new(
                 actix_middleware::TrailingSlash::Trim,
             ))
             .configure(services)
         //        .app_data(data.clone())
     })
+    .workers(SETTINGS.server.workers.unwrap_or(num_cpus::get()))
     .bind(SETTINGS.server.get_ip())
     .unwrap()
     .run()

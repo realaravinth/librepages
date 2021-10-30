@@ -15,3 +15,4 @@ ip= "0.0.0.0"
 domain = "localhost"
 allow_registration = true
 proxy_has_tls = false
+#workers = 2
