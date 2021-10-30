@@ -119,6 +119,7 @@
 <span id="119">119</span>
 <span id="120">120</span>
 <span id="121">121</span>
+<span id="122">122</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2021  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -151,6 +152,7 @@
     <span class="kw">pub</span> <span class="ident">domain</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">ip</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">proxy_has_tls</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">workers</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Server</span> {
