@@ -1,6 +1,5 @@
-debug = true
+log = "info" # possible values: "info", "warn", "trace", "error", "debug"
 source_code = "https://github.com/realaravinth/pages"
-
 pages = [
     { branch = "gh-pages", repo = "https://github.com/mCaptcha/website/", path ="/tmp/pages/mcaptcha/website", secret = "faee1b650ac586068a54cb160bd6353c5e16be7c64b49113fe57726e5393" },
 ]

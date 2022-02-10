@@ -18,6 +18,7 @@ use std::env;
 use std::path::Path;
 
 use config::{Config, ConfigError, Environment, File};
+use derive_more::Display;
 use log::warn;
 use serde::Deserialize;
 use url::Url;
@@ -40,9 +41,24 @@ impl Server {
     }
 }
 
+#[derive(Deserialize, Display, Clone, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum LogLevel {
+    #[display(fmt = "debug")]
+    Debug,
+    #[display(fmt = "info")]
+    Info,
+    #[display(fmt = "trace")]
+    Trace,
+    #[display(fmt = "error")]
+    Error,
+    #[display(fmt = "warn")]
+    Warn,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
-    pub debug: bool,
+    pub log: LogLevel,
     //    pub database: Database,
     pub server: Server,
     pub source_code: String,
@@ -108,6 +124,10 @@ impl Settings {
             page.fetch_upstream(&page.branch);
         }
 
+        const LOG_VAR: &str = "RUST_LOG";
+        if env::var(LOG_VAR).is_err() {
+            env::set_var("RUST_LOG", format!("{}", settings.log));
+        }
         Ok(settings)
     }
 }

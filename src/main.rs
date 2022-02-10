@@ -47,8 +47,7 @@ pub const PKG_HOMEPAGE: &str = env!("CARGO_PKG_HOMEPAGE");
 #[cfg(not(tarpaulin_include))]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env::set_var("RUST_LOG", "info");
-
+    lazy_static::initialize(&SETTINGS);
     pretty_env_logger::init();
 
     info!(
