@@ -4,6 +4,10 @@
 
 **Auto-deploy static websites from git repositories**
 
+`service-provider` branch contains changes and features that are more
+suited for use by folks that host large number of websites like GitHub
+Pages, etc.
+
 </p>
 
 [![Build](https://github.com/realaravinth/pages/actions/workflows/linux.yml/badge.svg)](https://github.com/realaravinth/pages/actions/workflows/linux.yml)
