@@ -28,14 +28,22 @@ pub struct Page {
 
 impl Page {
     pub fn create_repo(&self) -> Repository {
-        let repo = Repository::open(&self.path);
-
-        let repo = if repo.is_err() {
-            info!("Cloning repository {} at {}", self.repo, self.path);
-            Repository::clone(&self.repo, &self.path).unwrap()
-        } else {
-            repo.unwrap()
+        let repo = match Repository::open(&self.path) {
+            Ok(repo) => repo,
+            Err(e) => {
+                log::error!("Opening repo {} caused error {}", &self.path, e);
+                info!("Cloning repository {} at {}", self.repo, self.path);
+                Repository::clone(&self.repo, &self.path).unwrap()
+            }
         };
+        //let repo = Repository::open(&self.path);
+
+        //let repo = if repo.is_err() {
+        //    info!("Cloning repository {} at {}", self.repo, self.path);
+        //    Repository::clone(&self.repo, &self.path).unwrap()
+        //} else {
+        //    repo.unwrap()
+        //};
         //        let branch = repo.find_branch(&self.branch, BranchType::Local).unwrap();
 
         //repo.branches(BranchType::Local).unwrap().find(|b| b.unwrap().na
