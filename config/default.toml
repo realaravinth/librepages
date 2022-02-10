@@ -13,6 +13,5 @@ port = 7000
 ip= "0.0.0.0" 
 # enter your hostname, eg: example.com
 domain = "localhost"
-allow_registration = true
 proxy_has_tls = false
 #workers = 2
