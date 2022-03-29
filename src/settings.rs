@@ -48,33 +48,32 @@ pub struct Settings {
 #[cfg(not(tarpaulin_include))]
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
-        let mut s = Config::new();
+        let mut s = Config::builder();
+
         const CURRENT_DIR: &str = "./config/default.toml";
         const ETC: &str = "/etc/static-pages/config.toml";
 
         if let Ok(path) = env::var("PAGES__CONFIG") {
-            s.merge(File::with_name(&path))?;
+            s = s.add_source(File::with_name(&path));
         } else if Path::new(CURRENT_DIR).exists() {
             // merging default config from file
-            s.merge(File::with_name(CURRENT_DIR))?;
+            s = s.add_source(File::with_name(CURRENT_DIR));
         } else if Path::new(ETC).exists() {
-            s.merge(File::with_name(ETC))?;
+            s = s.add_source(File::with_name(ETC));
         } else {
             log::warn!("configuration file not found");
         }
 
-        s.merge(Environment::with_prefix("PAGES").separator("__"))?;
+        s = s.add_source(Environment::with_prefix("PAGES").separator("__"));
 
-        check_url(&s);
-
+        let mut settings = s.build()?.try_deserialize::<Settings>()?;
+        settings.check_url();
         match env::var("PORT") {
             Ok(val) => {
-                s.set("server.port", val).unwrap();
+                settings.server.port = val.parse().unwrap();
             }
             Err(e) => warn!("couldn't interpret PORT: {}", e),
         }
-
-        let settings: Settings = s.try_into()?;
 
         for (index, page) in settings.pages.iter().enumerate() {
             Url::parse(&page.repo).unwrap();
@@ -100,13 +99,9 @@ impl Settings {
 
         Ok(settings)
     }
-}
 
-#[cfg(not(tarpaulin_include))]
-fn check_url(s: &Config) {
-    let url = s
-        .get::<String>("source_code")
-        .expect("Couldn't access source_code");
-
-    Url::parse(&url).expect("Please enter a URL for source_code in settings");
+    #[cfg(not(tarpaulin_include))]
+    fn check_url(&self) {
+        Url::parse(&self.source_code).expect("Please enter a URL for source_code in settings");
+    }
 }
