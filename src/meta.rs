@@ -23,6 +23,7 @@ use crate::{GIT_COMMIT_HASH, VERSION};
 pub struct BuildDetails {
     pub version: &'static str,
     pub git_commit_hash: &'static str,
+    pub source_code: &'static str,
 }
 
 pub mod routes {
@@ -47,6 +48,7 @@ async fn build_details() -> impl Responder {
     let build = BuildDetails {
         version: VERSION,
         git_commit_hash: GIT_COMMIT_HASH,
+        source_code: &crate::SETTINGS.source_code,
     };
     HttpResponse::Ok().json(build)
 }
