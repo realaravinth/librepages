@@ -30,17 +30,17 @@ impl Page {
     pub fn create_repo(&self) -> Repository {
         let repo = Repository::open(&self.path);
 
-        let repo = if repo.is_err() {
+        if let Ok(repo) = repo {
+            return repo;
+        } else {
             info!("Cloning repository {} at {}", self.repo, self.path);
             Repository::clone(&self.repo, &self.path).unwrap()
-        } else {
-            repo.unwrap()
         };
         //        let branch = repo.find_branch(&self.branch, BranchType::Local).unwrap();
 
         //repo.branches(BranchType::Local).unwrap().find(|b| b.unwrap().na
+        let repo = Repository::open(&self.path).unwrap();
         {
-            let repo = Repository::open(&self.path).unwrap();
             self._fetch_upstream(&repo, &self.branch);
             let branch = repo
                 .find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)

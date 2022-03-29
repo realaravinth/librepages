@@ -65,7 +65,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(get_json_err())
             .wrap(
                 actix_middleware::DefaultHeaders::new()
-                    .header("Permissions-Policy", "interest-cohort=()"),
+                    .add(("Permissions-Policy", "interest-cohort=()")),
             )
             .wrap(actix_middleware::NormalizePath::new(
                 actix_middleware::TrailingSlash::Trim,
