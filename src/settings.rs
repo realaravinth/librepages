@@ -27,9 +27,7 @@ use crate::page::Page;
 #[derive(Debug, Clone, Deserialize)]
 pub struct Server {
     pub port: u32,
-    pub domain: String,
     pub ip: String,
-    pub proxy_has_tls: bool,
     pub workers: Option<usize>,
 }
 
@@ -42,8 +40,6 @@ impl Server {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
-    pub debug: bool,
-    //    pub database: Database,
     pub server: Server,
     pub source_code: String,
     pub pages: Vec<Page>,
@@ -53,16 +49,10 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
         let mut s = Config::new();
-
-        // setting default values
-        #[cfg(test)]
-        s.set_default("database.pool", 2.to_string())
-            .expect("Couldn't get the number of CPUs");
-
         const CURRENT_DIR: &str = "./config/default.toml";
         const ETC: &str = "/etc/static-pages/config.toml";
 
-        if let Ok(path) = env::var("ATHENA_CONFIG") {
+        if let Ok(path) = env::var("PAGES__CONFIG") {
             s.merge(File::with_name(&path))?;
         } else if Path::new(CURRENT_DIR).exists() {
             // merging default config from file

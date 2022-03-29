@@ -1,4 +1,3 @@
-debug = true
 source_code = "https://github.com/realaravinth/pages"
 
 pages = [
@@ -12,7 +11,4 @@ port = 7000
 #IP address. Enter 0.0.0.0 to listen on all availale addresses
 ip= "0.0.0.0" 
 # enter your hostname, eg: example.com
-domain = "localhost"
-allow_registration = true
-proxy_has_tls = false
 #workers = 2
