@@ -1,14 +1,21 @@
+# source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
 
+# To deploy a website from a Git repository, please provide the folloing details:
+# 1. branch: the branch in the Git repository which contains the website files
+# 2. repo: the public readonly/clonable URL of the website repository
+# 3. path: the directory where you'd like Pages to clone the specified repository
+# 3. secret: a unique secret which is used to authenticate webhook calls
 pages = [
     { branch = "gh-pages", repo = "https://github.com/mCaptcha/website/", path ="/tmp/pages/mcaptcha/website", secret = "faee1b650ac586068a54cb160bd6353c5e16be7c64b49113fe57726e5393" },
 ]
 
 [server]
-# The port at which you want authentication to listen to
-# takes a number, choose from 1000-10000 if you dont know what you are doing
+# The port at which you want Pages to listen to
 port = 7000
 #IP address. Enter 0.0.0.0 to listen on all availale addresses
 ip= "0.0.0.0" 
-# enter your hostname, eg: example.com
-#workers = 2
+# The number of worker threads that must be spun up by the Pages server.
+# Minimum of two threads are advisable for top async performace but can work
+# with one also.
+workers = 2
