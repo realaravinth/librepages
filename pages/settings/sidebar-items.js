@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["check_url",""]],"struct":[["Server",""],["Settings",""]]});
+initSidebarItems({"struct":[["Server",""],["Settings",""]]});
