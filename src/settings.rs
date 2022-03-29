@@ -53,14 +53,24 @@ impl Settings {
         const CURRENT_DIR: &str = "./config/default.toml";
         const ETC: &str = "/etc/static-pages/config.toml";
 
-        if let Ok(path) = env::var("PAGES__CONFIG") {
-            s = s.add_source(File::with_name(&path));
-        } else if Path::new(CURRENT_DIR).exists() {
+        let mut read_file = false;
+
+        if Path::new(ETC).exists() {
+            s = s.add_source(File::with_name(ETC));
+            read_file = true;
+        }
+        if Path::new(CURRENT_DIR).exists() {
             // merging default config from file
             s = s.add_source(File::with_name(CURRENT_DIR));
-        } else if Path::new(ETC).exists() {
-            s = s.add_source(File::with_name(ETC));
-        } else {
+            read_file = true;
+        }
+
+        if let Ok(path) = env::var("PAGES_CONFIG") {
+            s = s.add_source(File::with_name(&path));
+            read_file = true;
+        }
+
+        if !read_file {
             log::warn!("configuration file not found");
         }
 
