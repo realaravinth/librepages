@@ -27,7 +27,7 @@ pub struct Page {
 }
 
 impl Page {
-    pub fn create_repo(&self) -> Repository {
+    fn create_repo(&self) -> Repository {
         let repo = Repository::open(&self.path);
 
         if let Ok(repo) = repo {
@@ -36,9 +36,7 @@ impl Page {
             info!("Cloning repository {} at {}", self.repo, self.path);
             Repository::clone(&self.repo, &self.path).unwrap()
         };
-        //        let branch = repo.find_branch(&self.branch, BranchType::Local).unwrap();
 
-        //repo.branches(BranchType::Local).unwrap().find(|b| b.unwrap().na
         let repo = Repository::open(&self.path).unwrap();
         {
             self._fetch_upstream(&repo, &self.branch);
@@ -53,11 +51,8 @@ impl Page {
 
             repo.checkout_tree(&tree, Some(&mut checkout_options))
                 .unwrap();
-            //                repo.set_head(&format!("refs/heads/{}", &self.branch))
-            //                    .unwrap();
 
             repo.set_head(branch.get().name().unwrap()).unwrap();
-            //           }
         }
         repo
     }
@@ -73,5 +68,37 @@ impl Page {
     pub fn fetch_upstream(&self, branch: &str) {
         let repo = self.create_repo();
         self._fetch_upstream(&repo, branch);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use mktemp::Temp;
+
+    #[actix_rt::test]
+    async fn pages_works() {
+        let tmp_dir = Temp::new_dir().unwrap();
+        assert!(tmp_dir.exists(), "tmp directory successully created");
+        let page = Page {
+            secret: String::default(),
+            repo: "https://github.com/mcaptcha/website".to_owned(),
+            path: tmp_dir.to_str().unwrap().to_string(),
+            branch: "gh-pages".to_string(),
+        };
+
+        assert!(
+            Repository::open(tmp_dir.as_path()).is_err(),
+            "repository doesn't exist yet"
+        );
+
+        let repo = page.create_repo();
+        assert!(!repo.is_bare(), "repository isn't bare");
+        page.create_repo();
+        assert!(
+            Repository::open(tmp_dir.as_path()).is_ok(),
+            "repository exists yet"
+        );
     }
 }

@@ -34,3 +34,6 @@ url = "2.2"
 derive_more = "0.99"
 
 num_cpus = "1.13"
+
+[dev-dependencies]
+mktemp = "0.4.1"
