@@ -45,7 +45,7 @@ async fn update(payload: web::Json<DeployEvent>) -> impl Responder {
     for page in SETTINGS.pages.iter() {
         if page.secret == payload.secret {
             web::block(|| {
-                page.fetch_upstream(&page.branch);
+                page.update();
             })
             .await
             .unwrap();

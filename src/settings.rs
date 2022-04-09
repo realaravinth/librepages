@@ -104,7 +104,7 @@ impl Settings {
                     panic!("duplicate page onfiguration {:?} and {:?}", page, page2);
                 }
             }
-            page.fetch_upstream(&page.branch);
+            page.update();
         }
 
         Ok(settings)

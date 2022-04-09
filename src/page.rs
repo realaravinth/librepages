@@ -38,23 +38,25 @@ impl Page {
         };
 
         let repo = Repository::open(&self.path).unwrap();
-        {
-            self._fetch_upstream(&repo, &self.branch);
-            let branch = repo
-                .find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)
-                .unwrap();
-
-            let mut checkout_options = CheckoutBuilder::new();
-            checkout_options.force();
-
-            let tree = branch.get().peel(ObjectType::Tree).unwrap();
-
-            repo.checkout_tree(&tree, Some(&mut checkout_options))
-                .unwrap();
-
-            repo.set_head(branch.get().name().unwrap()).unwrap();
-        }
+        self._fetch_upstream(&repo, &self.branch);
+        self.deploy_branch(&repo);
         repo
+    }
+
+    pub fn deploy_branch(&self, repo: &Repository) {
+        let branch = repo
+            .find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)
+            .unwrap();
+
+        let mut checkout_options = CheckoutBuilder::new();
+        checkout_options.force();
+
+        let tree = branch.get().peel(ObjectType::Tree).unwrap();
+
+        repo.checkout_tree(&tree, Some(&mut checkout_options))
+            .unwrap();
+        repo.set_head(branch.get().name().unwrap()).unwrap();
+        info!("Deploying branch {}", self.branch);
     }
 
     fn _fetch_upstream(&self, repo: &Repository, branch: &str) {
@@ -65,9 +67,10 @@ impl Page {
         remote.disconnect().unwrap();
     }
 
-    pub fn fetch_upstream(&self, branch: &str) {
+    pub fn update(&self) {
         let repo = self.create_repo();
-        self._fetch_upstream(&repo, branch);
+        self._fetch_upstream(&repo, &self.branch);
+        self.deploy_branch(&repo);
     }
 }
 
@@ -75,13 +78,22 @@ impl Page {
 mod tests {
     use super::*;
 
+    use git2::Branch;
+    use git2::Repository;
     use mktemp::Temp;
+
+    impl Page {
+        fn get_tree<'a>(&self, repo: &'a Repository) -> Branch<'a> {
+            repo.find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)
+                .unwrap()
+        }
+    }
 
     #[actix_rt::test]
     async fn pages_works() {
         let tmp_dir = Temp::new_dir().unwrap();
         assert!(tmp_dir.exists(), "tmp directory successully created");
-        let page = Page {
+        let mut page = Page {
             secret: String::default(),
             repo: "https://github.com/mcaptcha/website".to_owned(),
             path: tmp_dir.to_str().unwrap().to_string(),
@@ -100,5 +112,15 @@ mod tests {
             Repository::open(tmp_dir.as_path()).is_ok(),
             "repository exists yet"
         );
+
+        let gh_pages = page.get_tree(&repo);
+        assert_eq!(
+            gh_pages.name().unwrap().as_ref().unwrap(),
+            &"origin/gh-pages"
+        );
+        page.branch = "master".to_string();
+        page.update();
+        let master = page.get_tree(&repo);
+        assert_eq!(master.name().unwrap().as_ref().unwrap(), &"origin/master");
     }
 }
