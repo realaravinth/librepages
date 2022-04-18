@@ -1,7 +1,7 @@
 # source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
 
-# To deploy a website from a Git repository, please provide the folloing details:
+# To deploy a website from a Git repository, please provide the following details:
 # 1. branch: the branch in the Git repository which contains the website files
 # 2. repo: the public readonly/clonable URL of the website repository
 # 3. path: the directory where you'd like Pages to clone the specified repository
