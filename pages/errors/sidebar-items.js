@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ServiceError","Error data structure grouping various error subtypes"]],"struct":[["ConfigError",""],["ErrorToResponse",""],["FSError",""]],"type":[["ServiceResult","Generic result data structure"]]});

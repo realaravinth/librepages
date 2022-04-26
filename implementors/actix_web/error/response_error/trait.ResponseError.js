@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["pages"] = [{"text":"impl ResponseError for <a class=\"enum\" href=\"pages/errors/enum.ServiceError.html\" title=\"enum pages::errors::ServiceError\">ServiceError</a>","synthetic":false,"types":["pages::errors::ServiceError"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
