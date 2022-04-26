@@ -16,7 +16,9 @@
  */
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
+use tokio::sync::oneshot;
 
+use crate::errors::*;
 use crate::SETTINGS;
 
 pub mod routes {
@@ -40,24 +42,21 @@ pub struct DeployEvent {
 }
 
 #[my_codegen::post(path = "crate::V1_API_ROUTES.deploy.update")]
-async fn update(payload: web::Json<DeployEvent>) -> impl Responder {
-    let mut found = false;
+async fn update(payload: web::Json<DeployEvent>) -> ServiceResult<impl Responder> {
     for page in SETTINGS.pages.iter() {
         if page.secret == payload.secret {
+            let (tx, rx) = oneshot::channel();
             web::block(|| {
-                page.update();
+                tx.send(page.update()).unwrap();
             })
             .await
             .unwrap();
-            found = true;
+            rx.await.unwrap()?;
+            return Ok(HttpResponse::Ok());
         }
     }
 
-    if found {
-        HttpResponse::Ok()
-    } else {
-        HttpResponse::NotFound()
-    }
+    Err(ServiceError::WebsiteNotFound)
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
