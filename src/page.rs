@@ -18,6 +18,8 @@ use git2::{build::CheckoutBuilder, BranchType, Direction, ObjectType, Repository
 use log::info;
 use serde::Deserialize;
 
+use crate::errors::*;
+
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct Page {
     pub secret: String,
@@ -27,50 +29,50 @@ pub struct Page {
 }
 
 impl Page {
-    fn create_repo(&self) -> Repository {
+    fn create_repo(&self) -> ServiceResult<Repository> {
         let repo = Repository::open(&self.path);
 
         if let Ok(repo) = repo {
-            return repo;
+            return Ok(repo);
         } else {
             info!("Cloning repository {} at {}", self.repo, self.path);
-            Repository::clone(&self.repo, &self.path).unwrap()
+            Repository::clone(&self.repo, &self.path)?;
         };
 
-        let repo = Repository::open(&self.path).unwrap();
-        self._fetch_upstream(&repo, &self.branch);
-        self.deploy_branch(&repo);
-        repo
+        let repo = Repository::open(&self.path)?;
+        self._fetch_upstream(&repo, &self.branch)?;
+        self.deploy_branch(&repo)?;
+        Ok(repo)
     }
 
-    pub fn deploy_branch(&self, repo: &Repository) {
-        let branch = repo
-            .find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)
-            .unwrap();
+    pub fn deploy_branch(&self, repo: &Repository) -> ServiceResult<()> {
+        let branch = repo.find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)?;
 
         let mut checkout_options = CheckoutBuilder::new();
         checkout_options.force();
 
-        let tree = branch.get().peel(ObjectType::Tree).unwrap();
+        let tree = branch.get().peel(ObjectType::Tree)?;
 
-        repo.checkout_tree(&tree, Some(&mut checkout_options))
-            .unwrap();
-        repo.set_head(branch.get().name().unwrap()).unwrap();
+        repo.checkout_tree(&tree, Some(&mut checkout_options))?;
+        repo.set_head(branch.get().name().unwrap())?;
         info!("Deploying branch {}", self.branch);
+        Ok(())
     }
 
-    fn _fetch_upstream(&self, repo: &Repository, branch: &str) {
+    fn _fetch_upstream(&self, repo: &Repository, branch: &str) -> ServiceResult<()> {
         let mut remote = repo.find_remote("origin").unwrap();
-        remote.connect(Direction::Fetch).unwrap();
+        remote.connect(Direction::Fetch)?;
         info!("Updating repository {}", self.repo);
-        remote.fetch(&[branch], None, None).unwrap();
-        remote.disconnect().unwrap();
+        remote.fetch(&[branch], None, None)?;
+        remote.disconnect()?;
+        Ok(())
     }
 
-    pub fn update(&self) {
-        let repo = self.create_repo();
-        self._fetch_upstream(&repo, &self.branch);
-        self.deploy_branch(&repo);
+    pub fn update(&self) -> ServiceResult<()> {
+        let repo = self.create_repo()?;
+        self._fetch_upstream(&repo, &self.branch)?;
+        self.deploy_branch(&repo)?;
+        Ok(())
     }
 }
 
@@ -105,9 +107,9 @@ mod tests {
             "repository doesn't exist yet"
         );
 
-        let repo = page.create_repo();
+        let repo = page.create_repo().unwrap();
         assert!(!repo.is_bare(), "repository isn't bare");
-        page.create_repo();
+        page.create_repo().unwrap();
         assert!(
             Repository::open(tmp_dir.as_path()).is_ok(),
             "repository exists yet"
@@ -119,7 +121,7 @@ mod tests {
             &"origin/gh-pages"
         );
         page.branch = "master".to_string();
-        page.update();
+        page.update().unwrap();
         let master = page.get_tree(&repo);
         assert_eq!(master.name().unwrap().as_ref().unwrap(), &"origin/master");
     }

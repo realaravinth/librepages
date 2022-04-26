@@ -17,11 +17,12 @@
 use std::env;
 use std::path::Path;
 
-use config::{Config, ConfigError, Environment, File};
+use config::{Config, Environment, File};
 use log::warn;
 use serde::Deserialize;
 use url::Url;
 
+use crate::errors::*;
 use crate::page::Page;
 
 #[derive(Debug, Clone, Deserialize)]
@@ -47,7 +48,7 @@ pub struct Settings {
 
 #[cfg(not(tarpaulin_include))]
 impl Settings {
-    pub fn new() -> Result<Self, ConfigError> {
+    pub fn new() -> ServiceResult<Self> {
         let mut s = Config::builder();
 
         const CURRENT_DIR: &str = "./config/default.toml";
@@ -99,12 +100,26 @@ impl Settings {
                 if index2 == index {
                     continue;
                 }
-                if page.secret == page2.secret || page.repo == page2.repo || page.path == page2.path
-                {
-                    panic!("duplicate page onfiguration {:?} and {:?}", page, page2);
+                if page.secret == page2.secret {
+                    log::error!(
+                        "{}",
+                        ServiceError::SecretTaken(page.to_owned(), page2.to_owned())
+                    );
+                } else if page.repo == page2.repo {
+                    log::error!(
+                        "{}",
+                        ServiceError::DuplicateRepositoryURL(page.to_owned(), page2.to_owned(),)
+                    );
+                } else if page.path == page2.path {
+                    log::error!(
+                        "{}",
+                        ServiceError::PathTaken(page.to_owned(), page2.to_owned())
+                    );
                 }
             }
-            page.update();
+            if let Err(e) = page.update() {
+                log::error!("{e}");
+            }
         }
 
         Ok(settings)

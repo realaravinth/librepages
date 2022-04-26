@@ -25,6 +25,7 @@ use actix_web::{
 };
 use config::ConfigError as ConfigErrorInner;
 use derive_more::{Display, Error};
+use git2::Error as GitError;
 use serde::{Deserialize, Serialize};
 use url::ParseError;
 
@@ -118,12 +119,22 @@ pub enum ServiceError {
 
     #[display(fmt = "Configuration Error {}", _0)]
     ConfigError(ConfigError),
+
+    #[display(fmt = "Git Error {}", _0)]
+    GitError(GitError),
 }
 
 impl From<ParseError> for ServiceError {
     #[cfg(not(tarpaulin_include))]
     fn from(_: ParseError) -> ServiceError {
         ServiceError::NotAUrl
+    }
+}
+
+impl From<GitError> for ServiceError {
+    #[cfg(not(tarpaulin_include))]
+    fn from(e: GitError) -> ServiceError {
+        ServiceError::GitError(e)
     }
 }
 
@@ -167,6 +178,7 @@ impl ResponseError for ServiceError {
 
             ServiceError::UnauthorizedOperation(_) => StatusCode::UNAUTHORIZED,
             ServiceError::BadRequest(_) => StatusCode::BAD_REQUEST,
+            ServiceError::GitError(_) => StatusCode::BAD_REQUEST,
         }
     }
 }
