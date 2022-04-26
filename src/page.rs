@@ -18,7 +18,7 @@ use git2::{build::CheckoutBuilder, BranchType, Direction, ObjectType, Repository
 use log::info;
 use serde::Deserialize;
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct Page {
     pub secret: String,
     pub repo: String,

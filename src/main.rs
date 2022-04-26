@@ -24,6 +24,7 @@ use lazy_static::lazy_static;
 use log::info;
 
 mod deploy;
+mod errors;
 mod meta;
 mod page;
 mod routes;
