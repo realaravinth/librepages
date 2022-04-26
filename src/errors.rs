@@ -79,9 +79,9 @@ pub enum ServiceError {
     /// URL too long, maximum length can't be greater then 2048 characters
     URLTooLong,
 
-    #[display(fmt = "Account not found")]
-    /// account not found
-    AccountNotFound,
+    #[display(fmt = "Website not found")]
+    /// website not found
+    WebsiteNotFound,
 
     /// when the a path configured for a page is already taken
     #[display(
@@ -158,7 +158,7 @@ impl ResponseError for ServiceError {
             ServiceError::ConfigError(_) => StatusCode::INTERNAL_SERVER_ERROR, // INTERNAL SERVER ERROR
             ServiceError::NotAUrl => StatusCode::BAD_REQUEST,                  //BADREQUEST,
             ServiceError::URLTooLong => StatusCode::BAD_REQUEST,               //BADREQUEST,
-            ServiceError::AccountNotFound => StatusCode::NOT_FOUND,            //NOT FOUND,
+            ServiceError::WebsiteNotFound => StatusCode::NOT_FOUND,            //NOT FOUND,
 
             ServiceError::PathTaken(_, _) => StatusCode::BAD_REQUEST, //BADREQUEST,
             ServiceError::DuplicateRepositoryURL(_, _) => StatusCode::BAD_REQUEST, //BADREQUEST,
