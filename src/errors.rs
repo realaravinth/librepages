@@ -123,6 +123,9 @@ pub enum ServiceError {
 
     #[display(fmt = "Git Error {}", _0)]
     GitError(GitError),
+
+    #[display(fmt = "Branch {} not found", _0)]
+    BranchNotFound(#[error(not(source))] String),
 }
 
 impl From<ParseError> for ServiceError {
@@ -180,6 +183,7 @@ impl ResponseError for ServiceError {
             ServiceError::UnauthorizedOperation(_) => StatusCode::UNAUTHORIZED,
             ServiceError::BadRequest(_) => StatusCode::BAD_REQUEST,
             ServiceError::GitError(_) => StatusCode::BAD_REQUEST,
+            ServiceError::BranchNotFound(_) => StatusCode::CONFLICT,
         }
     }
 }
