@@ -19,7 +19,12 @@ use std::path::Path;
 use std::sync::Arc;
 
 use config::{Config, Environment, File};
-use log::warn;
+#[cfg(not(test))]
+use log::{error, warn};
+
+#[cfg(test)]
+use std::{println as warn, println as error};
+
 use serde::Deserialize;
 use url::Url;
 
@@ -73,7 +78,7 @@ impl Settings {
         }
 
         if !read_file {
-            log::warn!("configuration file not found");
+            warn!("configuration file not found");
         }
 
         s = s.add_source(Environment::with_prefix("PAGES").separator("__"));
@@ -87,7 +92,13 @@ impl Settings {
             Err(e) => warn!("couldn't interpret PORT: {}", e),
         }
 
-        for (index, page) in settings.pages.iter().enumerate() {
+        settings.init();
+
+        Ok(settings)
+    }
+
+    pub fn init(&self) {
+        for (index, page) in self.pages.iter().enumerate() {
             Url::parse(&page.repo).unwrap();
             let path = Path::new(&page.path);
             if path.exists() && path.is_file() {
@@ -97,27 +108,25 @@ impl Settings {
             if !path.exists() {
                 std::fs::create_dir_all(&path).unwrap();
             }
-            for (index2, page2) in settings.pages.iter().enumerate() {
+            for (index2, page2) in self.pages.iter().enumerate() {
                 if index2 == index {
                     continue;
                 }
                 if page.secret == page2.secret {
-                    log::error!("{}", ServiceError::SecretTaken(page.clone(), page2.clone()));
+                    error!("{}", ServiceError::SecretTaken(page.clone(), page2.clone()));
                 } else if page.repo == page2.repo {
-                    log::error!(
+                    error!(
                         "{}",
                         ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
                     );
                 } else if page.path == page2.path {
-                    log::error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
+                    error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
                 }
             }
             if let Err(e) = page.update() {
-                log::error!("{e}");
+                error!("{e}");
             }
         }
-
-        Ok(settings)
     }
 
     #[cfg(not(tarpaulin_include))]

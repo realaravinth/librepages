@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 use git2::{build::CheckoutBuilder, BranchType, Direction, ObjectType, Repository};
+#[cfg(not(test))]
 use log::info;
+
+#[cfg(test)]
+use std::println as info;
+
 use serde::Deserialize;
 
 use crate::errors::*;
