@@ -70,6 +70,6 @@ mod tests {
         let app = get_app!(ctx).await;
 
         let resp = get_request!(app, V1_API_ROUTES.meta.build_details);
-        assert!(tests::check_status(resp, StatusCode::OK).await);
+        check_status!(resp, StatusCode::OK);
     }
 }

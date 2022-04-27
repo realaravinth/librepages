@@ -130,13 +130,22 @@ macro_rules! get_app {
 
 /// Utility function to check for status of a test response, attempt response payload serialization
 /// and print payload if response status doesn't match expected status
-pub async fn check_status(resp: ServiceResponse, expected: StatusCode) -> bool {
-    let status = resp.status();
-    if status != expected {
-        eprintln!("[error] Expected status code: {expected} received: {status}");
-        let response: serde_json::Value = actix_web::test::read_body_json(resp).await;
-        eprintln!("[error] Body:\n{:#?}", response);
-    }
-
-    status == expected
+#[macro_export]
+macro_rules! check_status {
+    ($resp:expr, $expected:expr) => {
+        let status = $resp.status();
+        if status != $expected {
+            eprintln!(
+                "[error] Expected status code: {} received: {status}",
+                $expected
+            );
+            let response: serde_json::Value = actix_web::test::read_body_json($resp).await;
+            eprintln!("[error] Body:\n{:#?}", response);
+            assert_eq!(status, $expected);
+            panic!()
+        }
+        {
+            assert_eq!(status, $expected);
+        }
+    };
 }
