@@ -78,11 +78,6 @@
 <span id="73">73</span>
 <span id="74">74</span>
 <span id="75">75</span>
-<span id="76">76</span>
-<span id="77">77</span>
-<span id="78">78</span>
-<span id="79">79</span>
-<span id="80">80</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -102,13 +97,13 @@
 <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">web</span>, <span class="ident">HttpResponse</span>, <span class="ident">Responder</span>};
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">GIT_COMMIT_HASH</span>, <span class="ident">VERSION</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">AppCtx</span>, <span class="ident">GIT_COMMIT_HASH</span>, <span class="ident">VERSION</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BuildDetails</span> {
-    <span class="kw">pub</span> <span class="ident">version</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">git_commit_hash</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BuildDetails</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="ident">version</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">git_commit_hash</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
 }
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">routes</span> {
@@ -129,11 +124,11 @@
 
 <span class="doccomment">/// emmits build details of the bninary</span>
 <span class="attribute">#[<span class="ident">my_codegen::get</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.meta.build_details&quot;</span>)]</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">build_details</span>() -&gt; <span class="kw">impl</span> <span class="ident">Responder</span> {
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">build_details</span>(<span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="kw">impl</span> <span class="ident">Responder</span> {
     <span class="kw">let</span> <span class="ident">build</span> <span class="op">=</span> <span class="ident">BuildDetails</span> {
         <span class="ident">version</span>: <span class="ident">VERSION</span>,
         <span class="ident">git_commit_hash</span>: <span class="ident">GIT_COMMIT_HASH</span>,
-        <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::SETTINGS</span>.<span class="ident">source_code</span>,
+        <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="ident">ctx</span>.<span class="ident">settings</span>.<span class="ident">source_code</span>,
     };
     <span class="ident">HttpResponse::Ok</span>().<span class="ident">json</span>(<span class="ident">build</span>)
 }
@@ -144,23 +139,18 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">http::StatusCode</span>, <span class="ident">test</span>, <span class="ident">App</span>};
+    <span class="kw">use</span> <span class="ident">actix_web</span>::{<span class="ident">http::StatusCode</span>, <span class="ident">test</span>};
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::services</span>;
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">build_details_works</span>() {
-        <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="ident">test::init_service</span>(<span class="ident">App::new</span>().<span class="ident">configure</span>(<span class="ident">services</span>)).<span class="kw">await</span>;
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">tests::get_data</span>().<span class="kw">await</span>;
+        <span class="macro">println!</span>(<span class="string">&quot;[log] test configuration {:#?}&quot;</span>, <span class="ident">ctx</span>.<span class="ident">settings</span>);
+        <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="macro">get_app!</span>(<span class="ident">ctx</span>).<span class="kw">await</span>;
 
-        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">test::call_service</span>(
-            <span class="kw-2">&amp;</span><span class="ident">app</span>,
-            <span class="ident">test::TestRequest::get</span>()
-                .<span class="ident">uri</span>(<span class="ident">V1_API_ROUTES</span>.<span class="ident">meta</span>.<span class="ident">build_details</span>)
-                .<span class="ident">to_request</span>(),
-        )
-        .<span class="kw">await</span>;
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode::OK</span>);
+        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="macro">get_request!</span>(<span class="ident">app</span>, <span class="ident">V1_API_ROUTES</span>.<span class="ident">meta</span>.<span class="ident">build_details</span>);
+        <span class="macro">assert!</span>(<span class="ident">tests::check_status</span>(<span class="ident">resp</span>, <span class="ident">StatusCode::OK</span>).<span class="kw">await</span>);
     }
 }
 </code></pre></div>

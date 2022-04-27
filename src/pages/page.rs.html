@@ -131,6 +131,11 @@
 <span id="126">126</span>
 <span id="127">127</span>
 <span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -148,7 +153,12 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */</span>
 <span class="kw">use</span> <span class="ident">git2</span>::{<span class="ident">build::CheckoutBuilder</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">ObjectType</span>, <span class="ident">Repository</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
 <span class="kw">use</span> <span class="ident">log::info</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">use</span> <span class="ident">std::println</span> <span class="kw">as</span> <span class="ident">info</span>;
+
 <span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;

@@ -187,6 +187,7 @@
 <span id="182">182</span>
 <span id="183">183</span>
 <span id="184">184</span>
+<span id="185">185</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -206,6 +207,7 @@
 <span class="doccomment">//! represents all the ways a trait can fail using this crate</span>
 <span class="kw">use</span> <span class="ident">std::convert::From</span>;
 <span class="kw">use</span> <span class="ident">std::io::Error</span> <span class="kw">as</span> <span class="ident">FSErrorInner</span>;
+<span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">actix_web</span>::{
     <span class="ident">error::ResponseError</span>,
@@ -279,7 +281,7 @@
         <span class="ident">_0</span>,
         <span class="ident">_1</span>
     )]</span>
-    <span class="ident">PathTaken</span>(<span class="ident">Page</span>, <span class="ident">Page</span>),
+    <span class="ident">PathTaken</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// when the a Secret configured for a page is already taken</span>
     <span class="attribute">#[<span class="ident">display</span>(
@@ -287,7 +289,7 @@
         <span class="ident">_0</span>,
         <span class="ident">_1</span>
     )]</span>
-    <span class="ident">SecretTaken</span>(<span class="ident">Page</span>, <span class="ident">Page</span>),
+    <span class="ident">SecretTaken</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// when the a Repository URL configured for a page is already taken</span>
     <span class="attribute">#[<span class="ident">display</span>(
@@ -295,7 +297,7 @@
         <span class="ident">_0</span>,
         <span class="ident">_1</span>
     )]</span>
-    <span class="ident">DuplicateRepositoryURL</span>(<span class="ident">Page</span>, <span class="ident">Page</span>),
+    <span class="ident">DuplicateRepositoryURL</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
 
     <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;File System Error {}&quot;</span>, <span class="ident">_0</span>)]</span>
     <span class="ident">FSError</span>(<span class="ident">FSError</span>),
