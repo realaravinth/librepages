@@ -136,6 +136,36 @@
 <span id="131">131</span>
 <span id="132">132</span>
 <span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -152,7 +182,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */</span>
-<span class="kw">use</span> <span class="ident">git2</span>::{<span class="ident">build::CheckoutBuilder</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">ObjectType</span>, <span class="ident">Repository</span>};
+<span class="kw">use</span> <span class="ident">git2</span>::{
+    <span class="ident">build::CheckoutBuilder</span>, <span class="ident">Branch</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">ObjectType</span>, <span class="ident">Oid</span>, <span class="ident">Remote</span>, <span class="ident">Repository</span>,
+};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
 <span class="kw">use</span> <span class="ident">log::info</span>;
 
@@ -172,8 +204,12 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Page</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open_repo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Repository</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">Repository::open</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>)<span class="question-mark">?</span>)
+    }
+
     <span class="kw">fn</span> <span class="ident">create_repo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Repository</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="ident">Repository::open</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>);
+        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">open_repo</span>();
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">repo</span>) <span class="op">=</span> <span class="ident">repo</span> {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">repo</span>);
@@ -188,8 +224,13 @@
         <span class="prelude-val">Ok</span>(<span class="ident">repo</span>)
     }
 
+    <span class="kw">fn</span> <span class="ident">find_branch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Branch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="ident">BranchType::Local</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">branch</span>)
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deploy_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;origin/{}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>), <span class="ident">BranchType::Remote</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">find_branch</span>(<span class="ident">repo</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checkout_options</span> <span class="op">=</span> <span class="ident">CheckoutBuilder::new</span>();
         <span class="ident">checkout_options</span>.<span class="ident">force</span>();
@@ -197,17 +238,23 @@
         <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">branch</span>.<span class="ident">get</span>().<span class="ident">peel</span>(<span class="ident">ObjectType::Tree</span>)<span class="question-mark">?</span>;
 
         <span class="ident">repo</span>.<span class="ident">checkout_tree</span>(<span class="kw-2">&amp;</span><span class="ident">tree</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="ident">checkout_options</span>))<span class="question-mark">?</span>;
-        <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="ident">branch</span>.<span class="ident">get</span>().<span class="ident">name</span>().<span class="ident">unwrap</span>())<span class="question-mark">?</span>;
+        <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="self">self</span>.<span class="ident">branch</span>))<span class="question-mark">?</span>;
         <span class="macro">info!</span>(<span class="string">&quot;Deploying branch {}&quot;</span>, <span class="self">self</span>.<span class="ident">branch</span>);
         <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">fn</span> <span class="ident">_fetch_upstream</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>, <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remote</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_remote</span>(<span class="string">&quot;origin&quot;</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remote</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::get_deploy_remote</span>(<span class="ident">repo</span>)<span class="question-mark">?</span>;
         <span class="ident">remote</span>.<span class="ident">connect</span>(<span class="ident">Direction::Fetch</span>)<span class="question-mark">?</span>;
         <span class="macro">info!</span>(<span class="string">&quot;Updating repository {}&quot;</span>, <span class="self">self</span>.<span class="ident">repo</span>);
-        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="ident">branch</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">remote_branch_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;origin/{branch}&quot;</span>);
+        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">remote_branch_name</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="ident">remote</span>.<span class="ident">disconnect</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="ident">remote_branch_name</span>, <span class="ident">BranchType::Remote</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">commit</span> <span class="op">=</span> <span class="ident">branch</span>.<span class="ident">get</span>().<span class="ident">peel_to_commit</span>()<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">find_branch</span>(<span class="ident">repo</span>).<span class="ident">is_err</span>() {
+            <span class="ident">repo</span>.<span class="ident">branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="kw-2">&amp;</span><span class="ident">commit</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
+        }
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -217,22 +264,33 @@
         <span class="self">self</span>.<span class="ident">deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">find_branch</span>(<span class="ident">repo</span>)<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="ident">branch</span>.<span class="ident">is_head</span>() {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">branch</span>.<span class="ident">clone</span>())
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Err</span>(<span class="ident">ServiceError::BranchNotFound</span>(<span class="self">self</span>.<span class="ident">branch</span>.<span class="ident">clone</span>()))
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_commit</span>(<span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Oid</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">head</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">commit</span> <span class="op">=</span> <span class="ident">head</span>.<span class="ident">peel_to_commit</span>()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">commit</span>.<span class="ident">id</span>())
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_remote</span>(<span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Remote</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">repo</span>.<span class="ident">find_remote</span>(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>)
+    }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">use</span> <span class="ident">git2::Branch</span>;
     <span class="kw">use</span> <span class="ident">git2::Repository</span>;
     <span class="kw">use</span> <span class="ident">mktemp::Temp</span>;
-
-    <span class="kw">impl</span> <span class="ident">Page</span> {
-        <span class="kw">fn</span> <span class="ident">get_tree</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Repository</span>) -&gt; <span class="ident">Branch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-            <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;origin/{}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>), <span class="ident">BranchType::Remote</span>)
-                .<span class="ident">unwrap</span>()
-        }
-    }
 
     <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">pages_works</span>() {
@@ -258,15 +316,17 @@
             <span class="string">&quot;repository exists yet&quot;</span>
         );
 
-        <span class="kw">let</span> <span class="ident">gh_pages</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_tree</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>);
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">gh_pages</span>.<span class="ident">name</span>().<span class="ident">unwrap</span>().<span class="ident">as_ref</span>().<span class="ident">unwrap</span>(),
-            <span class="kw-2">&amp;</span><span class="string">&quot;origin/gh-pages&quot;</span>
-        );
+        <span class="kw">let</span> <span class="ident">gh_pages</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">gh_pages</span>, <span class="string">&quot;gh-pages&quot;</span>);
         <span class="ident">page</span>.<span class="ident">branch</span> <span class="op">=</span> <span class="string">&quot;master&quot;</span>.<span class="ident">to_string</span>();
         <span class="ident">page</span>.<span class="ident">update</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">master</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_tree</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">master</span>.<span class="ident">name</span>().<span class="ident">unwrap</span>().<span class="ident">as_ref</span>().<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="string">&quot;origin/master&quot;</span>);
+        <span class="kw">let</span> <span class="ident">master</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq!</span>(<span class="ident">master</span>, <span class="string">&quot;master&quot;</span>);
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">Page::get_deploy_remote</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>().<span class="ident">url</span>().<span class="ident">unwrap</span>(),
+            <span class="ident">page</span>.<span class="ident">repo</span>
+        );
     }
 }
 </code></pre></div>

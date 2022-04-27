@@ -188,6 +188,10 @@
 <span id="183">183</span>
 <span id="184">184</span>
 <span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -313,6 +317,9 @@
 
     <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Git Error {}&quot;</span>, <span class="ident">_0</span>)]</span>
     <span class="ident">GitError</span>(<span class="ident">GitError</span>),
+
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Branch {} not found&quot;</span>, <span class="ident">_0</span>)]</span>
+    <span class="ident">BranchNotFound</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
@@ -370,6 +377,7 @@
             <span class="ident">ServiceError::UnauthorizedOperation</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::UNAUTHORIZED</span>,
             <span class="ident">ServiceError::BadRequest</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
             <span class="ident">ServiceError::GitError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
+            <span class="ident">ServiceError::BranchNotFound</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::CONFLICT</span>,
         }
     }
 }

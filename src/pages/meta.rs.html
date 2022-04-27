@@ -145,12 +145,12 @@
 
     <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">build_details_works</span>() {
-        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">tests::get_data</span>().<span class="kw">await</span>;
+        <span class="kw">let</span> (<span class="ident">_dir</span>, <span class="ident">ctx</span>) <span class="op">=</span> <span class="ident">tests::get_data</span>().<span class="kw">await</span>;
         <span class="macro">println!</span>(<span class="string">&quot;[log] test configuration {:#?}&quot;</span>, <span class="ident">ctx</span>.<span class="ident">settings</span>);
         <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="macro">get_app!</span>(<span class="ident">ctx</span>).<span class="kw">await</span>;
 
         <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="macro">get_request!</span>(<span class="ident">app</span>, <span class="ident">V1_API_ROUTES</span>.<span class="ident">meta</span>.<span class="ident">build_details</span>);
-        <span class="macro">assert!</span>(<span class="ident">tests::check_status</span>(<span class="ident">resp</span>, <span class="ident">StatusCode::OK</span>).<span class="kw">await</span>);
+        <span class="macro">check_status!</span>(<span class="ident">resp</span>, <span class="ident">StatusCode::OK</span>);
     }
 }
 </code></pre></div>
