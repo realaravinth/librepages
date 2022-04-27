@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-use git2::{build::CheckoutBuilder, BranchType, Direction, ObjectType, Repository};
+use git2::{
+    build::CheckoutBuilder, Branch, BranchType, Direction, ObjectType, Oid, Remote, Repository,
+};
 #[cfg(not(test))]
 use log::info;
 
@@ -34,8 +36,12 @@ pub struct Page {
 }
 
 impl Page {
+    pub fn open_repo(&self) -> ServiceResult<Repository> {
+        Ok(Repository::open(&self.path)?)
+    }
+
     fn create_repo(&self) -> ServiceResult<Repository> {
-        let repo = Repository::open(&self.path);
+        let repo = self.open_repo();
 
         if let Ok(repo) = repo {
             return Ok(repo);
@@ -50,8 +56,13 @@ impl Page {
         Ok(repo)
     }
 
+    fn find_branch<'a>(&self, repo: &'a Repository) -> ServiceResult<Branch<'a>> {
+        let branch = repo.find_branch(&self.branch, BranchType::Local)?;
+        Ok(branch)
+    }
+
     pub fn deploy_branch(&self, repo: &Repository) -> ServiceResult<()> {
-        let branch = repo.find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)?;
+        let branch = self.find_branch(repo)?;
 
         let mut checkout_options = CheckoutBuilder::new();
         checkout_options.force();
@@ -59,17 +70,23 @@ impl Page {
         let tree = branch.get().peel(ObjectType::Tree)?;
 
         repo.checkout_tree(&tree, Some(&mut checkout_options))?;
-        repo.set_head(branch.get().name().unwrap())?;
+        repo.set_head(&format!("refs/heads/{}", self.branch))?;
         info!("Deploying branch {}", self.branch);
         Ok(())
     }
 
     fn _fetch_upstream(&self, repo: &Repository, branch: &str) -> ServiceResult<()> {
-        let mut remote = repo.find_remote("origin").unwrap();
+        let mut remote = Self::get_deploy_remote(repo)?;
         remote.connect(Direction::Fetch)?;
         info!("Updating repository {}", self.repo);
-        remote.fetch(&[branch], None, None)?;
+        let remote_branch_name = format!("origin/{branch}");
+        remote.fetch(&[&remote_branch_name], None, None)?;
         remote.disconnect()?;
+        let branch = repo.find_branch(&remote_branch_name, BranchType::Remote)?;
+        let commit = branch.get().peel_to_commit()?;
+        if self.find_branch(repo).is_err() {
+            repo.branch(&self.branch, &commit, true)?;
+        }
         Ok(())
     }
 
@@ -79,22 +96,33 @@ impl Page {
         self.deploy_branch(&repo)?;
         Ok(())
     }
+
+    pub fn get_deploy_branch(&self, repo: &Repository) -> ServiceResult<String> {
+        let branch = self.find_branch(repo)?;
+        if branch.is_head() {
+            Ok(self.branch.clone())
+        } else {
+            Err(ServiceError::BranchNotFound(self.branch.clone()))
+        }
+    }
+
+    pub fn get_deploy_commit(repo: &Repository) -> ServiceResult<Oid> {
+        let head = repo.head()?;
+        let commit = head.peel_to_commit()?;
+        Ok(commit.id())
+    }
+
+    pub fn get_deploy_remote(repo: &Repository) -> ServiceResult<Remote> {
+        Ok(repo.find_remote("origin")?)
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    use git2::Branch;
     use git2::Repository;
     use mktemp::Temp;
-
-    impl Page {
-        fn get_tree<'a>(&self, repo: &'a Repository) -> Branch<'a> {
-            repo.find_branch(&format!("origin/{}", &self.branch), BranchType::Remote)
-                .unwrap()
-        }
-    }
 
     #[actix_rt::test]
     async fn pages_works() {
@@ -120,14 +148,16 @@ mod tests {
             "repository exists yet"
         );
 
-        let gh_pages = page.get_tree(&repo);
-        assert_eq!(
-            gh_pages.name().unwrap().as_ref().unwrap(),
-            &"origin/gh-pages"
-        );
+        let gh_pages = page.get_deploy_branch(&repo).unwrap();
+        assert_eq!(gh_pages, "gh-pages");
         page.branch = "master".to_string();
         page.update().unwrap();
-        let master = page.get_tree(&repo);
-        assert_eq!(master.name().unwrap().as_ref().unwrap(), &"origin/master");
+        let master = page.get_deploy_branch(&repo).unwrap();
+        assert_eq!(master, "master");
+
+        assert_eq!(
+            Page::get_deploy_remote(&repo).unwrap().url().unwrap(),
+            page.repo
+        );
     }
 }
