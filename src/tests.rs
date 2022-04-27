@@ -17,24 +17,23 @@
 use std::path::Path;
 use std::sync::Arc;
 
-use actix_http::StatusCode;
-use actix_web::dev::ServiceResponse;
 use mktemp::Temp;
 
 use crate::ctx::Ctx;
 use crate::page::Page;
 use crate::settings::Settings;
 
-pub async fn get_data() -> Arc<Ctx> {
+pub async fn get_data() -> (Temp, Arc<Ctx>) {
+    // mktemp::Temp is returned because the temp directory created
+    // is removed once the variable goes out of scope
     let mut settings = Settings::new().unwrap();
 
     let tmp_dir = Temp::new_dir().unwrap();
     println!("[log] Test temp directory: {}", tmp_dir.to_str().unwrap());
-    let tmp_dir = tmp_dir.as_path();
     let mut pages = Vec::with_capacity(settings.pages.len());
     for page in settings.pages.iter() {
         let name = Path::new(&page.path).file_name().unwrap().to_str().unwrap();
-        let path = tmp_dir.join(name);
+        let path = tmp_dir.as_path().join(name);
         let page = Page {
             path: path.to_str().unwrap().to_string(),
             secret: page.secret.clone(),
@@ -49,7 +48,7 @@ pub async fn get_data() -> Arc<Ctx> {
     println!("[log] Initialzing settings again with test config");
     settings.init();
 
-    Ctx::new(settings)
+    (tmp_dir, Ctx::new(settings))
 }
 
 #[allow(dead_code, clippy::upper_case_acronyms)]

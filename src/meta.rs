@@ -65,7 +65,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn build_details_works() {
-        let ctx = tests::get_data().await;
+        let (_dir, ctx) = tests::get_data().await;
         println!("[log] test configuration {:#?}", ctx.settings);
         let app = get_app!(ctx).await;
 
