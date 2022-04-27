@@ -14,13 +14,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+use std::path::Path;
 use std::sync::Arc;
 
+use actix_http::StatusCode;
+use actix_web::dev::ServiceResponse;
+use mktemp::Temp;
+
 use crate::ctx::Ctx;
+use crate::page::Page;
 use crate::settings::Settings;
 
 pub async fn get_data() -> Arc<Ctx> {
-    let settings = Settings::new().unwrap();
+    let mut settings = Settings::new().unwrap();
+
+    let tmp_dir = Temp::new_dir().unwrap();
+    println!("[log] Test temp directory: {}", tmp_dir.to_str().unwrap());
+    let tmp_dir = tmp_dir.as_path();
+    let mut pages = Vec::with_capacity(settings.pages.len());
+    for page in settings.pages.iter() {
+        let name = Path::new(&page.path).file_name().unwrap().to_str().unwrap();
+        let path = tmp_dir.join(name);
+        let page = Page {
+            path: path.to_str().unwrap().to_string(),
+            secret: page.secret.clone(),
+            branch: page.branch.clone(),
+            repo: page.repo.clone(),
+        };
+
+        pages.push(Arc::new(page));
+    }
+
+    settings.pages = pages;
+    println!("[log] Initialzing settings again with test config");
+    settings.init();
+
     Ctx::new(settings)
 }
 
@@ -98,4 +126,17 @@ macro_rules! get_app {
     ($ctx:expr) => {
         test::init_service(get_app!("APP").app_data(crate::WebData::new($ctx.clone())))
     };
+}
+
+/// Utility function to check for status of a test response, attempt response payload serialization
+/// and print payload if response status doesn't match expected status
+pub async fn check_status(resp: ServiceResponse, expected: StatusCode) -> bool {
+    let status = resp.status();
+    if status != expected {
+        eprintln!("[error] Expected status code: {expected} received: {status}");
+        let response: serde_json::Value = actix_web::test::read_body_json(resp).await;
+        eprintln!("[error] Body:\n{:#?}", response);
+    }
+
+    status == expected
 }

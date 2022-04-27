@@ -76,6 +76,7 @@ mod tests {
     #[actix_rt::test]
     async fn deploy_update_works() {
         let ctx = tests::get_data().await;
+        println!("[log] test configuration {:#?}", ctx.settings);
         let app = get_app!(ctx).await;
         let page = ctx.settings.pages.get(0);
         let page = page.unwrap();
@@ -90,7 +91,7 @@ mod tests {
             post_request!(&payload, V1_API_ROUTES.deploy.update).to_request(),
         )
         .await;
-        assert_eq!(resp.status(), StatusCode::OK);
+        assert!(tests::check_status(resp, StatusCode::OK).await);
 
         payload.secret = page.branch.clone();
 
@@ -99,6 +100,6 @@ mod tests {
             post_request!(&payload, V1_API_ROUTES.deploy.update).to_request(),
         )
         .await;
-        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+        assert!(tests::check_status(resp, StatusCode::NOT_FOUND).await);
     }
 }

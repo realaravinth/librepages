@@ -66,15 +66,10 @@ mod tests {
     #[actix_rt::test]
     async fn build_details_works() {
         let ctx = tests::get_data().await;
+        println!("[log] test configuration {:#?}", ctx.settings);
         let app = get_app!(ctx).await;
 
-        let resp = test::call_service(
-            &app,
-            test::TestRequest::get()
-                .uri(V1_API_ROUTES.meta.build_details)
-                .to_request(),
-        )
-        .await;
-        assert_eq!(resp.status(), StatusCode::OK);
+        let resp = get_request!(app, V1_API_ROUTES.meta.build_details);
+        assert!(tests::check_status(resp, StatusCode::OK).await);
     }
 }
