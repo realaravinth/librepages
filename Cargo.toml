@@ -21,7 +21,7 @@ my-codegen = {package = "actix-web-codegen", git ="https://github.com/realaravin
 config = "0.13"
 git2 = "0.14.2"
 
-serde = { version = "1", features = ["derive"]}
+serde = { version = "1", features = ["derive", "rc"]}
 serde_json = "1"
 
 pretty_env_logger = "0.4"

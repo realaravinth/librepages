@@ -16,6 +16,7 @@
  */
 use std::env;
 use std::path::Path;
+use std::sync::Arc;
 
 use config::{Config, Environment, File};
 use log::warn;
@@ -43,7 +44,7 @@ impl Server {
 pub struct Settings {
     pub server: Server,
     pub source_code: String,
-    pub pages: Vec<Page>,
+    pub pages: Vec<Arc<Page>>,
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -101,20 +102,14 @@ impl Settings {
                     continue;
                 }
                 if page.secret == page2.secret {
-                    log::error!(
-                        "{}",
-                        ServiceError::SecretTaken(page.to_owned(), page2.to_owned())
-                    );
+                    log::error!("{}", ServiceError::SecretTaken(page.clone(), page2.clone()));
                 } else if page.repo == page2.repo {
                     log::error!(
                         "{}",
-                        ServiceError::DuplicateRepositoryURL(page.to_owned(), page2.to_owned(),)
+                        ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
                     );
                 } else if page.path == page2.path {
-                    log::error!(
-                        "{}",
-                        ServiceError::PathTaken(page.to_owned(), page2.to_owned())
-                    );
+                    log::error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
                 }
             }
             if let Err(e) = page.update() {

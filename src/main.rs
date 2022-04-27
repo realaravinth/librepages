@@ -15,27 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 use std::env;
+use std::sync::Arc;
 
 use actix_web::{
-    error::InternalError, http::StatusCode, middleware as actix_middleware, web::JsonConfig, App,
-    HttpServer,
+    error::InternalError, http::StatusCode, middleware as actix_middleware, web::Data as WebData,
+    web::JsonConfig, App, HttpServer,
 };
-use lazy_static::lazy_static;
 use log::info;
 
+mod ctx;
 mod deploy;
 mod errors;
 mod meta;
 mod page;
 mod routes;
 mod settings;
+#[cfg(test)]
+mod tests;
 
 pub use routes::ROUTES as V1_API_ROUTES;
 pub use settings::Settings;
-
-lazy_static! {
-    pub static ref SETTINGS: Settings = Settings::new().unwrap();
-}
 
 pub const CACHE_AGE: u32 = 604800;
 
@@ -44,6 +43,8 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");
 pub const PKG_DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 pub const PKG_HOMEPAGE: &str = env!("CARGO_PKG_HOMEPAGE");
+
+pub type AppCtx = WebData<Arc<ctx::Ctx>>;
 
 #[cfg(not(tarpaulin_include))]
 #[actix_web::main]
@@ -55,6 +56,9 @@ async fn main() -> std::io::Result<()> {
         }
     }
 
+    let settings = Settings::new().unwrap();
+    let ctx = WebData::new(ctx::Ctx::new(settings.clone()));
+
     pretty_env_logger::init();
 
     info!(
@@ -62,12 +66,13 @@ async fn main() -> std::io::Result<()> {
         PKG_NAME, PKG_DESCRIPTION, PKG_HOMEPAGE, VERSION, GIT_COMMIT_HASH
     );
 
-    println!("Starting server on: http://{}", SETTINGS.server.get_ip());
+    info!("Starting server on: http://{}", settings.server.get_ip());
 
     HttpServer::new(move || {
         App::new()
             .wrap(actix_middleware::Logger::default())
             .wrap(actix_middleware::Compress::default())
+            .app_data(ctx.clone())
             .app_data(get_json_err())
             .wrap(
                 actix_middleware::DefaultHeaders::new()
@@ -78,8 +83,8 @@ async fn main() -> std::io::Result<()> {
             ))
             .configure(services)
     })
-    .workers(SETTINGS.server.workers.unwrap_or_else(num_cpus::get))
-    .bind(SETTINGS.server.get_ip())
+    .workers(settings.server.workers.unwrap_or_else(num_cpus::get))
+    .bind(settings.server.get_ip())
     .unwrap()
     .run()
     .await

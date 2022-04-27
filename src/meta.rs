@@ -17,13 +17,13 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 
-use crate::{GIT_COMMIT_HASH, VERSION};
+use crate::{AppCtx, GIT_COMMIT_HASH, VERSION};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct BuildDetails {
-    pub version: &'static str,
-    pub git_commit_hash: &'static str,
-    pub source_code: &'static str,
+pub struct BuildDetails<'a> {
+    pub version: &'a str,
+    pub git_commit_hash: &'a str,
+    pub source_code: &'a str,
 }
 
 pub mod routes {
@@ -44,11 +44,11 @@ pub mod routes {
 
 /// emmits build details of the bninary
 #[my_codegen::get(path = "crate::V1_API_ROUTES.meta.build_details")]
-async fn build_details() -> impl Responder {
+async fn build_details(ctx: AppCtx) -> impl Responder {
     let build = BuildDetails {
         version: VERSION,
         git_commit_hash: GIT_COMMIT_HASH,
-        source_code: &crate::SETTINGS.source_code,
+        source_code: &ctx.settings.source_code,
     };
     HttpResponse::Ok().json(build)
 }
@@ -59,14 +59,14 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{http::StatusCode, test, App};
+    use actix_web::{http::StatusCode, test};
 
-    use crate::services;
     use crate::*;
 
     #[actix_rt::test]
     async fn build_details_works() {
-        let app = test::init_service(App::new().configure(services)).await;
+        let ctx = tests::get_data().await;
+        let app = get_app!(ctx).await;
 
         let resp = test::call_service(
             &app,

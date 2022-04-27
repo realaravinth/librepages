@@ -17,6 +17,7 @@
 //! represents all the ways a trait can fail using this crate
 use std::convert::From;
 use std::io::Error as FSErrorInner;
+use std::sync::Arc;
 
 use actix_web::{
     error::ResponseError,
@@ -90,7 +91,7 @@ pub enum ServiceError {
         _0,
         _1
     )]
-    PathTaken(Page, Page),
+    PathTaken(Arc<Page>, Arc<Page>),
 
     /// when the a Secret configured for a page is already taken
     #[display(
@@ -98,7 +99,7 @@ pub enum ServiceError {
         _0,
         _1
     )]
-    SecretTaken(Page, Page),
+    SecretTaken(Arc<Page>, Arc<Page>),
 
     /// when the a Repository URL configured for a page is already taken
     #[display(
@@ -106,7 +107,7 @@ pub enum ServiceError {
         _0,
         _1
     )]
-    DuplicateRepositoryURL(Page, Page),
+    DuplicateRepositoryURL(Arc<Page>, Arc<Page>),
 
     #[display(fmt = "File System Error {}", _0)]
     FSError(FSError),

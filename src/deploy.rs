@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::oneshot;
 
 use crate::errors::*;
-use crate::SETTINGS;
+use crate::AppCtx;
 
 pub mod routes {
     pub struct Deploy {
@@ -42,11 +42,12 @@ pub struct DeployEvent {
 }
 
 #[my_codegen::post(path = "crate::V1_API_ROUTES.deploy.update")]
-async fn update(payload: web::Json<DeployEvent>) -> ServiceResult<impl Responder> {
-    for page in SETTINGS.pages.iter() {
+async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<impl Responder> {
+    for page in ctx.settings.pages.iter() {
         if page.secret == payload.secret {
             let (tx, rx) = oneshot::channel();
-            web::block(|| {
+            let page = page.clone();
+            web::block(move || {
                 tx.send(page.update()).unwrap();
             })
             .await
@@ -65,18 +66,18 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{http::StatusCode, test, App};
+    use actix_web::{http::StatusCode, test};
 
-    use crate::services;
+    use crate::tests;
     use crate::*;
 
     use super::*;
 
     #[actix_rt::test]
     async fn deploy_update_works() {
-        let app = test::init_service(App::new().configure(services)).await;
-
-        let page = SETTINGS.pages.get(0);
+        let ctx = tests::get_data().await;
+        let app = get_app!(ctx).await;
+        let page = ctx.settings.pages.get(0);
         let page = page.unwrap();
 
         let mut payload = DeployEvent {
@@ -86,10 +87,7 @@ mod tests {
 
         let resp = test::call_service(
             &app,
-            test::TestRequest::post()
-                .uri(V1_API_ROUTES.deploy.update)
-                .set_json(&payload)
-                .to_request(),
+            post_request!(&payload, V1_API_ROUTES.deploy.update).to_request(),
         )
         .await;
         assert_eq!(resp.status(), StatusCode::OK);
@@ -98,10 +96,7 @@ mod tests {
 
         let resp = test::call_service(
             &app,
-            test::TestRequest::post()
-                .uri(V1_API_ROUTES.deploy.update)
-                .set_json(&payload)
-                .to_request(),
+            post_request!(&payload, V1_API_ROUTES.deploy.update).to_request(),
         )
         .await;
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
