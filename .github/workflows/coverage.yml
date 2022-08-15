@@ -40,7 +40,6 @@ jobs:
         if: matrix.version == 'stable' && (github.ref == 'refs/heads/master' || github.event_name == 'pull_request')
         uses: actions-rs/tarpaulin@v0.1
         with:
-          version: '0.18.2'
           args: '-t 1200'
         env:
           # GIT_HASH is dummy value. I guess build.rs is skipped in tarpaulin
