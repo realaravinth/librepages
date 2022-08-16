@@ -33,7 +33,7 @@ FILENAME="$NAME-$2-linux-amd64"
 TARBALL=$FILENAME.tar.gz
 TARGET_DIR="$TMP_DIR/$FILENAME/"
 mkdir -p $TARGET_DIR
-DOCKER_IMG="realaravinth/$NAME:$3"
+DOCKER_IMG="realaravinth/pages:$3"
 
 
 get_bin(){
