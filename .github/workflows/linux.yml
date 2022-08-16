@@ -34,8 +34,15 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+
+      - name: configure GPG key
+        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
+        run: echo -n "$RELEASE_BOT_GPG_SIGNING_KEY" | gpg --batch --import --pinentry-mode loopback
+        env:
+          RELEASE_BOT_GPG_SIGNING_KEY: ${{ secrets.RELEASE_BOT_GPG_SIGNING_KEY }}
+
       - name: Login to DockerHub
-        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/pages'
+        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -57,6 +64,13 @@ jobs:
       - name: build and publish docker images
         run: make docker-publish
 
+      - name: publish bins
+        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
+        run: ./scripts/publish.sh publish master latest $DUMBSERVE_PASSWORD
+        env:
+          DUMBSERVE_PASSWORD: ${{ secrets.DUMBSERVE_PASSWORD }}
+          GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+
       - name: generate documentation
         if: matrix.version == 'stable' && (github.repository == 'realaravinth/pages')
         run: make doc
@@ -64,7 +78,7 @@ jobs:
           GIT_HASH: 8e77345f1597e40c2e266cb4e6dee74888918a61 # dummy value
 
       - name: Deploy to GitHub Pages
-        if: matrix.version == 'stable' && (github.repository == 'realaravinth/pages')
+        if: matrix.version == 'stable' && (github.repository == 'realaravinth/librepages')
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
