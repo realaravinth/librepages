@@ -39,7 +39,7 @@ DOCKER_IMG="realaravinth/pages:$3"
 get_bin(){
 	echo "[*] Grabbing binary"
 	container_id=$(docker create $DOCKER_IMG)
-	docker cp $container_id:/usr/local/bin/$NAME $TARGET_DIR/
+	docker cp $container_id:/usr/local/bin/pages $TARGET_DIR/
 	docker rm -v $container_id
 }
 
