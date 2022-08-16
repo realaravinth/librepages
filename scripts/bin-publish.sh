@@ -17,13 +17,12 @@
 # publish.sh: grab bin from docker container, pack, sign and upload
 # $2: binary version
 # $3: Docker img tag
-# $4: dumbserve username
-# $5: dumbserve password
+# $4: dumbserve password
 
 set -xEeuo  pipefail
 
 DUMBSERVE_USERNAME=librepages
-DUMBSERVE_PASSWORD=$5
+DUMBSERVE_PASSWORD=$4
 DUMBSERVE_HOST="https://$DUMBSERVE_USERNAME:$DUMBSERVE_PASSWORD@dl.librepages.org"
 
 NAME=librebages

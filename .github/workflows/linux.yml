@@ -66,7 +66,7 @@ jobs:
 
       - name: publish bins
         if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
-        run: ./scripts/publish.sh publish master latest $DUMBSERVE_PASSWORD
+        run: ./scripts/bin-publish.sh publish master latest $DUMBSERVE_PASSWORD
         env:
           DUMBSERVE_PASSWORD: ${{ secrets.DUMBSERVE_PASSWORD }}
           GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
