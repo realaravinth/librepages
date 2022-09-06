@@ -36,6 +36,7 @@ pub struct Server {
     pub port: u32,
     pub ip: String,
     pub workers: Option<usize>,
+    pub domain: String,
 }
 
 impl Server {
