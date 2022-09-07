@@ -7,7 +7,7 @@ on:
     branches:
       - master
       - "*"
-      - '!gh-pages'
+      - "!gh-pages"
 
 jobs:
   build_and_test:
@@ -33,7 +33,6 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
 
       - name: configure GPG key
         if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
@@ -61,7 +60,11 @@ jobs:
       - name: run tests
         run: make test
 
-      - name: build and publish docker images
+      - name: make docker images
+        run: make docker
+
+      - name: publish docker images
+        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
         run: make docker-publish
 
       - name: publish bins
