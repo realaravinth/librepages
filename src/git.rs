@@ -114,6 +114,32 @@ impl ContentType {
 /// in the repository. However, it will succeed if the output of [escape_spaces] is
 /// used in the request.
 pub fn read_file(repo_path: &str, path: &str) -> ServiceResult<FileInfo> {
+    let repo = git2::Repository::open(repo_path).unwrap();
+    let head = repo.head().unwrap();
+    let tree = head.peel_to_tree().unwrap();
+    read_file_inner(&repo, path, &tree)
+}
+
+pub fn read_preview_file(
+    repo_path: &str,
+    preview_name: &str,
+    path: &str,
+) -> ServiceResult<FileInfo> {
+    let repo = git2::Repository::open(repo_path).unwrap();
+    let branch = repo
+        .find_branch(preview_name, git2::BranchType::Local)
+        .unwrap();
+    //    let tree = head.peel_to_tree().unwrap();
+    let branch = branch.into_reference();
+    let tree = branch.peel_to_tree().unwrap();
+    read_file_inner(&repo, path, &tree)
+}
+
+fn read_file_inner(
+    repo: &git2::Repository,
+    path: &str,
+    tree: &git2::Tree,
+) -> ServiceResult<FileInfo> {
     fn read_file(id: Oid, repo: &git2::Repository) -> ContentType {
         let blob = repo.find_blob(id).unwrap();
         ContentType::from_blob(&blob)
@@ -145,9 +171,9 @@ pub fn read_file(repo_path: &str, path: &str) -> ServiceResult<FileInfo> {
         content
     }
 
-    let inner = |repo: &git2::Repository| -> ServiceResult<FileInfo> {
-        let head = repo.head().unwrap();
-        let tree = head.peel_to_tree().unwrap();
+    let inner = |repo: &git2::Repository, tree: &git2::Tree| -> ServiceResult<FileInfo> {
+        //        let head = repo.head().unwrap();
+        //        let tree = head.peel_to_tree().unwrap();
         let mut path = path;
         if path == "/" {
             let content = get_index_file(tree.id(), repo);
@@ -185,8 +211,8 @@ pub fn read_file(repo_path: &str, path: &str) -> ServiceResult<FileInfo> {
         }
     };
 
-    let repo = git2::Repository::open(repo_path).unwrap();
-    inner(&repo)
+    //let repo = git2::Repository::open(repo_path).unwrap();
+    inner(repo, tree)
 }
 
 #[cfg(test)]
@@ -254,6 +280,11 @@ pub mod tests {
 
         write_file_util(PATH);
         let resp = read_file(PATH, "README.txt").unwrap();
+        assert_eq!(resp.filename, "README.txt");
+        assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
+        assert_eq!(resp.mime.first().unwrap(), "text/plain");
+
+        let resp = read_preview_file(PATH, "master", "README.txt").unwrap();
         assert_eq!(resp.filename, "README.txt");
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
