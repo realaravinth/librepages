@@ -26,9 +26,11 @@ use log::info;
 mod ctx;
 mod deploy;
 mod errors;
+mod git;
 mod meta;
 mod page;
 mod routes;
+mod serve;
 mod settings;
 #[cfg(test)]
 mod tests;

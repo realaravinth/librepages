@@ -18,12 +18,14 @@ use actix_web::web;
 
 use crate::deploy::routes::Deploy;
 use crate::meta::routes::Meta;
+use crate::serve::routes::Serve;
 
 pub const ROUTES: Routes = Routes::new();
 
 pub struct Routes {
     pub meta: Meta,
     pub deploy: Deploy,
+    pub serve: Serve,
 }
 
 impl Routes {
@@ -31,6 +33,7 @@ impl Routes {
         Self {
             meta: Meta::new(),
             deploy: Deploy::new(),
+            serve: Serve::new(),
         }
     }
 }
@@ -38,4 +41,5 @@ impl Routes {
 pub fn services(cfg: &mut web::ServiceConfig) {
     crate::meta::services(cfg);
     crate::deploy::services(cfg);
+    crate::serve::services(cfg);
 }
