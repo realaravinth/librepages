@@ -1,6 +1,10 @@
 default: ## Debug build
 	cargo build
 
+check: ## Check for syntax errors on all workspaces
+	cargo check --workspace --tests --all-features
+	#cd utils/cache-bust && cargo check --tests --all-features
+
 clean: ## Clean all build artifacts and dependencies
 	@cargo clean
 
