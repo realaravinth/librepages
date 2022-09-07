@@ -29,6 +29,7 @@ mod errors;
 mod git;
 mod meta;
 mod page;
+mod preview;
 mod routes;
 mod serve;
 mod settings;

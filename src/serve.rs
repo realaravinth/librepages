@@ -56,27 +56,58 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
     }
 
     if host == ctx.settings.server.domain || host == "localhost" {
-        Ok(HttpResponse::Ok()
+        return Ok(HttpResponse::Ok()
             .content_type(ContentType::html())
-            .body("Welcome to Librepages!"))
-    } else {
-        match find_page(host, &ctx) {
-            Some(page) => {
-                log::debug!("Page found");
-                let content = crate::git::read_file(&page.path, req.uri().path())?;
-                let mime = if let Some(mime) = content.mime.first_raw() {
-                    mime
-                } else {
-                    "text/html; charset=utf-8"
-                };
+            .body("Welcome to Librepages!"));
+    }
 
-                Ok(HttpResponse::Ok()
-                    //.content_type(ContentType::html())
-                    .content_type(mime)
-                    .body(content.content.bytes()))
-            }
-            None => Err(ServiceError::WebsiteNotFound),
+    if host.contains(&ctx.settings.server.domain) {
+        let extractor = crate::preview::Preview::new(&ctx);
+        if let Some(preview_branch) = extractor.extract(host) {
+            unimplemented!(
+                "map a local subdomain on settings.server.domain and use it to fetch page"
+            );
+            let res = match find_page(host, &ctx) {
+                Some(page) => {
+                    log::debug!("Page found");
+                    let content = crate::git::read_preview_file(
+                        &page.path,
+                        preview_branch,
+                        req.uri().path(),
+                    )?;
+                    let mime = if let Some(mime) = content.mime.first_raw() {
+                        mime
+                    } else {
+                        "text/html; charset=utf-8"
+                    };
+
+                    Ok(HttpResponse::Ok()
+                        //.content_type(ContentType::html())
+                        .content_type(mime)
+                        .body(content.content.bytes()))
+                }
+                None => Err(ServiceError::WebsiteNotFound),
+            };
+            return res;
         }
+    }
+
+    match find_page(host, &ctx) {
+        Some(page) => {
+            log::debug!("Page found");
+            let content = crate::git::read_file(&page.path, req.uri().path())?;
+            let mime = if let Some(mime) = content.mime.first_raw() {
+                mime
+            } else {
+                "text/html; charset=utf-8"
+            };
+
+            Ok(HttpResponse::Ok()
+                //.content_type(ContentType::html())
+                .content_type(mime)
+                .body(content.content.bytes()))
+        }
+        None => Err(ServiceError::WebsiteNotFound),
     }
 }
 
