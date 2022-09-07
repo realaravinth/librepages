@@ -44,7 +44,7 @@ pub struct DeployEvent {
     pub branch: String,
 }
 
-fn find_page<'a>(secret: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
+pub fn find_page<'a>(secret: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
     for page in ctx.settings.pages.iter() {
         if page.secret == secret {
             return Some(page);
@@ -70,12 +70,12 @@ async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<i
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
 pub struct DeploySecret {
     pub secret: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
 pub struct DeployInfo {
     pub head: String,
     pub remote: String,

@@ -15,12 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use git2::{
-    build::CheckoutBuilder, Branch, BranchType, Direction, ObjectType, Oid, Remote, Repository,
-};
+use git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
 #[cfg(not(test))]
 use log::info;
-use std::io::{self, Write};
 
 #[cfg(test)]
 use std::println as info;
@@ -29,12 +26,13 @@ use serde::Deserialize;
 
 use crate::errors::*;
 
-#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct Page {
     pub secret: String,
     pub repo: String,
     pub path: String,
     pub branch: String,
+    pub domain: String,
 }
 
 impl Page {
@@ -130,7 +128,7 @@ impl Page {
             let head_commit = repo
                 .reference_to_annotated_commit(&repo.head().unwrap())
                 .unwrap();
-            Self::normal_merge(&repo, &head_commit, &fetch_commit).unwrap();
+            Self::normal_merge(repo, &head_commit, &fetch_commit).unwrap();
         } else {
             log::info!("Nothing to do...");
         }
@@ -254,6 +252,7 @@ mod tests {
             repo: "https://github.com/mcaptcha/website".to_owned(),
             path: tmp_dir.to_str().unwrap().to_string(),
             branch: "gh-pages".to_string(),
+            domain: "mcaptcha.org".into(),
         };
 
         assert!(

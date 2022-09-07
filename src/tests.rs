@@ -39,6 +39,7 @@ pub async fn get_data() -> (Temp, Arc<Ctx>) {
             secret: page.secret.clone(),
             branch: page.branch.clone(),
             repo: page.repo.clone(),
+            domain: "mcaptcha.org".into(),
         };
 
         pages.push(Arc::new(page));
@@ -112,18 +113,18 @@ macro_rules! delete_request {
 macro_rules! get_app {
     ("APP") => {
         actix_web::App::new()
-            .app_data(crate::get_json_err())
+            .app_data($crate::get_json_err())
             .wrap(actix_web::middleware::NormalizePath::new(
                 actix_web::middleware::TrailingSlash::Trim,
             ))
-            .configure(crate::routes::services)
+            .configure($crate::routes::services)
     };
 
     //    ($settings:ident) => {
     //        test::init_service(get_app!("APP", $settings))
     //    };
     ($ctx:expr) => {
-        test::init_service(get_app!("APP").app_data(crate::WebData::new($ctx.clone())))
+        test::init_service(get_app!("APP").app_data($crate::WebData::new($ctx.clone())))
     };
 }
 
