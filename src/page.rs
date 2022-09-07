@@ -73,10 +73,14 @@ impl Page {
         Ok(())
     }
 
-    fn fetch<'a>(&self, repo: &'a git2::Repository) -> ServiceResult<git2::AnnotatedCommit<'a>> {
+    fn fetch<'a>(
+        &self,
+        repo: &'a git2::Repository,
+        branch: &str,
+    ) -> ServiceResult<git2::AnnotatedCommit<'a>> {
         let mut remote = repo.find_remote("origin")?;
         log::info!("Fetching {} for repo", remote.name().unwrap());
-        remote.fetch(&[&self.branch], None, None)?;
+        remote.fetch(&[branch], None, None)?;
         let fetch_head = repo.find_reference("FETCH_HEAD")?;
         Ok(repo.reference_to_annotated_commit(&fetch_head)?)
     }
@@ -85,6 +89,7 @@ impl Page {
         &self,
         repo: &'a Repository,
         fetch_commit: git2::AnnotatedCommit<'a>,
+        branch: &str,
     ) -> ServiceResult<()> {
         // 1. do a merge analysis
         let analysis = repo.merge_analysis(&[&fetch_commit])?;
@@ -94,7 +99,7 @@ impl Page {
             //log::debug!("Doing a fast forward");
             log::debug!("Doing a fast forward");
             // do a fast forward
-            let refname = format!("refs/heads/{}", &self.branch);
+            let refname = format!("refs/heads/{}", branch);
             match repo.find_reference(&refname) {
                 Ok(mut r) => {
                     log::debug!("fast forwarding");
@@ -109,7 +114,7 @@ impl Page {
                         &refname,
                         fetch_commit.id(),
                         true,
-                        &format!("Setting {} to {}", &self.branch, fetch_commit.id()),
+                        &format!("Setting {} to {}", branch, fetch_commit.id()),
                     )
                     .unwrap();
                     repo.set_head(&refname).unwrap();
@@ -209,10 +214,10 @@ impl Page {
         Ok(())
     }
 
-    pub fn update(&self) -> ServiceResult<()> {
+    pub fn update(&self, branch: &str) -> ServiceResult<()> {
         let repo = self.create_repo()?;
-        let fetch_commit = self.fetch(&repo)?;
-        self.merge(&repo, fetch_commit)?;
+        let fetch_commit = self.fetch(&repo, branch)?;
+        self.merge(&repo, fetch_commit, branch)?;
         Ok(())
     }
 
@@ -271,7 +276,7 @@ mod tests {
         let gh_pages = page.get_deploy_branch(&repo).unwrap();
         assert_eq!(gh_pages, "gh-pages");
         page.branch = "master".to_string();
-        page.update().unwrap();
+        page.update(&page.branch).unwrap();
         let master = page.get_deploy_branch(&repo).unwrap();
         assert_eq!(master, "master");
 

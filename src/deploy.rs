@@ -59,7 +59,7 @@ async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<i
         let (tx, rx) = oneshot::channel();
         let page = page.clone();
         web::block(move || {
-            tx.send(page.update()).unwrap();
+            tx.send(page.update(&payload.branch)).unwrap();
         })
         .await
         .unwrap();

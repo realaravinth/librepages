@@ -124,7 +124,7 @@ impl Settings {
                     error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
                 }
             }
-            if let Err(e) = page.update() {
+            if let Err(e) = page.update(&page.branch) {
                 error!("{e}");
             }
         }
