@@ -169,7 +169,7 @@
     <span class="prelude-val">None</span>
 }
 
-<span class="attribute">#[<span class="ident">my_codegen::get</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.serve.catch_all&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::get</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.serve.catch_all&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">index</span>(<span class="ident">req</span>: <span class="ident">HttpRequest</span>, <span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Responder</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">req</span>.<span class="ident">connection_info</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">c</span>.<span class="ident">host</span>();

@@ -193,6 +193,21 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -209,8 +224,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */</span>
-<span class="doccomment">//! represents all the ways a trait can fail using this crate</span>
+<span class="doccomment">//! Represents all the ways a trait can fail using this crate</span>
 <span class="kw">use</span> <span class="ident">std::convert::From</span>;
+<span class="kw">use</span> <span class="ident">std::error::Error</span> <span class="kw">as</span> <span class="ident">StdError</span>;
 <span class="kw">use</span> <span class="ident">std::io::Error</span> <span class="kw">as</span> <span class="ident">FSErrorInner</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
@@ -321,6 +337,16 @@
 
     <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Branch {} not found&quot;</span>, <span class="ident">_0</span>)]</span>
     <span class="ident">BranchNotFound</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
+
+    <span class="doccomment">/// Username is taken</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Username is taken&quot;</span>)]</span>
+    <span class="ident">UsernameTaken</span>,
+    <span class="doccomment">/// Email is taken</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Email is taken&quot;</span>)]</span>
+    <span class="ident">EmailTaken</span>,
+    <span class="doccomment">/// Account not found</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Account not found&quot;</span>)]</span>
+    <span class="ident">AccountNotFound</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
@@ -379,6 +405,10 @@
             <span class="ident">ServiceError::BadRequest</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
             <span class="ident">ServiceError::GitError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
             <span class="ident">ServiceError::BranchNotFound</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::CONFLICT</span>,
+
+            <span class="ident">ServiceError::EmailTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
+            <span class="ident">ServiceError::UsernameTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
+            <span class="ident">ServiceError::AccountNotFound</span> =&gt; <span class="ident">StatusCode::NOT_FOUND</span>,
         }
     }
 }

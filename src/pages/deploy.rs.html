@@ -250,7 +250,7 @@
     <span class="prelude-val">None</span>
 }
 
-<span class="attribute">#[<span class="ident">my_codegen::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.update&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.update&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="ident">payload</span>: <span class="ident">web::Json</span><span class="op">&lt;</span><span class="ident">DeployEvent</span><span class="op">&gt;</span>, <span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Responder</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">page</span>) <span class="op">=</span> <span class="ident">find_page</span>(<span class="kw-2">&amp;</span><span class="ident">payload</span>.<span class="ident">secret</span>, <span class="kw-2">&amp;</span><span class="ident">ctx</span>) {
         <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">oneshot::channel</span>();
@@ -295,7 +295,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">my_codegen::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.info&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.info&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">deploy_info</span>(
     <span class="ident">payload</span>: <span class="ident">web::Json</span><span class="op">&lt;</span><span class="ident">DeploySecret</span><span class="op">&gt;</span>,
     <span class="ident">ctx</span>: <span class="ident">AppCtx</span>,

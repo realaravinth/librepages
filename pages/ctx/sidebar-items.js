@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["Ctx",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["Ctx",""]],"type":[["ArcCtx",""]]};
