@@ -21,9 +21,11 @@ use actix_web::{
     error::InternalError, http::StatusCode, middleware as actix_middleware, web::Data as WebData,
     web::JsonConfig, App, HttpServer,
 };
+use clap::{Parser, SubCommand, Subcommand};
 use log::info;
 
 mod ctx;
+mod db;
 mod deploy;
 mod errors;
 mod git;
@@ -36,6 +38,7 @@ mod settings;
 #[cfg(test)]
 mod tests;
 
+use ctx::Ctx;
 pub use routes::ROUTES as V1_API_ROUTES;
 pub use settings::Settings;
 
@@ -47,30 +50,76 @@ pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");
 pub const PKG_DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 pub const PKG_HOMEPAGE: &str = env!("CARGO_PKG_HOMEPAGE");
 
-pub type AppCtx = WebData<Arc<ctx::Ctx>>;
+pub type AppCtx = WebData<ctx::ArcCtx>;
 
-#[cfg(not(tarpaulin_include))]
+//#[cfg(not(tarpaulin_include))]
+//#[actix_web::main]
+//async fn main() -> std::io::Result<()> {
+//    {
+//        const LOG_VAR: &str = "RUST_LOG";
+//        if env::var(LOG_VAR).is_err() {
+//            env::set_var("RUST_LOG", "info");
+//        }
+//    }
+//
+//    let settings = Settings::new().unwrap();
+//    let ctx = WebData::new(ctx::Ctx::new(settings.clone()));
+//
+//    pretty_env_logger::init();
+//
+//    info!(
+//        "{}: {}.\nFor more information, see: {}\nBuild info:\nVersion: {} commit: {}",
+//        PKG_NAME, PKG_DESCRIPTION, PKG_HOMEPAGE, VERSION, GIT_COMMIT_HASH
+//    );
+//
+//
+//}
+
+#[derive(Parser)]
+#[clap(author, version, about, long_about = None)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    /// run database migrations
+    Migrate,
+
+    /// run server
+    Serve,
+}
+
 #[actix_web::main]
+#[cfg(not(tarpaulin_include))]
 async fn main() -> std::io::Result<()> {
-    {
-        const LOG_VAR: &str = "RUST_LOG";
-        if env::var(LOG_VAR).is_err() {
-            env::set_var("RUST_LOG", "info");
-        }
-    }
-
-    let settings = Settings::new().unwrap();
-    let ctx = WebData::new(ctx::Ctx::new(settings.clone()));
+    env::set_var("RUST_LOG", "info");
 
     pretty_env_logger::init();
+
+    let cli = Cli::parse();
 
     info!(
         "{}: {}.\nFor more information, see: {}\nBuild info:\nVersion: {} commit: {}",
         PKG_NAME, PKG_DESCRIPTION, PKG_HOMEPAGE, VERSION, GIT_COMMIT_HASH
     );
 
-    info!("Starting server on: http://{}", settings.server.get_ip());
+    let settings = Settings::new().unwrap();
+    let ctx = Ctx::new(settings.clone()).await;
+    let ctx = actix_web::web::Data::new(ctx);
 
+    match &cli.command {
+        Commands::Migrate => ctx.db.migrate().await.unwrap(),
+        Commands::Serve => serve(settings, ctx).await.unwrap(),
+    }
+    Ok(())
+}
+
+async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
+    let ip = settings.server.get_ip();
+
+    info!("Starting server on: http://{}", settings.server.get_ip());
     HttpServer::new(move || {
         App::new()
             .wrap(actix_middleware::Logger::default())
