@@ -49,7 +49,7 @@ pub async fn get_data() -> (Temp, Arc<Ctx>) {
     println!("[log] Initialzing settings again with test config");
     settings.init();
 
-    (tmp_dir, Ctx::new(settings))
+    (tmp_dir, Ctx::new(settings).await)
 }
 
 #[allow(dead_code, clippy::upper_case_acronyms)]

@@ -1,3 +1,4 @@
+debug = true
 # source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
 
@@ -20,3 +21,21 @@ ip= "0.0.0.0"
 # with one also.
 workers = 2
 domain = "demo.librepages.org"
+
+
+
+[database]
+# This section deals with the database location and how to access it
+# Please note that at the moment, we have support for only postgresqa.
+# Example, if you are Batman, your config would be:
+# hostname = "batcave.org"
+# port = "5432"
+# username = "batman"
+# password = "somereallycomplicatedBatmanpassword"
+hostname = "localhost"
+port = "5432"
+username = "postgres"
+password = "password"
+name = "postgres"
+pool = 4
+database_type="postgres" # "postgres"

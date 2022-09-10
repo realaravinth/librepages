@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-//! represents all the ways a trait can fail using this crate
+//! Represents all the ways a trait can fail using this crate
 use std::convert::From;
 use std::io::Error as FSErrorInner;
 use std::sync::Arc;

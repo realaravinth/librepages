@@ -18,7 +18,8 @@ use std::env;
 use std::path::Path;
 use std::sync::Arc;
 
-use config::{Config, Environment, File};
+use config::{Config, ConfigError, Environment, File};
+use derive_more::Display;
 #[cfg(not(test))]
 use log::{error, warn};
 
@@ -26,6 +27,7 @@ use log::{error, warn};
 use std::{println as warn, println as error};
 
 use serde::Deserialize;
+use serde::Serialize;
 use url::Url;
 
 use crate::errors::*;
@@ -46,11 +48,39 @@ impl Server {
     }
 }
 
+#[derive(Deserialize, Serialize, Display, Eq, PartialEq, Clone, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum DBType {
+    #[display(fmt = "postgres")]
+    Postgres,
+    //    #[display(fmt = "maria")]
+    //    Maria,
+}
+
+impl DBType {
+    fn from_url(url: &Url) -> Result<Self, ConfigError> {
+        match url.scheme() {
+            //        "mysql" => Ok(Self::Maria),
+            "postgres" => Ok(Self::Postgres),
+            _ => Err(ConfigError::Message("Unknown database type".into())),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Database {
+    pub url: String,
+    pub pool: u32,
+    pub database_type: DBType,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
+    pub debug: bool,
     pub server: Server,
     pub source_code: String,
     pub pages: Vec<Arc<Page>>,
+    pub database: Database,
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -84,15 +114,56 @@ impl Settings {
 
         s = s.add_source(Environment::with_prefix("PAGES").separator("__"));
 
-        let mut settings = s.build()?.try_deserialize::<Settings>()?;
-        settings.check_url();
         match env::var("PORT") {
             Ok(val) => {
-                settings.server.port = val.parse().unwrap();
+                s = s.set_override("server.port", val).unwrap();
+                //settings.server.port = val.parse().unwrap();
             }
             Err(e) => warn!("couldn't interpret PORT: {}", e),
         }
 
+        if let Ok(val) = env::var("DATABASE_URL") {
+            //        match env::var("DATABASE_URL") {
+            //           Ok(val) => {
+            let url = Url::parse(&val).expect("couldn't parse Database URL");
+            s = s.set_override("database.url", url.to_string()).unwrap();
+            let database_type = DBType::from_url(&url).unwrap();
+            s = s
+                .set_override("database.database_type", database_type.to_string())
+                .unwrap();
+        }
+
+        //    Err(_e) => {
+        //    }
+
+        let intermediate_config = s.build_cloned().unwrap();
+
+        s = s
+            .set_override(
+                "database.url",
+                format!(
+                    r"postgres://{}:{}@{}:{}/{}",
+                    intermediate_config
+                        .get::<String>("database.username")
+                        .expect("Couldn't access database username"),
+                    intermediate_config
+                        .get::<String>("database.password")
+                        .expect("Couldn't access database password"),
+                    intermediate_config
+                        .get::<String>("database.hostname")
+                        .expect("Couldn't access database hostname"),
+                    intermediate_config
+                        .get::<String>("database.port")
+                        .expect("Couldn't access database port"),
+                    intermediate_config
+                        .get::<String>("database.name")
+                        .expect("Couldn't access database name")
+                ),
+            )
+            .expect("Couldn't set database url");
+
+        let settings = s.build()?.try_deserialize::<Settings>()?;
+        settings.check_url();
         settings.init();
 
         Ok(settings)

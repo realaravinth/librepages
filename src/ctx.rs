@@ -16,15 +16,20 @@
  */
 use std::sync::Arc;
 
+use crate::db::*;
 use crate::settings::Settings;
+
+pub type ArcCtx = Arc<Ctx>;
 
 #[derive(Clone)]
 pub struct Ctx {
     pub settings: Settings,
+    pub db: Database,
 }
 
 impl Ctx {
-    pub fn new(settings: Settings) -> Arc<Self> {
-        Arc::new(Self { settings })
+    pub async fn new(settings: Settings) -> Arc<Self> {
+        let db = get_db(&settings).await;
+        Arc::new(Self { settings, db })
     }
 }
