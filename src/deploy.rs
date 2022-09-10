@@ -53,7 +53,7 @@ pub fn find_page<'a>(secret: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
     None
 }
 
-#[my_codegen::post(path = "crate::V1_API_ROUTES.deploy.update")]
+#[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.update")]
 async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<impl Responder> {
     if let Some(page) = find_page(&payload.secret, &ctx) {
         let (tx, rx) = oneshot::channel();
@@ -98,7 +98,7 @@ impl DeployInfo {
     }
 }
 
-#[my_codegen::post(path = "crate::V1_API_ROUTES.deploy.info")]
+#[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.info")]
 async fn deploy_info(
     payload: web::Json<DeploySecret>,
     ctx: AppCtx,

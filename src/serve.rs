@@ -47,7 +47,7 @@ pub fn find_page<'a>(domain: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
     None
 }
 
-#[my_codegen::get(path = "crate::V1_API_ROUTES.serve.catch_all")]
+#[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.serve.catch_all")]
 async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
     let c = req.connection_info();
     let mut host = c.host();

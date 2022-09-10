@@ -16,7 +16,8 @@ authors = ["realaravinth <realaravinth@batsense.net>"]
 actix-web = "4.0.1"
 actix-http = "3.0.4"
 actix-rt = "2"
-my-codegen = {package = "actix-web-codegen", git ="https://github.com/realaravinth/actix-web"}
+actix-web-codegen-const-routes = { version = "0.1.0", tag = "0.1.0", git = "https://github.com/realaravinth/actix-web-codegen-const-routes" }
+
 
 config = "0.13"
 git2 = "0.14.2"
