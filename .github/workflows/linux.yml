@@ -37,7 +37,6 @@ jobs:
         ports:
           - 5432:5432
 
-
     steps:
       - uses: actions/checkout@v2
       - name: ⚡ Cache
@@ -73,7 +72,7 @@ jobs:
       - name: build and apply migrations
         run: make migrate
         env:
-          DATABASE_URL="postgres://postgres:password@localhost:5432/postgres"
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres"
 
       - name: run tests
         run: make test
@@ -100,7 +99,6 @@ jobs:
         env:
           GIT_HASH: 8e77345f1597e40c2e266cb4e6dee74888918a61 # dummy value
           DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres"
-
 
       - name: Deploy to GitHub Pages
         if: matrix.version == 'stable' && (github.repository == 'realaravinth/librepages')
