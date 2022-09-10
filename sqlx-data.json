@@ -1,3 +1,180 @@
 {
-  "db": "PostgreSQL"
+  "db": "PostgreSQL",
+  "1be33ea4fe0e6079c88768ff912b824f4b0250193f2d086046c1fd0da125ae0c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "password",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT name, password  FROM librepages_users WHERE name = ($1)"
+  },
+  "279b5ae27935279b06d2799eef2da6a316324a05d23ba7a729c608c70168c496": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE librepages_users set name = $1\n            WHERE name = $2"
+  },
+  "5c5d774bde06c0ab83c3616a56a28f12dfd9c546cbaac9f246d3b350c587823e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "DELETE FROM librepages_users WHERE name = ($1)"
+  },
+  "6a557f851d4f47383b864085093beb0954e79779f21b655978f07e285281e0ac": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE librepages_users set email = $1\n            WHERE name = $2"
+  },
+  "8735b654bc261571e6a5908d55a8217474c76bdff7f3cbcc71500a0fe13249db": {
+    "describe": {
+      "columns": [
+        {
+          "name": "exists",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT EXISTS (SELECT 1 from librepages_users WHERE email = $1)"
+  },
+  "924e756de5544cece865a10a7e136ecc6126e3a603947264cc7899387c18c819": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "UPDATE librepages_users set password = $1\n            WHERE name = $2"
+  },
+  "aa0e7d72a4542f28db816a8cc20e3f7b778e90e3cbe982a5a24af0b682adaf7d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Text",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "insert into librepages_users\n            (name , password, email) values ($1, $2, $3)"
+  },
+  "b48c77db6e663d97df44bf9ec2ee92fd3e02f2dcbcdbd1d491e09fab2da68494": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "password",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT name, password  FROM librepages_users WHERE email = ($1)"
+  },
+  "bdd4d2a1b0b97ebf8ed61cfd120b40146fbf3ea9afb5cd0e03c9d29860b6a26b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "exists",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT EXISTS (SELECT 1 from librepages_users WHERE name = $1)"
+  },
+  "ced69a08729ffb906e8971dbdce6a8d4197bc9bb8ccd7c58b3a88eb7be73fc2e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "email",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT email FROM librepages_users WHERE name = $1"
+  }
 }

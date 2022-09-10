@@ -16,6 +16,7 @@
  */
 //! Represents all the ways a trait can fail using this crate
 use std::convert::From;
+use std::error::Error as StdError;
 use std::io::Error as FSErrorInner;
 use std::sync::Arc;
 
@@ -126,6 +127,16 @@ pub enum ServiceError {
 
     #[display(fmt = "Branch {} not found", _0)]
     BranchNotFound(#[error(not(source))] String),
+
+    /// Username is taken
+    #[display(fmt = "Username is taken")]
+    UsernameTaken,
+    /// Email is taken
+    #[display(fmt = "Email is taken")]
+    EmailTaken,
+    /// Account not found
+    #[display(fmt = "Account not found")]
+    AccountNotFound,
 }
 
 impl From<ParseError> for ServiceError {
@@ -184,6 +195,10 @@ impl ResponseError for ServiceError {
             ServiceError::BadRequest(_) => StatusCode::BAD_REQUEST,
             ServiceError::GitError(_) => StatusCode::BAD_REQUEST,
             ServiceError::BranchNotFound(_) => StatusCode::CONFLICT,
+
+            ServiceError::EmailTaken => StatusCode::BAD_REQUEST,
+            ServiceError::UsernameTaken => StatusCode::BAD_REQUEST,
+            ServiceError::AccountNotFound => StatusCode::NOT_FOUND,
         }
     }
 }
