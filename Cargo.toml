@@ -17,7 +17,9 @@ actix-web = "4.0.1"
 actix-http = "3.0.4"
 actix-rt = "2"
 actix-web-codegen-const-routes = { version = "0.1.0", tag = "0.1.0", git = "https://github.com/realaravinth/actix-web-codegen-const-routes" }
-
+argon2-creds = { branch = "master", git = "https://github.com/realaravinth/argon2-creds"}
+sqlx = { version = "0.6.1", features = [ "runtime-actix-rustls", "postgres", "time", "offline", "json"] }
+clap = { vesrion = "3.2.20", features = ["derive"]}
 
 config = "0.13"
 git2 = "0.14.2"

@@ -22,6 +22,22 @@ jobs:
     name: ${{ matrix.version }} - x86_64-unknown-linux-gnu
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+
     steps:
       - uses: actions/checkout@v2
       - name: ⚡ Cache
@@ -54,11 +70,15 @@ jobs:
           profile: minimal
           override: true
 
-      - name: build
-        run: make
+      - name: build and apply migrations
+        run: make migrate
+        env:
+          DATABASE_URL="postgres://postgres:password@localhost:5432/postgres"
 
       - name: run tests
         run: make test
+        env:
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres"
 
       - name: make docker images
         run: make docker
@@ -79,6 +99,8 @@ jobs:
         run: make doc
         env:
           GIT_HASH: 8e77345f1597e40c2e266cb4e6dee74888918a61 # dummy value
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/postgres"
+
 
       - name: Deploy to GitHub Pages
         if: matrix.version == 'stable' && (github.repository == 'realaravinth/librepages')

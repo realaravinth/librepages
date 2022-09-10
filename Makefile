@@ -32,11 +32,20 @@ lint: ## Lint codebase
 	cargo fmt -v --all -- --emit files
 	cargo clippy --workspace --tests --all-features
 
+migrate: ## run migrations
+	unset DATABASE_URL && cargo build
+	cargo run -- migrate
+
 release: ## Release build
 	cargo build --release
 
 run: default ## Run debug build
 	cargo run
+
+sqlx-offline-data: ## prepare sqlx offline data
+	cargo sqlx prepare  \
+		--database-url=${DATABASE_URL} -- \
+		--all-features
 
 test: ## Run tests
 	cargo test --all-features --no-fail-fast
