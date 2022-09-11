@@ -38,6 +38,7 @@ pub struct Server {
     pub port: u32,
     pub ip: String,
     pub workers: Option<usize>,
+    pub cookie_secret: String,
     pub domain: String,
 }
 

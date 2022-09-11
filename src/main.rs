@@ -15,15 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 use std::env;
-use std::sync::Arc;
 
+use actix_identity::{CookieIdentityPolicy, IdentityService};
 use actix_web::{
     error::InternalError, http::StatusCode, middleware as actix_middleware, web::Data as WebData,
     web::JsonConfig, App, HttpServer,
 };
-use clap::{Parser, SubCommand, Subcommand};
+use clap::{Parser, Subcommand};
 use log::info;
 
+mod api;
 mod ctx;
 mod db;
 mod deploy;
@@ -149,6 +150,20 @@ pub fn get_json_err() -> JsonConfig {
         //debug!("JSON deserialization error: {:?}", &err);
         InternalError::new(err, StatusCode::BAD_REQUEST).into()
     })
+}
+
+#[cfg(not(tarpaulin_include))]
+pub fn get_identity_service(settings: &Settings) -> IdentityService<CookieIdentityPolicy> {
+    let cookie_secret = &settings.server.cookie_secret;
+    IdentityService::new(
+        CookieIdentityPolicy::new(cookie_secret.as_bytes())
+            .path("/")
+            .name("Authorization")
+            //TODO change cookie age
+            .max_age_secs(216000)
+            .domain(&settings.server.domain)
+            .secure(false),
+    )
 }
 
 pub fn services(cfg: &mut actix_web::web::ServiceConfig) {

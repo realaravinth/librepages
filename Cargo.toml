@@ -15,6 +15,7 @@ authors = ["realaravinth <realaravinth@batsense.net>"]
 [dependencies]
 actix-web = "4.0.1"
 actix-http = "3.0.4"
+actix-identity = "0.4.0"
 actix-rt = "2"
 actix-web-codegen-const-routes = { version = "0.1.0", tag = "0.1.0", git = "https://github.com/realaravinth/actix-web-codegen-const-routes" }
 argon2-creds = { branch = "master", git = "https://github.com/realaravinth/argon2-creds"}
@@ -33,6 +34,7 @@ log = "0.4"
 lazy_static = "1.4"
 
 url = "2.2"
+urlencoding = "2.1.0"
 
 derive_more = "0.99"
 
@@ -44,5 +46,14 @@ num_enum = "0.5.7"
 mime_guess = "2.0.4"
 rand = "0.8.5"
 
+
+[dependencies.actix-auth-middleware]
+branch = "v4"
+features = ["actix_identity_backend"]
+git = "https://github.com/realaravinth/actix-auth-middleware"
+version = "0.2"
+
+
 [dev-dependencies]
+futures = "0.3.24"
 mktemp = "0.4.1"
