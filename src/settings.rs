@@ -76,6 +76,7 @@ pub struct Database {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
+    pub allow_registration: bool,
     pub debug: bool,
     pub server: Server,
     pub source_code: String,

@@ -1,4 +1,5 @@
 debug = true
+allow_registration = true
 # source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
 
