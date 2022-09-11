@@ -220,7 +220,7 @@ impl Database {
     }
 
     /// update user's password
-    async fn update_password(&self, p: &NameHash) -> ServiceResult<()> {
+    pub async fn update_password(&self, p: &NameHash) -> ServiceResult<()> {
         sqlx::query!(
             "UPDATE librepages_users set password = $1
             WHERE name = $2",
@@ -235,7 +235,7 @@ impl Database {
     }
 
     /// update username
-    async fn update_username(&self, current: &str, new: &str) -> ServiceResult<()> {
+    pub async fn update_username(&self, current: &str, new: &str) -> ServiceResult<()> {
         sqlx::query!(
             "UPDATE librepages_users set name = $1
             WHERE name = $2",
