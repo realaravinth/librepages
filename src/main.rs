@@ -37,6 +37,7 @@ mod serve;
 mod settings;
 #[cfg(test)]
 mod tests;
+mod utils;
 
 use ctx::Ctx;
 pub use routes::ROUTES as V1_API_ROUTES;
