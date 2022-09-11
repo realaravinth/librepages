@@ -53,8 +53,25 @@ async fn build_details(ctx: AppCtx) -> impl Responder {
     HttpResponse::Ok().json(build)
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+/// Health check return datatype
+pub struct Health {
+    db: bool,
+}
+
+/// checks all components of the system
+#[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.meta.health")]
+async fn health(ctx: crate::AppCtx) -> impl Responder {
+    let res = Health {
+        db: ctx.db.ping().await,
+    };
+
+    HttpResponse::Ok().json(res)
+}
+
 pub fn services(cfg: &mut web::ServiceConfig) {
     cfg.service(build_details);
+    cfg.service(health);
 }
 
 #[cfg(test)]
@@ -71,5 +88,26 @@ mod tests {
 
         let resp = get_request!(app, V1_API_ROUTES.meta.build_details);
         check_status!(resp, StatusCode::OK);
+    }
+
+    #[actix_rt::test]
+    async fn health_works() {
+        use actix_web::test;
+
+        let settings = Settings::new().unwrap();
+        let ctx = AppCtx::new(crate::ctx::Ctx::new(settings).await);
+        let app = test::init_service(App::new().app_data(ctx.clone()).configure(services)).await;
+
+        let resp = test::call_service(
+            &app,
+            test::TestRequest::get()
+                .uri(crate::V1_API_ROUTES.meta.health)
+                .to_request(),
+        )
+        .await;
+        assert_eq!(resp.status(), StatusCode::OK);
+
+        let health_resp: super::Health = test::read_body_json(resp).await;
+        assert!(health_resp.db);
     }
 }
