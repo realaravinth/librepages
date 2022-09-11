@@ -42,7 +42,7 @@ pub mod routes {
     }
 }
 
-/// emmits build details of the bninary
+/// emits build details of the binary
 #[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.meta.build_details")]
 async fn build_details(ctx: AppCtx) -> impl Responder {
     let build = BuildDetails {
@@ -82,7 +82,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn build_details_works() {
-        let (_dir, ctx) = tests::get_data().await;
+        let (_dir, ctx) = tests::get_ctx().await;
         println!("[log] test configuration {:#?}", ctx.settings);
         let app = get_app!(ctx).await;
 
@@ -94,9 +94,8 @@ mod tests {
     async fn health_works() {
         use actix_web::test;
 
-        let settings = Settings::new().unwrap();
-        let ctx = AppCtx::new(crate::ctx::Ctx::new(settings).await);
-        let app = test::init_service(App::new().app_data(ctx.clone()).configure(services)).await;
+        let (_dir, ctx) = tests::get_ctx().await;
+        let app = get_app!(ctx).await;
 
         let resp = test::call_service(
             &app,

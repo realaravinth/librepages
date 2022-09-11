@@ -127,7 +127,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn deploy_update_works() {
-        let (_dir, ctx) = tests::get_data().await;
+        let (_dir, ctx) = tests::get_ctx().await;
         println!("[log] test configuration {:#?}", ctx.settings);
         let app = get_app!(ctx).await;
         let page = ctx.settings.pages.get(0);
@@ -157,7 +157,7 @@ mod tests {
 
     #[actix_rt::test]
     async fn deploy_info_works() {
-        let (_dir, ctx) = tests::get_data().await;
+        let (_dir, ctx) = tests::get_ctx().await;
         println!("[log] test configuration {:#?}", ctx.settings);
         let page = ctx.settings.pages.get(0);
         let page = page.unwrap();
