@@ -124,7 +124,7 @@
 }
 
 <span class="doccomment">/// emmits build details of the bninary</span>
-<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::get</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.meta.build_details&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">my_codegen::get</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.meta.build_details&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">build_details</span>(<span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="kw">impl</span> <span class="ident">Responder</span> {
     <span class="kw">let</span> <span class="ident">build</span> <span class="op">=</span> <span class="ident">BuildDetails</span> {
         <span class="ident">version</span>: <span class="ident">VERSION</span>,

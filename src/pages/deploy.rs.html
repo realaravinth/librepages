@@ -241,7 +241,7 @@
     <span class="kw">pub</span> <span class="ident">branch</span>: <span class="ident">String</span>,
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_page</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">secret</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">AppCtx</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Page</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">find_page</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">secret</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">AppCtx</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Page</span><span class="op">&gt;</span> {
     <span class="kw">for</span> <span class="ident">page</span> <span class="kw">in</span> <span class="ident">ctx</span>.<span class="ident">settings</span>.<span class="ident">pages</span>.<span class="ident">iter</span>() {
         <span class="kw">if</span> <span class="ident">page</span>.<span class="ident">secret</span> <span class="op">==</span> <span class="ident">secret</span> {
             <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">page</span>);
@@ -250,13 +250,13 @@
     <span class="prelude-val">None</span>
 }
 
-<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.update&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">my_codegen::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.update&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="ident">payload</span>: <span class="ident">web::Json</span><span class="op">&lt;</span><span class="ident">DeployEvent</span><span class="op">&gt;</span>, <span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="kw">impl</span> <span class="ident">Responder</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">page</span>) <span class="op">=</span> <span class="ident">find_page</span>(<span class="kw-2">&amp;</span><span class="ident">payload</span>.<span class="ident">secret</span>, <span class="kw-2">&amp;</span><span class="ident">ctx</span>) {
         <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">oneshot::channel</span>();
         <span class="kw">let</span> <span class="ident">page</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">clone</span>();
         <span class="ident">web::block</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-            <span class="ident">tx</span>.<span class="ident">send</span>(<span class="ident">page</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="ident">payload</span>.<span class="ident">branch</span>)).<span class="ident">unwrap</span>();
+            <span class="ident">tx</span>.<span class="ident">send</span>(<span class="ident">page</span>.<span class="ident">update</span>()).<span class="ident">unwrap</span>();
         })
         .<span class="kw">await</span>
         .<span class="ident">unwrap</span>();
@@ -267,12 +267,12 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeploySecret</span> {
     <span class="kw">pub</span> <span class="ident">secret</span>: <span class="ident">String</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DeployInfo</span> {
     <span class="kw">pub</span> <span class="ident">head</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">remote</span>: <span class="ident">String</span>,
@@ -295,7 +295,7 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.info&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">my_codegen::post</span>(<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;crate::V1_API_ROUTES.deploy.info&quot;</span>)]</span>
 <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">deploy_info</span>(
     <span class="ident">payload</span>: <span class="ident">web::Json</span><span class="op">&lt;</span><span class="ident">DeploySecret</span><span class="op">&gt;</span>,
     <span class="ident">ctx</span>: <span class="ident">AppCtx</span>,

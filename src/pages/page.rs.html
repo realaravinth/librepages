@@ -288,10 +288,6 @@
 <span id="282">282</span>
 <span id="283">283</span>
 <span id="284">284</span>
-<span id="285">285</span>
-<span id="286">286</span>
-<span id="287">287</span>
-<span id="288">288</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -309,9 +305,12 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */</span>
 
-<span class="kw">use</span> <span class="ident">git2</span>::{<span class="ident">build::CheckoutBuilder</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">Oid</span>, <span class="ident">Remote</span>, <span class="ident">Repository</span>};
+<span class="kw">use</span> <span class="ident">git2</span>::{
+    <span class="ident">build::CheckoutBuilder</span>, <span class="ident">Branch</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">ObjectType</span>, <span class="ident">Oid</span>, <span class="ident">Remote</span>, <span class="ident">Repository</span>,
+};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
 <span class="kw">use</span> <span class="ident">log::info</span>;
+<span class="kw">use</span> <span class="ident">std::io</span>::{<span class="self">self</span>, <span class="ident">Write</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">use</span> <span class="ident">std::println</span> <span class="kw">as</span> <span class="ident">info</span>;
@@ -320,13 +319,12 @@
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Page</span> {
     <span class="kw">pub</span> <span class="ident">secret</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">repo</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">branch</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">domain</span>: <span class="ident">String</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Page</span> {
@@ -367,14 +365,10 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">fetch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">git2::Repository</span>,
-        <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">git2::AnnotatedCommit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fetch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">git2::Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">git2::AnnotatedCommit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remote</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_remote</span>(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>;
         <span class="macro">log::info!</span>(<span class="string">&quot;Fetching {} for repo&quot;</span>, <span class="ident">remote</span>.<span class="ident">name</span>().<span class="ident">unwrap</span>());
-        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="ident">branch</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">fetch_head</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_reference</span>(<span class="string">&quot;FETCH_HEAD&quot;</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="ident">repo</span>.<span class="ident">reference_to_annotated_commit</span>(<span class="kw-2">&amp;</span><span class="ident">fetch_head</span>)<span class="question-mark">?</span>)
     }
@@ -383,7 +377,6 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Repository</span>,
         <span class="ident">fetch_commit</span>: <span class="ident">git2::AnnotatedCommit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
-        <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     ) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="comment">// 1. do a merge analysis</span>
         <span class="kw">let</span> <span class="ident">analysis</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">merge_analysis</span>(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>])<span class="question-mark">?</span>;
@@ -393,7 +386,7 @@
             <span class="comment">//log::debug!(&quot;Doing a fast forward&quot;);</span>
             <span class="macro">log::debug!</span>(<span class="string">&quot;Doing a fast forward&quot;</span>);
             <span class="comment">// do a fast forward</span>
-            <span class="kw">let</span> <span class="ident">refname</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="ident">branch</span>);
+            <span class="kw">let</span> <span class="ident">refname</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>);
             <span class="kw">match</span> <span class="ident">repo</span>.<span class="ident">find_reference</span>(<span class="kw-2">&amp;</span><span class="ident">refname</span>) {
                 <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) =&gt; {
                     <span class="macro">log::debug!</span>(<span class="string">&quot;fast forwarding&quot;</span>);
@@ -408,7 +401,7 @@
                         <span class="kw-2">&amp;</span><span class="ident">refname</span>,
                         <span class="ident">fetch_commit</span>.<span class="ident">id</span>(),
                         <span class="bool-val">true</span>,
-                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Setting {} to {}&quot;</span>, <span class="ident">branch</span>, <span class="ident">fetch_commit</span>.<span class="ident">id</span>()),
+                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Setting {} to {}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="ident">fetch_commit</span>.<span class="ident">id</span>()),
                     )
                     .<span class="ident">unwrap</span>();
                     <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="kw-2">&amp;</span><span class="ident">refname</span>).<span class="ident">unwrap</span>();
@@ -427,7 +420,7 @@
             <span class="kw">let</span> <span class="ident">head_commit</span> <span class="op">=</span> <span class="ident">repo</span>
                 .<span class="ident">reference_to_annotated_commit</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>.<span class="ident">head</span>().<span class="ident">unwrap</span>())
                 .<span class="ident">unwrap</span>();
-            <span class="ident"><span class="self">Self</span>::normal_merge</span>(<span class="ident">repo</span>, <span class="kw-2">&amp;</span><span class="ident">head_commit</span>, <span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>).<span class="ident">unwrap</span>();
+            <span class="ident"><span class="self">Self</span>::normal_merge</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="kw-2">&amp;</span><span class="ident">head_commit</span>, <span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>).<span class="ident">unwrap</span>();
         } <span class="kw">else</span> {
             <span class="macro">log::info!</span>(<span class="string">&quot;Nothing to do...&quot;</span>);
         }
@@ -508,10 +501,10 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_repo</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">fetch_commit</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">branch</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">merge</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">fetch_commit</span>, <span class="ident">branch</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">fetch_commit</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">merge</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">fetch_commit</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -551,7 +544,6 @@
             <span class="ident">repo</span>: <span class="string">&quot;https://github.com/mcaptcha/website&quot;</span>.<span class="ident">to_owned</span>(),
             <span class="ident">path</span>: <span class="ident">tmp_dir</span>.<span class="ident">to_str</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>(),
             <span class="ident">branch</span>: <span class="string">&quot;gh-pages&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">domain</span>: <span class="string">&quot;mcaptcha.org&quot;</span>.<span class="ident">into</span>(),
         };
 
         <span class="macro">assert!</span>(
@@ -570,7 +562,7 @@
         <span class="kw">let</span> <span class="ident">gh_pages</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">gh_pages</span>, <span class="string">&quot;gh-pages&quot;</span>);
         <span class="ident">page</span>.<span class="ident">branch</span> <span class="op">=</span> <span class="string">&quot;master&quot;</span>.<span class="ident">to_string</span>();
-        <span class="ident">page</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="ident">page</span>.<span class="ident">branch</span>).<span class="ident">unwrap</span>();
+        <span class="ident">page</span>.<span class="ident">update</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">master</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
         <span class="macro">assert_eq!</span>(<span class="ident">master</span>, <span class="string">&quot;master&quot;</span>);
 
