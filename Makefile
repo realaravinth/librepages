@@ -40,7 +40,7 @@ release: ## Release build
 	cargo build --release
 
 run: default ## Run debug build
-	cargo run
+	cargo run -- serve
 
 sqlx-offline-data: ## prepare sqlx offline data
 	cargo sqlx prepare  \
