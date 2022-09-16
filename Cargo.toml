@@ -44,8 +44,17 @@ tokio = { version = "1", features=["sync"]}
 num_enum = "0.5.7"
 
 mime_guess = "2.0.4"
+mime = "0.3.16"
+rust-embed = "6.3.0"
 rand = "0.8.5"
 
+
+[dependencies.cache-buster]
+git = "https://github.com/realaravinth/cache-buster"
+
+[dependencies.tera]
+default-features = false
+version = "1.15.0"
 
 [dependencies.actix-auth-middleware]
 branch = "v4"
@@ -57,3 +66,7 @@ version = "0.2"
 [dev-dependencies]
 futures = "0.3.24"
 mktemp = "0.4.1"
+
+
+[workspace]
+exclude = ["utils/cache-bust"]
