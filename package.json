@@ -1,0 +1,25 @@
+{
+  "name": "librepages",
+  "version": "1.0.0",
+  "description": "<div align=\"center\"> <h1> Pages </h1> <p>",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "sass": "rm -rf static/cache/css/*.css && sass templates/main.scss static/cache/css/main.css && sass templates/mobile.scss static/cache/css/mobile.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/realaravinth/librepages.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/realaravinth/librepages/issues"
+  },
+  "homepage": "https://github.com/realaravinth/librepages#readme",
+  "devDependencies": {
+    "sass": "^1.54.9"
+  }
+}

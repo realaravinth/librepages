@@ -1,5 +1,14 @@
+define cache_bust ## run cache_busting program
+	npm run sass
+	cd utils/cache-bust && cargo run
+endef
+
 default: ## Debug build
-	cargo build
+	$(call cache_bust)
+	cargo run -- serve
+
+cache-bust: ## Run cache buster on static assets
+	$(call cache_bust)
 
 check: ## Check for syntax errors on all workspaces
 	cargo check --workspace --tests --all-features
@@ -9,9 +18,11 @@ clean: ## Clean all build artifacts and dependencies
 	@cargo clean
 
 coverage: ## Generate HTML code coverage
+	$(call cache_bust)
 	cargo tarpaulin -t 1200 --out Html
 
 dev-env: ## Download development dependencies
+	npm install
 	cargo fetch
 
 doc: ## Prepare documentation
@@ -37,6 +48,7 @@ migrate: ## run migrations
 	cargo run -- migrate
 
 release: ## Release build
+	$(call cache_bust)
 	cargo build --release
 
 run: default ## Run debug build
@@ -48,9 +60,11 @@ sqlx-offline-data: ## prepare sqlx offline data
 		--all-features
 
 test: ## Run tests
+	$(call cache_bust)
 	cargo test --all-features --no-fail-fast
 
 xml-test-coverage: ## Generate cobertura.xml test coverage
+	$(call cache_bust)
 	cargo tarpaulin -t 1200 --out Xml
 
 help: ## Prints help for targets with comments

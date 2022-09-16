@@ -2,3 +2,8 @@
 tarpaulin-report.html
 .env
 .env.local
+src/cache_buster_data.json
+utils/cache-bust/src/cache_buster_data.json
+node_modules/
+static/cache/css/
+assets/
