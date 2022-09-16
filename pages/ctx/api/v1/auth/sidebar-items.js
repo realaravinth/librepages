@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["Login","Login payload"],["Password","struct used to represent password"],["Register","Register payload"]]};

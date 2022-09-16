@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["services",""]],"struct":[["AccountCheckPayload",""],["Email",""],["Username",""],["delete_account",""],["email_exists",""],["set_email","update email"],["set_username","update username"],["update_user_password",""],["username_exists",""]]};

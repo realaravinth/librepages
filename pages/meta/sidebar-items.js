@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["services",""]],"mod":[["routes",""]],"struct":[["BuildDetails",""],["build_details","emmits build details of the bninary"]]};
+window.SIDEBAR_ITEMS = {"fn":[["services",""]],"mod":[["routes",""]],"struct":[["BuildDetails",""],["Health","Health check return datatype"],["build_details","emits build details of the binary"],["health","checks all components of the system"]]};

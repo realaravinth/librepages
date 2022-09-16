@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["pages"] = [{"text":"impl GetLoginRoute for <a class=\"struct\" href=\"pages/api/v1/routes/struct.Routes.html\" title=\"struct pages::api::v1::routes::Routes\">Routes</a>","synthetic":false,"types":["pages::api::v1::routes::Routes"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

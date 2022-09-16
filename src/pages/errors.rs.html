@@ -193,6 +193,84 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -209,7 +287,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */</span>
-<span class="doccomment">//! represents all the ways a trait can fail using this crate</span>
+<span class="doccomment">//! Represents all the ways a trait can fail using this crate</span>
 <span class="kw">use</span> <span class="ident">std::convert::From</span>;
 <span class="kw">use</span> <span class="ident">std::io::Error</span> <span class="kw">as</span> <span class="ident">FSErrorInner</span>;
 <span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
@@ -219,6 +297,7 @@
     <span class="ident">http</span>::{<span class="ident">header</span>, <span class="ident">StatusCode</span>},
     <span class="ident">HttpResponse</span>, <span class="ident">HttpResponseBuilder</span>,
 };
+<span class="kw">use</span> <span class="ident">argon2_creds::errors::CredsError</span>;
 <span class="kw">use</span> <span class="ident">config::ConfigError</span> <span class="kw">as</span> <span class="ident">ConfigErrorInner</span>;
 <span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">Display</span>, <span class="ident">Error</span>};
 <span class="kw">use</span> <span class="ident">git2::Error</span> <span class="kw">as</span> <span class="ident">GitError</span>;
@@ -321,6 +400,53 @@
 
     <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Branch {} not found&quot;</span>, <span class="ident">_0</span>)]</span>
     <span class="ident">BranchNotFound</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
+
+    <span class="doccomment">/// Username is taken</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Username is taken&quot;</span>)]</span>
+    <span class="ident">UsernameTaken</span>,
+    <span class="doccomment">/// Email is taken</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Email is taken&quot;</span>)]</span>
+    <span class="ident">EmailTaken</span>,
+    <span class="doccomment">/// Account not found</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Account not found&quot;</span>)]</span>
+    <span class="ident">AccountNotFound</span>,
+
+    <span class="attribute">#[<span class="ident">display</span>(
+        <span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;This server is is closed for registration. Contact admin if this is unexpecter&quot;</span>
+    )]</span>
+    <span class="doccomment">/// registration failure, server is is closed for registration</span>
+    <span class="ident">ClosedForRegistration</span>,
+
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The value you entered for email is not an email&quot;</span>)]</span> <span class="comment">//405j</span>
+    <span class="doccomment">/// The value you entered for email is not an email&quot;</span>
+    <span class="ident">NotAnEmail</span>,
+
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Wrong password&quot;</span>)]</span>
+    <span class="doccomment">/// wrong password</span>
+    <span class="ident">WrongPassword</span>,
+
+    <span class="doccomment">/// when the value passed contains profanity</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Can&#39;t allow profanity in usernames&quot;</span>)]</span>
+    <span class="ident">ProfanityError</span>,
+    <span class="doccomment">/// when the value passed contains blacklisted words</span>
+    <span class="doccomment">/// see [blacklist](https://github.com/shuttlecraft/The-Big-Username-Blacklist)</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Username contains blacklisted words&quot;</span>)]</span>
+    <span class="ident">BlacklistError</span>,
+    <span class="doccomment">/// when the value passed contains characters not present</span>
+    <span class="doccomment">/// in [UsernameCaseMapped](https://tools.ietf.org/html/rfc8265#page-7)</span>
+    <span class="doccomment">/// profile</span>
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;username_case_mapped violation&quot;</span>)]</span>
+    <span class="ident">UsernameCaseMappedError</span>,
+
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Passsword too short&quot;</span>)]</span>
+    <span class="doccomment">/// password too short</span>
+    <span class="ident">PasswordTooShort</span>,
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;password too long&quot;</span>)]</span>
+    <span class="doccomment">/// password too long</span>
+    <span class="ident">PasswordTooLong</span>,
+    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Passwords don&#39;t match&quot;</span>)]</span>
+    <span class="doccomment">/// passwords don&#39;t match</span>
+    <span class="ident">PasswordsDontMatch</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
@@ -379,6 +505,36 @@
             <span class="ident">ServiceError::BadRequest</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
             <span class="ident">ServiceError::GitError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
             <span class="ident">ServiceError::BranchNotFound</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::CONFLICT</span>,
+
+            <span class="ident">ServiceError::EmailTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
+            <span class="ident">ServiceError::UsernameTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
+            <span class="ident">ServiceError::AccountNotFound</span> =&gt; <span class="ident">StatusCode::NOT_FOUND</span>,
+
+            <span class="ident">ServiceError::ProfanityError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::BlacklistError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::UsernameCaseMappedError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+
+            <span class="ident">ServiceError::PasswordTooShort</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::PasswordTooLong</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,  <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::PasswordsDontMatch</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::ClosedForRegistration</span> =&gt; <span class="ident">StatusCode::FORBIDDEN</span>, <span class="comment">//FORBIDDEN,</span>
+            <span class="ident">ServiceError::NotAnEmail</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,       <span class="comment">//BADREQUEST,</span>
+            <span class="ident">ServiceError::WrongPassword</span> =&gt; <span class="ident">StatusCode::UNAUTHORIZED</span>,   <span class="comment">//UNAUTHORIZED,</span>
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CredsError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">CredsError</span>) -&gt; <span class="ident">ServiceError</span> {
+        <span class="kw">match</span> <span class="ident">e</span> {
+            <span class="ident">CredsError::UsernameCaseMappedError</span> =&gt; <span class="ident">ServiceError::UsernameCaseMappedError</span>,
+            <span class="ident">CredsError::ProfainityError</span> =&gt; <span class="ident">ServiceError::ProfanityError</span>,
+            <span class="ident">CredsError::BlacklistError</span> =&gt; <span class="ident">ServiceError::BlacklistError</span>,
+            <span class="ident">CredsError::NotAnEmail</span> =&gt; <span class="ident">ServiceError::NotAnEmail</span>,
+            <span class="ident">CredsError::Argon2Error</span>(<span class="kw">_</span>) =&gt; <span class="ident">ServiceError::InternalServerError</span>,
+            <span class="ident">CredsError::PasswordTooLong</span> =&gt; <span class="ident">ServiceError::PasswordTooLong</span>,
+            <span class="ident">CredsError::PasswordTooShort</span> =&gt; <span class="ident">ServiceError::PasswordTooShort</span>,
         }
     }
 }
