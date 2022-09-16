@@ -1,12 +1,21 @@
+FROM node:16.9.1 as frontend
+COPY package.json package-lock.json /src/
+WORKDIR /src
+RUN npm install
+COPY . .
+RUN npm run sass
+
 FROM rust:slim as rust
 WORKDIR /src
-RUN apt-get update && apt-get install -y git pkg-config libssl-dev
+RUN apt-get update && apt-get install -y git pkg-config libssl-dev make
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 COPY Cargo.toml .
 RUN sed -i '/.*build.rs.*/d' Cargo.toml
 COPY Cargo.lock .
-RUN cargo build --release
+RUN cargo build --release || true
+COPY --from=frontend /src/static/ /src/static/
 COPY . /src
+RUN cd utils/cache-bust && cargo run
 RUN cargo build --release
 
 FROM debian:bullseye-slim
