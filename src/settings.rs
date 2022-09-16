@@ -166,7 +166,6 @@ impl Settings {
 
         let settings = s.build()?.try_deserialize::<Settings>()?;
         settings.check_url();
-        settings.init();
 
         Ok(settings)
     }

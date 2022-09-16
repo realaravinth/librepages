@@ -16,7 +16,6 @@
  */
 //! Represents all the ways a trait can fail using this crate
 use std::convert::From;
-use std::error::Error as StdError;
 use std::io::Error as FSErrorInner;
 use std::sync::Arc;
 

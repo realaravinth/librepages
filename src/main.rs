@@ -108,6 +108,7 @@ async fn main() -> std::io::Result<()> {
     );
 
     let settings = Settings::new().unwrap();
+    settings.init();
     let ctx = Ctx::new(settings.clone()).await;
     let ctx = actix_web::web::Data::new(ctx);
 
@@ -121,7 +122,7 @@ async fn main() -> std::io::Result<()> {
 async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
     let ip = settings.server.get_ip();
 
-    info!("Starting server on: http://{}", settings.server.get_ip());
+    info!("Starting server on: http://{}", ip);
     HttpServer::new(move || {
         App::new()
             .wrap(actix_middleware::Logger::default())
@@ -138,7 +139,7 @@ async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
             .configure(services)
     })
     .workers(settings.server.workers.unwrap_or_else(num_cpus::get))
-    .bind(settings.server.get_ip())
+    .bind(ip)
     .unwrap()
     .run()
     .await
