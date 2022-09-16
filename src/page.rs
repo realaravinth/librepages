@@ -23,10 +23,11 @@ use log::info;
 use std::println as info;
 
 use serde::Deserialize;
+use serde::Serialize;
 
 use crate::errors::*;
 
-#[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Page {
     pub secret: String,
     pub repo: String,

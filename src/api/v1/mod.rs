@@ -29,7 +29,6 @@ pub fn services(cfg: &mut ServiceConfig) {
     account::services(cfg);
     crate::meta::services(cfg);
     crate::deploy::services(cfg);
-    crate::serve::services(cfg);
 }
 
 #[derive(Deserialize)]

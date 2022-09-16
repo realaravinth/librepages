@@ -23,6 +23,7 @@ use actix_web::{
 };
 use clap::{Parser, Subcommand};
 use log::info;
+use static_assets::FileMap;
 
 mod api;
 mod ctx;
@@ -32,16 +33,17 @@ mod errors;
 mod git;
 mod meta;
 mod page;
+mod pages;
 mod preview;
-mod routes;
 mod serve;
 mod settings;
+mod static_assets;
 #[cfg(test)]
 mod tests;
 mod utils;
 
+pub use crate::api::v1::ROUTES as V1_API_ROUTES;
 use ctx::Ctx;
-pub use routes::ROUTES as V1_API_ROUTES;
 pub use settings::Settings;
 
 pub const CACHE_AGE: u32 = 604800;
@@ -54,28 +56,9 @@ pub const PKG_HOMEPAGE: &str = env!("CARGO_PKG_HOMEPAGE");
 
 pub type AppCtx = WebData<ctx::ArcCtx>;
 
-//#[cfg(not(tarpaulin_include))]
-//#[actix_web::main]
-//async fn main() -> std::io::Result<()> {
-//    {
-//        const LOG_VAR: &str = "RUST_LOG";
-//        if env::var(LOG_VAR).is_err() {
-//            env::set_var("RUST_LOG", "info");
-//        }
-//    }
-//
-//    let settings = Settings::new().unwrap();
-//    let ctx = WebData::new(ctx::Ctx::new(settings.clone()));
-//
-//    pretty_env_logger::init();
-//
-//    info!(
-//        "{}: {}.\nFor more information, see: {}\nBuild info:\nVersion: {} commit: {}",
-//        PKG_NAME, PKG_DESCRIPTION, PKG_HOMEPAGE, VERSION, GIT_COMMIT_HASH
-//    );
-//
-//
-//}
+lazy_static::lazy_static! {
+    pub static ref FILES: FileMap = FileMap::new();
+}
 
 #[derive(Parser)]
 #[clap(author, version, about, long_about = None)]
@@ -168,5 +151,8 @@ pub fn get_identity_service(settings: &Settings) -> IdentityService<CookieIdenti
 }
 
 pub fn services(cfg: &mut actix_web::web::ServiceConfig) {
-    routes::services(cfg);
+    crate::api::v1::services(cfg);
+    crate::pages::services(cfg);
+    crate::static_assets::services(cfg);
+    crate::serve::services(cfg);
 }
