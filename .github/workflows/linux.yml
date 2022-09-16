@@ -83,11 +83,11 @@ jobs:
         run: make docker
 
       - name: publish docker images
-        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
+        if: (github.ref == 'refs/heads/master' && github.event_name == 'push') && github.repository == 'realaravinth/librepages'
         run: make docker-publish
 
       - name: publish bins
-        if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
+        if: (github.ref == 'refs/heads/master' && github.event_name == 'push') && github.repository == 'realaravinth/librepages'
         run: ./scripts/bin-publish.sh publish master latest $DUMBSERVE_PASSWORD
         env:
           DUMBSERVE_PASSWORD: ${{ secrets.DUMBSERVE_PASSWORD }}

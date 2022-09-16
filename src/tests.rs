@@ -17,13 +17,23 @@
 use std::path::Path;
 use std::sync::Arc;
 
+use actix_web::{
+    body::{BoxBody, EitherBody},
+    dev::ServiceResponse,
+    error::ResponseError,
+    http::StatusCode,
+};
 use mktemp::Temp;
+use serde::Serialize;
 
+use crate::ctx::api::v1::auth::{Login, Register};
 use crate::ctx::Ctx;
+use crate::errors::*;
 use crate::page::Page;
 use crate::settings::Settings;
+use crate::*;
 
-pub async fn get_data() -> (Temp, Arc<Ctx>) {
+pub async fn get_ctx() -> (Temp, Arc<Ctx>) {
     // mktemp::Temp is returned because the temp directory created
     // is removed once the variable goes out of scope
     let mut settings = Settings::new().unwrap();
@@ -46,6 +56,7 @@ pub async fn get_data() -> (Temp, Arc<Ctx>) {
     }
 
     settings.pages = pages;
+    settings.init();
     println!("[log] Initialzing settings again with test config");
     settings.init();
 
@@ -58,18 +69,20 @@ pub struct FORM;
 #[macro_export]
 macro_rules! post_request {
     ($uri:expr) => {
-        test::TestRequest::post().uri($uri)
+        actix_web::test::TestRequest::post().uri($uri)
     };
 
     ($serializable:expr, $uri:expr) => {
-        test::TestRequest::post()
+        actix_web::test::TestRequest::post()
             .uri($uri)
             .insert_header((actix_web::http::header::CONTENT_TYPE, "application/json"))
             .set_payload(serde_json::to_string($serializable).unwrap())
     };
 
     ($serializable:expr, $uri:expr, FORM) => {
-        test::TestRequest::post().uri($uri).set_form($serializable)
+        actix_web::test::TestRequest::post()
+            .uri($uri)
+            .set_form($serializable)
     };
 }
 
@@ -111,20 +124,17 @@ macro_rules! delete_request {
 
 #[macro_export]
 macro_rules! get_app {
-    ("APP") => {
-        actix_web::App::new()
-            .app_data($crate::get_json_err())
-            .wrap(actix_web::middleware::NormalizePath::new(
-                actix_web::middleware::TrailingSlash::Trim,
-            ))
-            .configure($crate::routes::services)
-    };
-
-    //    ($settings:ident) => {
-    //        test::init_service(get_app!("APP", $settings))
-    //    };
     ($ctx:expr) => {
-        test::init_service(get_app!("APP").app_data($crate::WebData::new($ctx.clone())))
+        actix_web::test::init_service(
+            actix_web::App::new()
+                .app_data($crate::get_json_err())
+                .wrap($crate::get_identity_service(&$ctx.settings))
+                .wrap(actix_web::middleware::NormalizePath::new(
+                    actix_web::middleware::TrailingSlash::Trim,
+                ))
+                .configure($crate::routes::services)
+                .app_data($crate::WebData::new($ctx.clone())),
+        )
     };
 }
 
@@ -148,4 +158,123 @@ macro_rules! check_status {
             assert_eq!(status, $expected);
         }
     };
+}
+
+#[macro_export]
+macro_rules! get_cookie {
+    ($resp:expr) => {
+        $resp.response().cookies().next().unwrap().to_owned()
+    };
+}
+
+impl Ctx {
+    /// register and signin utility
+    pub async fn register_and_signin(
+        &self,
+        name: &str,
+        email: &str,
+        password: &str,
+    ) -> (Login, ServiceResponse<EitherBody<BoxBody>>) {
+        self.register_test(name, email, password).await;
+        self.signin_test(name, password).await
+    }
+
+    pub fn to_arc(&self) -> Arc<Self> {
+        Arc::new(self.clone())
+    }
+
+    /// register utility
+    pub async fn register_test(&self, name: &str, email: &str, password: &str) {
+        let app = get_app!(self.to_arc()).await;
+
+        // 1. Register
+        let msg = Register {
+            username: name.into(),
+            password: password.into(),
+            confirm_password: password.into(),
+            email: email.into(),
+        };
+        println!("{:?}", msg);
+        let resp = actix_web::test::call_service(
+            &app,
+            post_request!(&msg, crate::V1_API_ROUTES.auth.register).to_request(),
+        )
+        .await;
+        //       let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
+        //       panic!("{}", resp_err.error);
+        assert_eq!(resp.status(), StatusCode::OK);
+    }
+
+    /// signin util
+    pub async fn signin_test(
+        &self,
+
+        name: &str,
+        password: &str,
+    ) -> (Login, ServiceResponse<EitherBody<BoxBody>>) {
+        let app = get_app!(self.to_arc()).await;
+
+        // 2. signin
+        let creds = Login {
+            login: name.into(),
+            password: password.into(),
+        };
+        let signin_resp = actix_web::test::call_service(
+            &app,
+            post_request!(&creds, V1_API_ROUTES.auth.login).to_request(),
+        )
+        .await;
+        assert_eq!(signin_resp.status(), StatusCode::OK);
+        (creds, signin_resp)
+    }
+
+    /// pub duplicate test
+    pub async fn bad_post_req_test<T: Serialize>(
+        &self,
+
+        name: &str,
+        password: &str,
+        url: &str,
+        payload: &T,
+        err: ServiceError,
+    ) {
+        let (_, signin_resp) = self.signin_test(name, password).await;
+        let cookies = get_cookie!(signin_resp);
+        let app = get_app!(self.to_arc()).await;
+
+        let resp = actix_web::test::call_service(
+            &app,
+            post_request!(&payload, url)
+                .cookie(cookies.clone())
+                .to_request(),
+        )
+        .await;
+        assert_eq!(resp.status(), err.status_code());
+        let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
+        //println!("{}", txt.error);
+        assert_eq!(resp_err.error, format!("{}", err));
+    }
+
+    /// bad post req test without payload
+    pub async fn bad_post_req_test_witout_payload(
+        &self,
+        name: &str,
+        password: &str,
+        url: &str,
+        err: ServiceError,
+    ) {
+        let (_, signin_resp) = self.signin_test(name, password).await;
+        let app = get_app!(self.to_arc()).await;
+        let cookies = get_cookie!(signin_resp);
+
+        let resp = actix_web::test::call_service(
+            &app,
+            post_request!(url).cookie(cookies.clone()).to_request(),
+        )
+        .await;
+        assert_eq!(resp.status(), err.status_code());
+        let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
+        //println!("{}", resp_err.error);
+        assert_eq!(resp_err.error, format!("{}", err));
+    }
 }
