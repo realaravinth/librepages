@@ -47,6 +47,14 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+
       - name: Install ${{ matrix.version }}
         uses: actions-rs/toolchain@v1
         with:
