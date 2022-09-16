@@ -1,0 +1,36 @@
+.home__container {
+	max-height: 100vh;
+	height: 100vh;
+}
+
+.home__name {
+	font-size: 2rem;
+}
+
+.index-banner {
+	margin: auto;
+}
+
+.index-banner__title {
+	font-size: 2.5rem;
+	margin: auto;
+}
+
+.index__group-content {
+	.page__container {
+		width: 90%;
+	}
+}
+
+.index-banner__logo-container {
+	display: none;
+}
+
+.action-call__margin-container {
+	flex-direction: column;
+	width: 85%;
+}
+
+.action-call__prompt {
+	text-align: center;
+}

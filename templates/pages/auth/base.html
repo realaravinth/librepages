@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="{{ assets.css }}" />
+		<title>LibrePages</title>
+	</head>
+	<body class="auth__body">
+		<header>{% include "pub_nav" %}</header>
+
+		<main class="index-banner__container">
+			<section class="index-banner">
+				<div class="index-banner__content-container">
+					<h1 class="index-banner__title">
+						Easiest way to deploy websites
+					</h1>
+					<p class="index-banner__tagline">
+						JAMstack platform with focus on privacy and speed
+					</p>
+					<ul class="index-banner__features-list">
+						<li class="index-banner__features">
+							<b>Seamless Git Integration</b> making migration
+							easy
+						</li>
+						<li class="index-banner__features">
+							<b>Pull Request Previews</b> to verify changes
+							before deployment
+						</li>
+						<li class="index-banner__features">
+							<b>Server-less form submissions</b> to collect data
+							from visitors
+						</li>
+						<li class="index-banner__features">
+							<b>Global CDN</b> for high-speed access from across
+							the world
+						</li>
+						<li class="index-banner__features">
+							<b>
+								100%
+								<a
+									href="https://www.gnu.org/philosophy/free-sw.html"
+									>Free Software</a
+								> </b
+							>: deploy your own instance
+						</li>
+						<li class="index-banner__features">
+							25% of the income dedicated to sustain Free Software
+							dependencies
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="index-banner__logo-container">
+				{% block login %} {% endblock %}
+			</section>
+		</main>
+		{% include "footer" %}
+	</body>
+</html>

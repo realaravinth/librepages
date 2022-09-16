@@ -1,0 +1,52 @@
+$footer-font-size: 0.44rem;
+
+footer {
+	font-size: $footer-font-size;
+}
+
+.footer__container {
+	display: grid;
+	grid-template-rows: repeat(3, 100%);
+	align-items: center;
+	margin: auto;
+	justify-content: center;
+}
+
+.footer__link {
+	font-size: 0.5rem;
+}
+
+.license__conatiner,
+.license__link {
+	text-align: center;
+}
+
+@mixin footer__column-base {
+	margin: 0 auto;
+	display: flex;
+	padding: 0;
+}
+
+.footer__column:first-child {
+	grid-row-start: 3;
+	flex-direction: row;
+}
+
+.footer__column:last-child {
+	grid-row-start: 2;
+}
+
+.footer__column {
+	@include footer__column-base;
+	align-self: flex-end;
+}
+
+.footer__column--center {
+	@include footer__column-base;
+	align-self: flex-start;
+}
+
+.footer__column-divider--mobile-only {
+	margin: 0 3px;
+	font-size: 9.9px;
+}

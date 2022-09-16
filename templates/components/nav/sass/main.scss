@@ -1,0 +1,112 @@
+@import "../../sass/_link";
+
+header {
+	z-index: 5;
+	position: sticky;
+	top: 0;
+	background-color: #fff;
+}
+
+.nav__container {
+	display: flex;
+	flex-direction: row;
+
+	box-sizing: border-box;
+	width: 100%;
+	padding-top: 5px;
+	border-bottom: 1px solid rgb(211, 211, 211);
+}
+
+.nav__home-btn {
+	font-weight: bold;
+	//	font-family: monospace, monospace;
+	margin: auto;
+	margin-left: 10px;
+}
+
+.nav__hamburger-menu {
+	display: none;
+}
+
+.nav__spacer--small {
+	width: 100px;
+	margin: auto;
+}
+
+.nav__spacer {
+	flex: 4;
+	margin: auto;
+}
+
+.nav__logo-container {
+	display: inline-flex;
+	text-decoration: none;
+}
+
+.nav__logo-container:hover {
+	@include a_hover;
+}
+
+.nav__toggle {
+	display: none;
+}
+
+.nav__logo {
+	display: inline-flex;
+	margin: auto;
+	padding: 5px;
+	width: 40px;
+}
+
+@mixin nav__link-group {
+	flex: 1.5;
+	list-style: none;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	align-self: center;
+	margin: auto;
+	text-align: center;
+}
+
+.nav__link-group {
+	@include nav__link-group;
+
+}
+
+.nav__link-group--small {
+	@include nav__link-group;
+	flex: 0.5;
+	margin-right: 10px;
+}
+
+@mixin nav__link-container {
+	display: flex;
+	padding: 10px;
+	height: 100%;
+	margin: auto;
+}
+
+.nav__link-container {
+	@include nav__link-container;
+}
+
+.nav__link-container--action {
+	@include nav__link-container;
+	background-color: green;
+	padding: 15px;
+	.nav__link {
+		color: white !important;
+	}
+}
+
+.nav__link {
+	text-decoration: none;
+	color: black !important;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.nav__link:hover {
+	@include a_hover;
+}

@@ -1,0 +1,152 @@
+@import "../../../components/sass/fullscreen";
+
+.auth__body {
+	display: flex;
+	@include fullscreen;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+$heading-letter-spacing: 20px;
+.index-banner__container {
+	width: 100%;
+	display: flex;
+	//background-color: #d1875a;
+	//	background-color: #3c3c3c;
+	//	background-color: #58181f;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	flex-grow: 1;
+}
+
+.index-banner {
+	margin: auto;
+	display: flex;
+	//	flex-direction: column;
+	justify-content: space-between;
+}
+
+.index-banner__content-container {
+	//	height: 300px;
+	li {
+		//		color: white;
+	}
+}
+.index-banner__logo-container {
+	margin: auto;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	width: 500px;
+}
+
+.index-banner__title {
+	margin: auto;
+	font-style: none;
+	//color: #fff;
+}
+
+.index-banner__tagline {
+	margin: auto;
+	//	color: #fff;
+	//	font-size: 1.4rem;
+}
+
+.index-banner__title-container {
+	display: flex;
+}
+
+.index-banner__logo {
+	width: 120px;
+	margin: auto;
+	border-radius: 20px;
+}
+
+.index-banner__main-action-btn {
+	display: block;
+	display: block;
+	font-weight: 400;
+	padding: 15px;
+	border: none;
+	margin: 20px 0;
+	background-color: green;
+}
+
+.index-banner__main-action-link {
+	color: white !important;
+}
+
+.index-banner__main-action-btn:hover {
+	//	background-color: lightgray;
+}
+
+.index-banner__features-list {
+	margin: 20px;
+}
+
+.index-banner__features {
+	margin: 10px 0;
+}
+
+.home__features {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.home__features-title {
+	margin: auto;
+}
+
+$page-content-width: 80%;
+.index__group-content {
+	.page__container {
+		width: $page-content-width;
+		@include fullscreen;
+		height: 90vh !important;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+	}
+}
+
+.action-call__container {
+	background: #1f5818;
+	width: 100%;
+	padding: 60px 0;
+}
+
+.action-call__margin-container {
+	display: flex;
+	width: $page-content-width;
+	margin: auto;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.action-call__prompt {
+	color: white;
+	font-weight: 400;
+	font-size: 1.7rem;
+}
+
+.action-call__button {
+	display: block;
+	display: block;
+	font-weight: 400;
+	padding: 15px;
+	border: none;
+	margin: 20px 0;
+	background-color: #fff;
+}
+
+.action-call__button:hover {
+	background-color: lightgray;
+}
+
+.action-call_link {
+	color: #000 !important;
+}
+
+.action-call_link:hover {
+	text-decoration: none !important;
+}
