@@ -292,6 +292,7 @@
 <span id="286">286</span>
 <span id="287">287</span>
 <span id="288">288</span>
+<span id="289">289</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -317,10 +318,11 @@
 <span class="kw">use</span> <span class="ident">std::println</span> <span class="kw">as</span> <span class="ident">info</span>;
 
 <span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
+<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Page</span> {
     <span class="kw">pub</span> <span class="ident">secret</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">repo</span>: <span class="ident">String</span>,

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["ERROR_KEY",""],["ERROR_TEMPLATE",""]],"fn":[["register_templates",""]],"struct":[["PageError",""],["ReadableError",""]],"trait":[["CtxError","Render template with error context"]],"type":[["PageResult","Generic result data structure"]]};

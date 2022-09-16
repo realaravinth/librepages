@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["AUTH_BASE",""]],"fn":[["register_templates",""],["services",""]],"mod":[["login",""],["register",""]],"struct":[["signout",""]]};

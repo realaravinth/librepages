@@ -213,6 +213,7 @@
 <span id="207">207</span>
 <span id="208">208</span>
 <span id="209">209</span>
+<span id="210">210</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -248,7 +249,7 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::page::Page</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Server</span> {
     <span class="kw">pub</span> <span class="ident">port</span>: <span class="ident">u32</span>,
     <span class="kw">pub</span> <span class="ident">ip</span>: <span class="ident">String</span>,
@@ -283,16 +284,17 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Database</span> {
     <span class="kw">pub</span> <span class="ident">url</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">pool</span>: <span class="ident">u32</span>,
     <span class="kw">pub</span> <span class="ident">database_type</span>: <span class="ident">DBType</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Deserialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Settings</span> {
     <span class="kw">pub</span> <span class="ident">allow_registration</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">support_email</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">debug</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span> <span class="ident">server</span>: <span class="ident">Server</span>,
     <span class="kw">pub</span> <span class="ident">source_code</span>: <span class="ident">String</span>,
