@@ -14,22 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-use std::sync::Arc;
+pub mod account;
+pub mod auth;
 
-use crate::db::*;
-use crate::settings::Settings;
-
-pub type ArcCtx = Arc<Ctx>;
-
-#[derive(Clone)]
-pub struct Ctx {
-    pub settings: Settings,
-    pub db: Database,
-}
-
-impl Ctx {
-    pub async fn new(settings: Settings) -> Arc<Self> {
-        let db = get_db(&settings).await;
-        Arc::new(Self { settings, db })
-    }
-}
+#[cfg(test)]
+mod tests;
