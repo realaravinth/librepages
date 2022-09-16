@@ -44,6 +44,7 @@ lint: ## Lint codebase
 	cargo clippy --workspace --tests --all-features
 
 migrate: ## run migrations
+	$(call cache_bust)
 	unset DATABASE_URL && cargo build
 	cargo run -- migrate
 
