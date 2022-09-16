@@ -2,6 +2,7 @@ debug = true
 allow_registration = true
 # source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
+support_email = "support@librepages.example.org"
 
 # To deploy a website from a Git repository, please provide the following details:
 # 1. branch: the branch in the Git repository which contains the website files

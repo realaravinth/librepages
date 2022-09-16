@@ -33,7 +33,7 @@ use url::Url;
 use crate::errors::*;
 use crate::page::Page;
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Server {
     pub port: u32,
     pub ip: String,
@@ -68,16 +68,17 @@ impl DBType {
     }
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Database {
     pub url: String,
     pub pool: u32,
     pub database_type: DBType,
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
     pub allow_registration: bool,
+    pub support_email: String,
     pub debug: bool,
     pub server: Server,
     pub source_code: String,
