@@ -91,13 +91,15 @@ async fn main() -> std::io::Result<()> {
     );
 
     let settings = Settings::new().unwrap();
-    settings.init();
-    let ctx = Ctx::new(settings.clone()).await;
-    let ctx = actix_web::web::Data::new(ctx);
 
     match &cli.command {
-        Commands::Migrate => ctx.db.migrate().await.unwrap(),
-        Commands::Serve => serve(settings, ctx).await.unwrap(),
+        Commands::Migrate => db::get_db(&settings).await.migrate().await.unwrap(),
+        Commands::Serve => {
+            let ctx = Ctx::new(settings.clone()).await;
+            let ctx = actix_web::web::Data::new(ctx);
+            settings.init();
+            serve(settings, ctx).await.unwrap();
+        }
     }
     Ok(())
 }
