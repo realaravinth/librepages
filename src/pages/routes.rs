@@ -27,14 +27,16 @@ pub struct Pages {
     pub auth: Auth,
     /// home page
     pub home: &'static str,
+    pub dash: Dash,
 }
 
 impl Pages {
     /// create new instance of Routes
     const fn new() -> Pages {
         let auth = Auth::new();
-        let home = auth.login;
-        Pages { auth, home }
+        let dash = Dash::new();
+        let home = "/";
+        Pages { auth, home, dash }
     }
 }
 
@@ -63,9 +65,19 @@ impl Auth {
     }
 }
 
-#[derive(Deserialize)]
-pub struct GistProfilePathComponent<'a> {
-    pub username: &'a str,
+#[derive(Serialize)]
+/// Dashboard routes
+pub struct Dash {
+    /// home route
+    pub home: &'static str,
+}
+
+impl Dash {
+    /// create new instance of Dash route
+    pub const fn new() -> Dash {
+        let home = "/dash";
+        Dash { home }
+    }
 }
 
 pub fn get_auth_middleware() -> Authentication<Pages> {

@@ -14,17 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+use std::cell::RefCell;
+
+use actix_identity::Identity;
+use actix_web::http::header;
 use actix_web::*;
 use lazy_static::lazy_static;
 use rust_embed::RustEmbed;
 use serde::*;
 use tera::*;
 
+use crate::pages::errors::*;
 use crate::settings::Settings;
 use crate::static_assets::ASSETS;
+use crate::AppCtx;
 use crate::{GIT_COMMIT_HASH, VERSION};
 
 pub mod auth;
+pub mod dash;
 pub mod errors;
 pub mod routes;
 
@@ -69,6 +76,8 @@ lazy_static! {
         errors::register_templates(&mut tera);
         tera.autoescape_on(vec![".html", ".sql"]);
         auth::register_templates(&mut tera);
+        dash::register_templates(&mut tera);
+        HOME.register(&mut tera).expect(HOME.name);
         tera
     };
 }
@@ -96,15 +105,6 @@ pub fn context(s: &Settings) -> Context {
 }
 
 pub fn auth_ctx(username: Option<&str>, s: &Settings) -> Context {
-    //    use routes::GistProfilePathComponent;
-    //    let mut profile_link = None;
-    //    if let Some(name) = username {
-    //        profile_link = Some(
-    //            PAGES
-    //                .gist
-    //                .get_profile_route(GistProfilePathComponent { username: name }),
-    //        );
-    //    }
     let mut ctx = Context::new();
     let footer = Footer::new(s);
     ctx.insert("footer", &footer);
@@ -135,8 +135,52 @@ impl<'a> Footer<'a> {
     }
 }
 
+pub const HOME: TemplateFile = TemplateFile::new("home", "pages/index.html");
+
+pub struct Home {
+    ctx: RefCell<Context>,
+}
+
+impl CtxError for Home {
+    fn with_error(&self, e: &ReadableError) -> String {
+        self.ctx.borrow_mut().insert(ERROR_KEY, e);
+        self.render()
+    }
+}
+
+impl Home {
+    pub fn new(settings: &Settings) -> Self {
+        let ctx = RefCell::new(context(settings));
+        Self { ctx }
+    }
+
+    pub fn render(&self) -> String {
+        TEMPLATES.render(HOME.name, &self.ctx.borrow()).unwrap()
+    }
+
+    pub fn page(s: &Settings) -> String {
+        let p = Self::new(s);
+        p.render()
+    }
+}
+
+#[actix_web_codegen_const_routes::get(path = "PAGES.home")]
+pub async fn home(ctx: AppCtx, id: Identity) -> impl Responder {
+    if id.identity().is_none() {
+        let home = Home::page(&ctx.settings);
+        let html = header::ContentType::html();
+        HttpResponse::Ok().content_type(html).body(home)
+    } else {
+        HttpResponse::Found()
+            .append_header((header::LOCATION, PAGES.dash.home))
+            .finish()
+    }
+}
+
 pub fn services(cfg: &mut web::ServiceConfig) {
     auth::services(cfg);
+    dash::services(cfg);
+    cfg.service(home);
 }
 
 #[cfg(test)]
@@ -158,6 +202,7 @@ mod tests {
             auth::login::LOGIN,
             auth::register::REGISTER,
             errors::ERROR_TEMPLATE,
+            HOME,
         ]
         .iter()
         {
@@ -186,7 +231,7 @@ mod http_page_tests {
     async fn templates_work(ctx: ArcCtx) {
         let app = get_app!(ctx).await;
 
-        for file in [PAGES.auth.login, PAGES.auth.register].iter() {
+        for file in [PAGES.auth.login, PAGES.auth.register, PAGES.home].iter() {
             let resp = get_request!(&app, file);
             assert_eq!(resp.status(), StatusCode::OK);
         }

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ assets.css }}" />
+    <title>LibrePages</title>
+  </head>
+  <body class="auth__body">
+    <header>
+      <nav>
+        <p>LibrePages</p>
+        <span class="nav__spacer"></span>
+        <ul class="nav__links">
+          <li class="nav__item">Help</li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h1>LibrePages: FOSS static site hosting</h1>
+      <p>Welcome to LibrePages. Homepage.</p>
+    </main>
+    {% include "footer" %}
+  </body>
+
+  <style>
+    header {
+      width: 100%;
+    }
+
+    nav {
+      width: 100%;
+      margin: auto;
+      display: flex;
+    }
+
+    .nav__spacer {
+      flex: 4;
+    }
+
+    .nav__links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav__item {
+      margin: 0 20px;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    main {
+      width: 100%;
+      margin: 20px;
+    }
+
+    .sites__collection {
+      margin: auto;
+      width: 70%;
+
+      border: 1px solid #e8ebed;
+      border-radius: 8px;
+    }
+
+    .sites__actions {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 0px 20px;
+      margin: 10px 0;
+    }
+
+    .sites__actions__new-site {
+      min-height: 36px;
+      background: green;
+      display: flex;
+      align-items: center;
+      padding: 0px 8px;
+    }
+
+    .sites__actions__new-site > button {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      border: none;
+      width: 100%;
+      color: white;
+      background: none;
+    }
+
+    .site__container {
+      box-sizing: border-box;
+      margin: 10px 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
+      align-items: center;
+    }
+
+    .site__container:hover {
+      background: #f7f8f8;
+    }
+
+    .site__info--head {
+      display: flex;
+      align-items: center;
+    }
+
+    .site__info--column {
+      margin-left: 20px;
+    }
+
+    .site__info--column > p,
+    .site__info--column > a {
+      margin: 0;
+      padding: 0;
+    }
+    .site__container:visited,
+    .site__container {
+      color: black;
+      text-decoration: none;
+    }
+
+    .site__container--preview {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  </style>
+</html>
