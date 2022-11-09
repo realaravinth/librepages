@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+use crate::Settings;
+use std::path::{Path, PathBuf};
+
 /// Get random string of specific length
 pub(crate) fn get_random(len: usize) -> String {
     use rand::{distributions::Alphanumeric, rngs::ThreadRng, thread_rng, Rng};
@@ -26,4 +29,8 @@ pub(crate) fn get_random(len: usize) -> String {
         .map(char::from)
         .take(len)
         .collect::<String>()
+}
+
+pub(crate) fn get_website_path(s: &Settings, hostname: &str) -> PathBuf {
+    Path::new(&s.page.base_path).join(hostname)
 }
