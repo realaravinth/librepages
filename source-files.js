@@ -1,3 +1,4 @@
-var sourcesIndex = {};
-sourcesIndex["pages"] = {"name":"","dirs":[{"name":"api","dirs":[{"name":"v1","dirs":[{"name":"account","files":["mod.rs"]}],"files":["auth.rs","mod.rs","routes.rs"]}],"files":["mod.rs"]},{"name":"ctx","dirs":[{"name":"api","dirs":[{"name":"v1","files":["account.rs","auth.rs","mod.rs"]}],"files":["mod.rs"]}],"files":["mod.rs"]},{"name":"pages","dirs":[{"name":"auth","files":["login.rs","mod.rs","register.rs"]}],"files":["errors.rs","mod.rs","routes.rs"]},{"name":"static_assets","files":["filemap.rs","mod.rs","static_files.rs"]}],"files":["db.rs","deploy.rs","errors.rs","git.rs","main.rs","meta.rs","page.rs","preview.rs","serve.rs","settings.rs","utils.rs"]};
+var sourcesIndex = JSON.parse('{\
+"pages":["",[["api",[["v1",[["account",[],["mod.rs"]]],["auth.rs","mod.rs","routes.rs"]]],["mod.rs"]],["ctx",[["api",[["v1",[],["account.rs","auth.rs","mod.rs"]]],["mod.rs"]]],["mod.rs"]],["pages",[["auth",[],["login.rs","mod.rs","register.rs"]],["dash",[],["home.rs","mod.rs"]]],["errors.rs","mod.rs","routes.rs"]],["static_assets",[],["filemap.rs","mod.rs","static_files.rs"]]],["db.rs","deploy.rs","errors.rs","git.rs","main.rs","meta.rs","page.rs","preview.rs","serve.rs","settings.rs","utils.rs"]]\
+}');
 createSourceSidebar();

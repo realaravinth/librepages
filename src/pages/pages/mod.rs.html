@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pages/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../pages/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pages/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../pages/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -198,6 +192,51 @@
 <span id="192">192</span>
 <span id="193">193</span>
 <span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -213,185 +252,229 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
-<span class="kw">use</span> <span class="ident">rust_embed::RustEmbed</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">tera</span>::<span class="kw-2">*</span>;
+ */
+</span><span class="kw">use </span>std::cell::RefCell;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings::Settings</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::static_assets::ASSETS</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">GIT_COMMIT_HASH</span>, <span class="ident">VERSION</span>};
+<span class="kw">use </span>actix_identity::Identity;
+<span class="kw">use </span>actix_web::http::header;
+<span class="kw">use </span>actix_web::<span class="kw-2">*</span>;
+<span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>rust_embed::RustEmbed;
+<span class="kw">use </span>serde::<span class="kw-2">*</span>;
+<span class="kw">use </span>tera::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">auth</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">errors</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">routes</span>;
+<span class="kw">use </span><span class="kw">crate</span>::pages::errors::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
+<span class="kw">use </span><span class="kw">crate</span>::static_assets::ASSETS;
+<span class="kw">use </span><span class="kw">crate</span>::AppCtx;
+<span class="kw">use crate</span>::{GIT_COMMIT_HASH, VERSION};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">routes::get_auth_middleware</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">routes::PAGES</span>;
+<span class="kw">pub mod </span>auth;
+<span class="kw">pub mod </span>dash;
+<span class="kw">pub mod </span>errors;
+<span class="kw">pub mod </span>routes;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TemplateFile</span> {
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+<span class="kw">pub use </span>routes::get_auth_middleware;
+<span class="kw">pub use </span>routes::PAGES;
+
+<span class="kw">pub struct </span>TemplateFile {
+    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>path: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
 }
 
-<span class="kw">impl</span> <span class="ident">TemplateFile</span> {
-    <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">name</span>, <span class="ident">path</span> }
+<span class="kw">impl </span>TemplateFile {
+    <span class="kw">pub const fn </span>new(name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, path: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{ name, path }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Tera</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span>(), <span class="ident">tera::Error</span><span class="op">&gt;</span> {
-        <span class="ident">t</span>.<span class="ident">add_raw_template</span>(<span class="self">self</span>.<span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">Templates::get_template</span>(<span class="self">self</span>).<span class="ident">expect</span>(<span class="self">self</span>.<span class="ident">name</span>))
+    <span class="kw">pub fn </span>register(<span class="kw-2">&amp;</span><span class="self">self</span>, t: <span class="kw-2">&amp;mut </span>Tera) -&gt; std::result::Result&lt;(), tera::Error&gt; {
+        t.add_raw_template(<span class="self">self</span>.name, <span class="kw-2">&amp;</span>Templates::get_template(<span class="self">self</span>).expect(<span class="self">self</span>.name))
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">register_from_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Tera</span>) -&gt; <span class="ident">std::result::Result</span><span class="op">&lt;</span>(), <span class="ident">tera::Error</span><span class="op">&gt;</span> {
-        <span class="kw">use</span> <span class="ident">std::path::Path</span>;
-        <span class="ident">t</span>.<span class="ident">add_template_file</span>(<span class="ident">Path::new</span>(<span class="string">&quot;templates/&quot;</span>).<span class="ident">join</span>(<span class="self">self</span>.<span class="ident">path</span>), <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">name</span>))
+    <span class="attribute">#[cfg(test)]
+    #[allow(dead_code)]
+    </span><span class="kw">pub fn </span>register_from_file(<span class="kw-2">&amp;</span><span class="self">self</span>, t: <span class="kw-2">&amp;mut </span>Tera) -&gt; std::result::Result&lt;(), tera::Error&gt; {
+        <span class="kw">use </span>std::path::Path;
+        t.add_template_file(Path::new(<span class="string">&quot;templates/&quot;</span>).join(<span class="self">self</span>.path), <span class="prelude-val">Some</span>(<span class="self">self</span>.name))
     }
 }
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PAYLOAD_KEY</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;payload&quot;</span>;
+<span class="kw">pub const </span>PAYLOAD_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;payload&quot;</span>;
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BASE</span>: <span class="ident">TemplateFile</span> <span class="op">=</span> <span class="ident">TemplateFile::new</span>(<span class="string">&quot;base&quot;</span>, <span class="string">&quot;components/base.html&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">FOOTER</span>: <span class="ident">TemplateFile</span> <span class="op">=</span> <span class="ident">TemplateFile::new</span>(<span class="string">&quot;footer&quot;</span>, <span class="string">&quot;components/footer.html&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PUB_NAV</span>: <span class="ident">TemplateFile</span> <span class="op">=</span> <span class="ident">TemplateFile::new</span>(<span class="string">&quot;pub_nav&quot;</span>, <span class="string">&quot;components/nav/pub.html&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">AUTH_NAV</span>: <span class="ident">TemplateFile</span> <span class="op">=</span> <span class="ident">TemplateFile::new</span>(<span class="string">&quot;auth_nav&quot;</span>, <span class="string">&quot;components/nav/auth.html&quot;</span>);
+<span class="kw">pub const </span>BASE: TemplateFile = TemplateFile::new(<span class="string">&quot;base&quot;</span>, <span class="string">&quot;components/base.html&quot;</span>);
+<span class="kw">pub const </span>FOOTER: TemplateFile = TemplateFile::new(<span class="string">&quot;footer&quot;</span>, <span class="string">&quot;components/footer.html&quot;</span>);
+<span class="kw">pub const </span>PUB_NAV: TemplateFile = TemplateFile::new(<span class="string">&quot;pub_nav&quot;</span>, <span class="string">&quot;components/nav/pub.html&quot;</span>);
+<span class="kw">pub const </span>AUTH_NAV: TemplateFile = TemplateFile::new(<span class="string">&quot;auth_nav&quot;</span>, <span class="string">&quot;components/nav/auth.html&quot;</span>);
 
-<span class="macro">lazy_static!</span> {
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">TEMPLATES</span>: <span class="ident">Tera</span> <span class="op">=</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tera</span> <span class="op">=</span> <span class="ident">Tera::default</span>();
-        <span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> [<span class="ident">BASE</span>, <span class="ident">FOOTER</span>, <span class="ident">PUB_NAV</span>, <span class="ident">AUTH_NAV</span>].<span class="ident">iter</span>() {
-            <span class="ident">t</span>.<span class="ident">register</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tera</span>).<span class="ident">unwrap</span>();
+<span class="macro">lazy_static! </span>{
+    <span class="kw">pub static </span><span class="kw-2">ref </span>TEMPLATES: Tera = {
+        <span class="kw">let </span><span class="kw-2">mut </span>tera = Tera::default();
+        <span class="kw">for </span>t <span class="kw">in </span>[BASE, FOOTER, PUB_NAV, AUTH_NAV].iter() {
+            t.register(<span class="kw-2">&amp;mut </span>tera).unwrap();
         }
-        <span class="ident">errors::register_templates</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tera</span>);
-        <span class="ident">tera</span>.<span class="ident">autoescape_on</span>(<span class="macro">vec!</span>[<span class="string">&quot;.html&quot;</span>, <span class="string">&quot;.sql&quot;</span>]);
-        <span class="ident">auth::register_templates</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tera</span>);
-        <span class="ident">tera</span>
+        errors::register_templates(<span class="kw-2">&amp;mut </span>tera);
+        tera.autoescape_on(<span class="macro">vec!</span>[<span class="string">&quot;.html&quot;</span>, <span class="string">&quot;.sql&quot;</span>]);
+        auth::register_templates(<span class="kw-2">&amp;mut </span>tera);
+        dash::register_templates(<span class="kw-2">&amp;mut </span>tera);
+        HOME.register(<span class="kw-2">&amp;mut </span>tera).expect(HOME.name);
+        tera
     };
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RustEmbed</span>)]</span>
-<span class="attribute">#[<span class="ident">folder</span> <span class="op">=</span> <span class="string">&quot;templates/&quot;</span>]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Templates</span>;
+<span class="attribute">#[derive(RustEmbed)]
+#[folder = <span class="string">&quot;templates/&quot;</span>]
+</span><span class="kw">pub struct </span>Templates;
 
-<span class="kw">impl</span> <span class="ident">Templates</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_template</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">TemplateFile</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="ident"><span class="self">Self</span>::get</span>(<span class="ident">t</span>.<span class="ident">path</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">file</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">String::from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>.<span class="ident">data</span>).<span class="ident">into_owned</span>()),
-            <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
+<span class="kw">impl </span>Templates {
+    <span class="kw">pub fn </span>get_template(t: <span class="kw-2">&amp;</span>TemplateFile) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+        <span class="kw">match </span><span class="self">Self</span>::get(t.path) {
+            <span class="prelude-val">Some</span>(file) =&gt; <span class="prelude-val">Some</span>(String::from_utf8_lossy(<span class="kw-2">&amp;</span>file.data).into_owned()),
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">context</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">Settings</span>) -&gt; <span class="ident">Context</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">Context::new</span>();
-    <span class="kw">let</span> <span class="ident">footer</span> <span class="op">=</span> <span class="ident">Footer::new</span>(<span class="ident">s</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;footer&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">footer</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;page&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">PAGES</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;assets&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ASSETS</span>);
-    <span class="ident">ctx</span>
+<span class="kw">pub fn </span>context(s: <span class="kw-2">&amp;</span>Settings) -&gt; Context {
+    <span class="kw">let </span><span class="kw-2">mut </span>ctx = Context::new();
+    <span class="kw">let </span>footer = Footer::new(s);
+    ctx.insert(<span class="string">&quot;footer&quot;</span>, <span class="kw-2">&amp;</span>footer);
+    ctx.insert(<span class="string">&quot;page&quot;</span>, <span class="kw-2">&amp;</span>PAGES);
+    ctx.insert(<span class="string">&quot;assets&quot;</span>, <span class="kw-2">&amp;*</span>ASSETS);
+    ctx
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">auth_ctx</span>(<span class="ident">username</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">Settings</span>) -&gt; <span class="ident">Context</span> {
-    <span class="comment">//    use routes::GistProfilePathComponent;</span>
-    <span class="comment">//    let mut profile_link = None;</span>
-    <span class="comment">//    if let Some(name) = username {</span>
-    <span class="comment">//        profile_link = Some(</span>
-    <span class="comment">//            PAGES</span>
-    <span class="comment">//                .gist</span>
-    <span class="comment">//                .get_profile_route(GistProfilePathComponent { username: name }),</span>
-    <span class="comment">//        );</span>
-    <span class="comment">//    }</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">Context::new</span>();
-    <span class="kw">let</span> <span class="ident">footer</span> <span class="op">=</span> <span class="ident">Footer::new</span>(<span class="ident">s</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;footer&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">footer</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;page&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">PAGES</span>);
-    <span class="ident">ctx</span>.<span class="ident">insert</span>(<span class="string">&quot;assets&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ASSETS</span>);
-    <span class="comment">//    ctx.insert(&quot;loggedin_user&quot;, &amp;profile_link);</span>
-    <span class="ident">ctx</span>
+<span class="kw">pub fn </span>auth_ctx(username: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;, s: <span class="kw-2">&amp;</span>Settings) -&gt; Context {
+    <span class="kw">let </span><span class="kw-2">mut </span>ctx = Context::new();
+    <span class="kw">let </span>footer = Footer::new(s);
+    ctx.insert(<span class="string">&quot;footer&quot;</span>, <span class="kw-2">&amp;</span>footer);
+    ctx.insert(<span class="string">&quot;page&quot;</span>, <span class="kw-2">&amp;</span>PAGES);
+    ctx.insert(<span class="string">&quot;assets&quot;</span>, <span class="kw-2">&amp;*</span>ASSETS);
+    <span class="comment">//    ctx.insert(&quot;loggedin_user&quot;, &amp;profile_link);
+    </span>ctx
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Footer</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="ident">version</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="ident">support_email</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="ident">git_hash</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Settings</span>,
+<span class="attribute">#[derive(Serialize)]
+</span><span class="kw">pub struct </span>Footer&lt;<span class="lifetime">&#39;a</span>&gt; {
+    version: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    support_email: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    source_code: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    git_hash: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    settings: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Settings,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Footer</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Settings</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">version</span>: <span class="ident">VERSION</span>,
-            <span class="ident">source_code</span>: <span class="kw-2">&amp;</span><span class="ident">settings</span>.<span class="ident">source_code</span>,
-            <span class="ident">support_email</span>: <span class="kw-2">&amp;</span><span class="ident">settings</span>.<span class="ident">support_email</span>,
-            <span class="ident">git_hash</span>: <span class="kw-2">&amp;</span><span class="ident">GIT_COMMIT_HASH</span>[..<span class="number">8</span>],
-            <span class="ident">settings</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Footer&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">pub fn </span>new(settings: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Settings) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            version: VERSION,
+            source_code: <span class="kw-2">&amp;</span>settings.source_code,
+            support_email: <span class="kw-2">&amp;</span>settings.support_email,
+            git_hash: <span class="kw-2">&amp;</span>GIT_COMMIT_HASH[..<span class="number">8</span>],
+            settings,
         }
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="ident">cfg</span>: <span class="kw-2">&amp;mut</span> <span class="ident">web::ServiceConfig</span>) {
-    <span class="ident">auth::services</span>(<span class="ident">cfg</span>);
+<span class="kw">pub const </span>HOME: TemplateFile = TemplateFile::new(<span class="string">&quot;home&quot;</span>, <span class="string">&quot;pages/index.html&quot;</span>);
+
+<span class="kw">pub struct </span>Home {
+    ctx: RefCell&lt;Context&gt;,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
+<span class="kw">impl </span>CtxError <span class="kw">for </span>Home {
+    <span class="kw">fn </span>with_error(<span class="kw-2">&amp;</span><span class="self">self</span>, e: <span class="kw-2">&amp;</span>ReadableError) -&gt; String {
+        <span class="self">self</span>.ctx.borrow_mut().insert(ERROR_KEY, e);
+        <span class="self">self</span>.render()
+    }
+}
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">templates_work_basic</span>() {
-        <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-        <span class="kw">use</span> <span class="ident">tera::Tera</span>;
+<span class="kw">impl </span>Home {
+    <span class="kw">pub fn </span>new(settings: <span class="kw-2">&amp;</span>Settings) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>ctx = RefCell::new(context(settings));
+        <span class="self">Self </span>{ ctx }
+    }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tera</span> <span class="op">=</span> <span class="ident">Tera::default</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tera2</span> <span class="op">=</span> <span class="ident">Tera::default</span>();
-        <span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> [
-            <span class="ident">BASE</span>,
-            <span class="ident">FOOTER</span>,
-            <span class="ident">PUB_NAV</span>,
-            <span class="ident">AUTH_NAV</span>,
-            <span class="ident">auth::AUTH_BASE</span>,
-            <span class="ident">auth::login::LOGIN</span>,
-            <span class="ident">auth::register::REGISTER</span>,
-            <span class="ident">errors::ERROR_TEMPLATE</span>,
+    <span class="kw">pub fn </span>render(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
+        TEMPLATES.render(HOME.name, <span class="kw-2">&amp;</span><span class="self">self</span>.ctx.borrow()).unwrap()
+    }
+
+    <span class="kw">pub fn </span>page(s: <span class="kw-2">&amp;</span>Settings) -&gt; String {
+        <span class="kw">let </span>p = <span class="self">Self</span>::new(s);
+        p.render()
+    }
+}
+
+<span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;PAGES.home&quot;</span>)]
+</span><span class="kw">pub async fn </span>home(ctx: AppCtx, id: Identity) -&gt; <span class="kw">impl </span>Responder {
+    <span class="kw">if </span>id.identity().is_none() {
+        <span class="kw">let </span>home = Home::page(<span class="kw-2">&amp;</span>ctx.settings);
+        <span class="kw">let </span>html = header::ContentType::html();
+        HttpResponse::Ok().content_type(html).body(home)
+    } <span class="kw">else </span>{
+        HttpResponse::Found()
+            .append_header((header::LOCATION, PAGES.dash.home))
+            .finish()
+    }
+}
+
+<span class="kw">pub fn </span>services(cfg: <span class="kw-2">&amp;mut </span>web::ServiceConfig) {
+    auth::services(cfg);
+    dash::services(cfg);
+    cfg.service(home);
+}
+
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>templates_work_basic() {
+        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+        <span class="kw">use </span>tera::Tera;
+
+        <span class="kw">let </span><span class="kw-2">mut </span>tera = Tera::default();
+        <span class="kw">let </span><span class="kw-2">mut </span>tera2 = Tera::default();
+        <span class="kw">for </span>t <span class="kw">in </span>[
+            BASE,
+            FOOTER,
+            PUB_NAV,
+            AUTH_NAV,
+            auth::AUTH_BASE,
+            auth::login::LOGIN,
+            auth::register::REGISTER,
+            errors::ERROR_TEMPLATE,
+            HOME,
         ]
-        .<span class="ident">iter</span>()
+        .iter()
         {
-            <span class="ident">t</span>.<span class="ident">register_from_file</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tera2</span>).<span class="ident">unwrap</span>();
-            <span class="ident">t</span>.<span class="ident">register</span>(<span class="kw-2">&amp;mut</span> <span class="ident">tera</span>).<span class="ident">unwrap</span>();
+            t.register_from_file(<span class="kw-2">&amp;mut </span>tera2).unwrap();
+            t.register(<span class="kw-2">&amp;mut </span>tera).unwrap();
         }
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">http_page_tests</span> {
-    <span class="kw">use</span> <span class="ident">actix_web::http::StatusCode</span>;
-    <span class="kw">use</span> <span class="ident">actix_web::test</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>http_page_tests {
+    <span class="kw">use </span>actix_web::http::StatusCode;
+    <span class="kw">use </span>actix_web::test;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::ctx::ArcCtx</span>;
-    <span class="kw">use</span> <span class="kw">crate</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::ctx::ArcCtx;
+    <span class="kw">use crate</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::PAGES</span>;
+    <span class="kw">use </span><span class="kw">super</span>::PAGES;
 
-    <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">postgrest_templates_work</span>() {
-        <span class="kw">let</span> (<span class="kw">_</span>, <span class="ident">ctx</span>) <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::tests::get_ctx</span>().<span class="kw">await</span>;
-        <span class="ident">templates_work</span>(<span class="ident">ctx</span>).<span class="kw">await</span>;
+    <span class="attribute">#[actix_rt::test]
+    </span><span class="kw">async fn </span>postgrest_templates_work() {
+        <span class="kw">let </span>(<span class="kw">_</span>, ctx) = <span class="kw">crate</span>::tests::get_ctx().<span class="kw">await</span>;
+        templates_work(ctx).<span class="kw">await</span>;
     }
 
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">templates_work</span>(<span class="ident">ctx</span>: <span class="ident">ArcCtx</span>) {
-        <span class="kw">let</span> <span class="ident">app</span> <span class="op">=</span> <span class="macro">get_app!</span>(<span class="ident">ctx</span>).<span class="kw">await</span>;
+    <span class="kw">async fn </span>templates_work(ctx: ArcCtx) {
+        <span class="kw">let </span>app = <span class="macro">get_app!</span>(ctx).<span class="kw">await</span>;
 
-        <span class="kw">for</span> <span class="ident">file</span> <span class="kw">in</span> [<span class="ident">PAGES</span>.<span class="ident">auth</span>.<span class="ident">login</span>, <span class="ident">PAGES</span>.<span class="ident">auth</span>.<span class="ident">register</span>].<span class="ident">iter</span>() {
-            <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span><span class="ident">app</span>, <span class="ident">file</span>);
-            <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">status</span>(), <span class="ident">StatusCode::OK</span>);
+        <span class="kw">for </span>file <span class="kw">in </span>[PAGES.auth.login, PAGES.auth.register, PAGES.home].iter() {
+            <span class="kw">let </span>resp = <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span>app, file);
+            <span class="macro">assert_eq!</span>(resp.status(), StatusCode::OK);
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

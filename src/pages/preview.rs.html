@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/preview.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>preview.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/preview.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>preview.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -135,107 +129,106 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::AppCtx</span>;
+ */
+</span><span class="kw">use </span><span class="kw">crate</span>::AppCtx;
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Preview</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">delimiter</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
-    <span class="kw">pub</span> <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+<span class="kw">pub struct </span>Preview&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">pub </span>base: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    <span class="kw">pub </span>delimiter: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>prefix: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Preview</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">AppCtx</span>) -&gt; <span class="self">Self</span> {
-        <span class="self">Self</span> {
-            <span class="ident">base</span>: <span class="kw-2">&amp;</span><span class="ident">ctx</span>.<span class="ident">settings</span>.<span class="ident">server</span>.<span class="ident">domain</span>,
-            <span class="ident">delimiter</span>: <span class="string">&quot;.&quot;</span>,
-            <span class="ident">prefix</span>: <span class="string">&quot;deploy-preview-&quot;</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Preview&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">pub fn </span>new(ctx: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>AppCtx) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            base: <span class="kw-2">&amp;</span>ctx.settings.server.domain,
+            delimiter: <span class="string">&quot;.&quot;</span>,
+            prefix: <span class="string">&quot;deploy-preview-&quot;</span>,
         }
     }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">preview_number</span>: <span class="ident">usize</span>) -&gt; <span class="ident">String</span> {
+    <span class="kw">pub fn </span>get_name(<span class="kw-2">&amp;</span><span class="self">self</span>, preview_number: usize) -&gt; String {
         <span class="macro">format!</span>(
             <span class="string">&quot;{}{preview_number}{}{}&quot;</span>,
-            <span class="self">self</span>.<span class="ident">prefix</span>, <span class="self">self</span>.<span class="ident">delimiter</span>, <span class="self">self</span>.<span class="ident">base</span>
+            <span class="self">self</span>.prefix, <span class="self">self</span>.delimiter, <span class="self">self</span>.base
         )
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">hostname</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">hostname</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">delimiter</span>)
-            <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">hostname</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">prefix</span>)
-            <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="ident">hostname</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">base</span>)
+    <span class="kw">pub fn </span>extract(<span class="kw-2">&amp;</span><span class="self">self</span>, hostname: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt; {
+        <span class="kw">if </span>!hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.delimiter)
+            || !hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.prefix)
+            || !hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.base)
         {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
+            <span class="kw">return </span><span class="prelude-val">None</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="self">self</span>.<span class="ident">delimiter</span>, <span class="self">self</span>.<span class="ident">base</span>);
+        <span class="kw">let </span>d = <span class="macro">format!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="self">self</span>.delimiter, <span class="self">self</span>.base);
 
-        <span class="kw">if</span> <span class="ident">hostname</span>.<span class="ident">split</span>(<span class="kw-2">&amp;</span><span class="ident">d</span>).<span class="ident">count</span>() <span class="op">==</span> <span class="number">2</span> {
-            <span class="kw">return</span> <span class="ident">hostname</span>.<span class="ident">split</span>(<span class="kw-2">&amp;</span><span class="ident">d</span>).<span class="ident">next</span>();
+        <span class="kw">if </span>hostname.split(<span class="kw-2">&amp;</span>d).count() == <span class="number">2 </span>{
+            <span class="kw">return </span>hostname.split(<span class="kw-2">&amp;</span>d).next();
         }
-        <span class="prelude-val">None</span>
-    }
+        <span class="prelude-val">None
+    </span>}
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">preview_extract_generate_works</span>() {
-        <span class="kw">const</span> <span class="ident">BASE_DOMAIN</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;librepages.site&quot;</span>;
-        <span class="kw">const</span> <span class="ident">PREVIEW_DELIMITER</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;.&quot;</span>;
-        <span class="kw">const</span> <span class="ident">PREVIEW_PREFIX</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;deploy-preview-&quot;</span>;
-        <span class="kw">const</span> <span class="ident">PREVIEW_NUMBER</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">1666</span>;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>preview_extract_generate_works() {
+        <span class="kw">const </span>BASE_DOMAIN: <span class="kw-2">&amp;</span>str = <span class="string">&quot;librepages.site&quot;</span>;
+        <span class="kw">const </span>PREVIEW_DELIMITER: <span class="kw-2">&amp;</span>str = <span class="string">&quot;.&quot;</span>;
+        <span class="kw">const </span>PREVIEW_PREFIX: <span class="kw-2">&amp;</span>str = <span class="string">&quot;deploy-preview-&quot;</span>;
+        <span class="kw">const </span>PREVIEW_NUMBER: usize = <span class="number">1666</span>;
 
-        <span class="kw">let</span> <span class="ident">preview_hostname</span> <span class="op">=</span>
+        <span class="kw">let </span>preview_hostname =
             <span class="macro">format!</span>(<span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}{PREVIEW_DELIMITER}{BASE_DOMAIN}&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">bad_hostname</span> <span class="op">=</span> <span class="ident">BASE_DOMAIN</span>.<span class="ident">to_string</span>();
+        <span class="kw">let </span>bad_hostname = BASE_DOMAIN.to_string();
 
-        <span class="kw">let</span> <span class="ident">extractor</span> <span class="op">=</span> <span class="ident">Preview</span> {
-            <span class="ident">base</span>: <span class="ident">BASE_DOMAIN</span>,
-            <span class="ident">prefix</span>: <span class="ident">PREVIEW_PREFIX</span>,
-            <span class="ident">delimiter</span>: <span class="ident">PREVIEW_DELIMITER</span>,
+        <span class="kw">let </span>extractor = Preview {
+            base: BASE_DOMAIN,
+            prefix: PREVIEW_PREFIX,
+            delimiter: PREVIEW_DELIMITER,
         };
 
-        <span class="macro">assert_eq!</span>(<span class="ident">extractor</span>.<span class="ident">get_name</span>(<span class="ident">PREVIEW_NUMBER</span>), <span class="ident">preview_hostname</span>);
+        <span class="macro">assert_eq!</span>(extractor.get_name(PREVIEW_NUMBER), preview_hostname);
 
-        <span class="macro">assert_eq!</span>(<span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="ident">bad_hostname</span>), <span class="prelude-val">None</span>);
-
-        <span class="macro">assert_eq!</span>(
-            <span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}{PREVIEW_DELIMITER}no_base_domain&quot;</span>
-            )),
-            <span class="prelude-val">None</span>
-        );
+        <span class="macro">assert_eq!</span>(extractor.extract(<span class="kw-2">&amp;</span>bad_hostname), <span class="prelude-val">None</span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}no-delimiter{BASE_DOMAIN}&quot;</span>
-            )),
-            <span class="prelude-val">None</span>
-        );
+            extractor.extract(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}{PREVIEW_DELIMITER}no_base_domain&quot;
+            </span>)),
+            <span class="prelude-val">None
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}no-delimiter{BASE_DOMAIN}&quot;</span>
-            )),
-            <span class="prelude-val">None</span>
-        );
+            extractor.extract(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}no-delimiter{BASE_DOMAIN}&quot;
+            </span>)),
+            <span class="prelude-val">None
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
-                <span class="string">&quot;noprefix{PREVIEW_NUMBER}{PREVIEW_DELIMITER}{BASE_DOMAIN}&quot;</span>
-            )),
-            <span class="prelude-val">None</span>
-        );
+            extractor.extract(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+                <span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}no-delimiter{BASE_DOMAIN}&quot;
+            </span>)),
+            <span class="prelude-val">None
+        </span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">extractor</span>.<span class="ident">extract</span>(<span class="kw-2">&amp;</span><span class="ident">preview_hostname</span>),
-            <span class="prelude-val">Some</span>(<span class="macro">format!</span>(<span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}&quot;</span>).<span class="ident">as_str</span>())
+            extractor.extract(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+                <span class="string">&quot;noprefix{PREVIEW_NUMBER}{PREVIEW_DELIMITER}{BASE_DOMAIN}&quot;
+            </span>)),
+            <span class="prelude-val">None
+        </span>);
+
+        <span class="macro">assert_eq!</span>(
+            extractor.extract(<span class="kw-2">&amp;</span>preview_hostname),
+            <span class="prelude-val">Some</span>(<span class="macro">format!</span>(<span class="string">&quot;{PREVIEW_PREFIX}{PREVIEW_NUMBER}&quot;</span>).as_str())
         );
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

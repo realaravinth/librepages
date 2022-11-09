@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["pages"] = [{"text":"impl RustEmbed for <a class=\"struct\" href=\"pages/pages/struct.Templates.html\" title=\"struct pages::pages::Templates\">Templates</a>","synthetic":false,"types":["pages::pages::Templates"]},{"text":"impl RustEmbed for <a class=\"struct\" href=\"pages/static_assets/static_files/struct.Asset.html\" title=\"struct pages::static_assets::static_files::Asset\">Asset</a>","synthetic":false,"types":["pages::static_assets::static_files::Asset"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"pages":[["impl RustEmbed for <a class=\"struct\" href=\"pages/pages/struct.Templates.html\" title=\"struct pages::pages::Templates\">Templates</a>"],["impl RustEmbed for <a class=\"struct\" href=\"pages/static_assets/static_files/struct.Asset.html\" title=\"struct pages::static_assets::static_files::Asset\">Asset</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

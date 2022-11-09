@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/errors.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>errors.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/errors.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>errors.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -286,258 +280,257 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="doccomment">//! Represents all the ways a trait can fail using this crate</span>
-<span class="kw">use</span> <span class="ident">std::convert::From</span>;
-<span class="kw">use</span> <span class="ident">std::io::Error</span> <span class="kw">as</span> <span class="ident">FSErrorInner</span>;
-<span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
+ */
+</span><span class="doccomment">//! Represents all the ways a trait can fail using this crate
+</span><span class="kw">use </span>std::convert::From;
+<span class="kw">use </span>std::io::Error <span class="kw">as </span>FSErrorInner;
+<span class="kw">use </span>std::sync::Arc;
 
-<span class="kw">use</span> <span class="ident">actix_web</span>::{
-    <span class="ident">error::ResponseError</span>,
-    <span class="ident">http</span>::{<span class="ident">header</span>, <span class="ident">StatusCode</span>},
-    <span class="ident">HttpResponse</span>, <span class="ident">HttpResponseBuilder</span>,
+<span class="kw">use </span>actix_web::{
+    error::ResponseError,
+    http::{header, StatusCode},
+    HttpResponse, HttpResponseBuilder,
 };
-<span class="kw">use</span> <span class="ident">argon2_creds::errors::CredsError</span>;
-<span class="kw">use</span> <span class="ident">config::ConfigError</span> <span class="kw">as</span> <span class="ident">ConfigErrorInner</span>;
-<span class="kw">use</span> <span class="ident">derive_more</span>::{<span class="ident">Display</span>, <span class="ident">Error</span>};
-<span class="kw">use</span> <span class="ident">git2::Error</span> <span class="kw">as</span> <span class="ident">GitError</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">url::ParseError</span>;
+<span class="kw">use </span>argon2_creds::errors::CredsError;
+<span class="kw">use </span>config::ConfigError <span class="kw">as </span>ConfigErrorInner;
+<span class="kw">use </span>derive_more::{Display, Error};
+<span class="kw">use </span>git2::Error <span class="kw">as </span>GitError;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>url::ParseError;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::page::Page</span>;
+<span class="kw">use </span><span class="kw">crate</span>::page::Page;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Error</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FSError</span>(<span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;File System Error {}&quot;</span>, <span class="ident">_0</span>)]</span> <span class="kw">pub</span> <span class="ident">FSErrorInner</span>);
+<span class="attribute">#[derive(Debug, Display, Error)]
+</span><span class="kw">pub struct </span>FSError(<span class="attribute">#[display(fmt = <span class="string">&quot;File System Error {}&quot;</span>, _0)] </span><span class="kw">pub </span>FSErrorInner);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Error</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConfigError</span>(<span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Configuration Error {}&quot;</span>, <span class="ident">_0</span>)]</span> <span class="kw">pub</span> <span class="ident">ConfigErrorInner</span>);
+<span class="attribute">#[derive(Debug, Display, Error)]
+</span><span class="kw">pub struct </span>ConfigError(<span class="attribute">#[display(fmt = <span class="string">&quot;Configuration Error {}&quot;</span>, _0)] </span><span class="kw">pub </span>ConfigErrorInner);
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">FSError</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">kind</span>() <span class="op">==</span> <span class="ident">other</span>.<span class="number">0</span>.<span class="ident">kind</span>()
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">impl </span>PartialEq <span class="kw">for </span>FSError {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0</span>.kind() == other.<span class="number">0</span>.kind()
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">ConfigError</span> {
-    <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="number">0</span>.<span class="ident">to_string</span>().<span class="ident">trim</span>() <span class="op">==</span> <span class="ident">other</span>.<span class="number">0</span>.<span class="ident">to_string</span>().<span class="ident">trim</span>()
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">impl </span>PartialEq <span class="kw">for </span>ConfigError {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="self">self</span>.<span class="number">0</span>.to_string().trim() == other.<span class="number">0</span>.to_string().trim()
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">FSErrorInner</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">FSErrorInner</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::FSError</span>(<span class="ident">FSError</span>(<span class="ident">e</span>))
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">impl </span>From&lt;FSErrorInner&gt; <span class="kw">for </span>ServiceError {
+    <span class="kw">fn </span>from(e: FSErrorInner) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::FSError(FSError(e))
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ConfigErrorInner</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">ConfigErrorInner</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident"><span class="self">Self</span>::ConfigError</span>(<span class="ident">ConfigError</span>(<span class="ident">e</span>))
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">impl </span>From&lt;ConfigErrorInner&gt; <span class="kw">for </span>ServiceError {
+    <span class="kw">fn </span>from(e: ConfigErrorInner) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::ConfigError(ConfigError(e))
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">PartialEq</span>, <span class="ident">Error</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="doccomment">/// Error data structure grouping various error subtypes</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ServiceError</span> {
-    <span class="doccomment">/// All non-specific errors are grouped under this category</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;internal server error&quot;</span>)]</span>
-    <span class="ident">InternalServerError</span>,
+<span class="attribute">#[derive(Debug, Display, PartialEq, Error)]
+#[cfg(not(tarpaulin_include))]
+</span><span class="doccomment">/// Error data structure grouping various error subtypes
+</span><span class="kw">pub enum </span>ServiceError {
+    <span class="doccomment">/// All non-specific errors are grouped under this category
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;internal server error&quot;</span>)]
+    </span>InternalServerError,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The value you entered for URL is not a URL&quot;</span>)]</span> <span class="comment">//405j</span>
-    <span class="doccomment">/// The value you entered for url is not url&quot;</span>
-    <span class="ident">NotAUrl</span>,
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;URL too long, maximum length can&#39;t be greater then 2048 characters&quot;</span>)]</span> <span class="comment">//405</span>
-    <span class="doccomment">/// URL too long, maximum length can&#39;t be greater then 2048 characters</span>
-    <span class="ident">URLTooLong</span>,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;The value you entered for URL is not a URL&quot;</span>)] </span><span class="comment">//405j
+    </span><span class="doccomment">/// The value you entered for url is not url&quot;
+    </span>NotAUrl,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;URL too long, maximum length can&#39;t be greater then 2048 characters&quot;</span>)] </span><span class="comment">//405
+    </span><span class="doccomment">/// URL too long, maximum length can&#39;t be greater then 2048 characters
+    </span>URLTooLong,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Website not found&quot;</span>)]</span>
-    <span class="doccomment">/// website not found</span>
-    <span class="ident">WebsiteNotFound</span>,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Website not found&quot;</span>)]
+    </span><span class="doccomment">/// website not found
+    </span>WebsiteNotFound,
 
-    <span class="doccomment">/// when the a path configured for a page is already taken</span>
-    <span class="attribute">#[<span class="ident">display</span>(
-        <span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Path already used for another website. lhs: {:?} rhs: {:?}&quot;</span>,
-        <span class="ident">_0</span>,
-        <span class="ident">_1</span>
-    )]</span>
-    <span class="ident">PathTaken</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// when the a path configured for a page is already taken
+    </span><span class="attribute">#[display(
+        fmt = <span class="string">&quot;Path already used for another website. lhs: {:?} rhs: {:?}&quot;</span>,
+        _0,
+        _1
+    )]
+    </span>PathTaken(Arc&lt;Page&gt;, Arc&lt;Page&gt;),
 
-    <span class="doccomment">/// when the a Secret configured for a page is already taken</span>
-    <span class="attribute">#[<span class="ident">display</span>(
-        <span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Secret already used for another website. lhs: {:?} rhs: {:?}&quot;</span>,
-        <span class="ident">_0</span>,
-        <span class="ident">_1</span>
-    )]</span>
-    <span class="ident">SecretTaken</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// when the a Secret configured for a page is already taken
+    </span><span class="attribute">#[display(
+        fmt = <span class="string">&quot;Secret already used for another website. lhs: {:?} rhs: {:?}&quot;</span>,
+        _0,
+        _1
+    )]
+    </span>SecretTaken(Arc&lt;Page&gt;, Arc&lt;Page&gt;),
 
-    <span class="doccomment">/// when the a Repository URL configured for a page is already taken</span>
-    <span class="attribute">#[<span class="ident">display</span>(
-        <span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Repository URL already configured for another website deployment. lhs: {:?} rhs: {:?}&quot;</span>,
-        <span class="ident">_0</span>,
-        <span class="ident">_1</span>
-    )]</span>
-    <span class="ident">DuplicateRepositoryURL</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>, <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Page</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// when the a Repository URL configured for a page is already taken
+    </span><span class="attribute">#[display(
+        fmt = <span class="string">&quot;Repository URL already configured for another website deployment. lhs: {:?} rhs: {:?}&quot;</span>,
+        _0,
+        _1
+    )]
+    </span>DuplicateRepositoryURL(Arc&lt;Page&gt;, Arc&lt;Page&gt;),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;File System Error {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">FSError</span>(<span class="ident">FSError</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;File System Error {}&quot;</span>, _0)]
+    </span>FSError(FSError),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Unauthorized {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">UnauthorizedOperation</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Unauthorized {}&quot;</span>, _0)]
+    </span>UnauthorizedOperation(<span class="attribute">#[error(not(source))] </span>String),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Bad request: {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">BadRequest</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Bad request: {}&quot;</span>, _0)]
+    </span>BadRequest(<span class="attribute">#[error(not(source))] </span>String),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Configuration Error {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">ConfigError</span>(<span class="ident">ConfigError</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Configuration Error {}&quot;</span>, _0)]
+    </span>ConfigError(ConfigError),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Git Error {}&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">GitError</span>(<span class="ident">GitError</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Git Error {}&quot;</span>, _0)]
+    </span>GitError(GitError),
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Branch {} not found&quot;</span>, <span class="ident">_0</span>)]</span>
-    <span class="ident">BranchNotFound</span>(<span class="attribute">#[<span class="ident">error</span>(<span class="ident">not</span>(<span class="ident">source</span>))]</span> <span class="ident">String</span>),
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Branch {} not found&quot;</span>, _0)]
+    </span>BranchNotFound(<span class="attribute">#[error(not(source))] </span>String),
 
-    <span class="doccomment">/// Username is taken</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Username is taken&quot;</span>)]</span>
-    <span class="ident">UsernameTaken</span>,
-    <span class="doccomment">/// Email is taken</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Email is taken&quot;</span>)]</span>
-    <span class="ident">EmailTaken</span>,
-    <span class="doccomment">/// Account not found</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Account not found&quot;</span>)]</span>
-    <span class="ident">AccountNotFound</span>,
+    <span class="doccomment">/// Username is taken
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;Username is taken&quot;</span>)]
+    </span>UsernameTaken,
+    <span class="doccomment">/// Email is taken
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;Email is taken&quot;</span>)]
+    </span>EmailTaken,
+    <span class="doccomment">/// Account not found
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;Account not found&quot;</span>)]
+    </span>AccountNotFound,
 
-    <span class="attribute">#[<span class="ident">display</span>(
-        <span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;This server is is closed for registration. Contact admin if this is unexpecter&quot;</span>
-    )]</span>
-    <span class="doccomment">/// registration failure, server is is closed for registration</span>
-    <span class="ident">ClosedForRegistration</span>,
+    <span class="attribute">#[display(
+        fmt = <span class="string">&quot;This server is is closed for registration. Contact admin if this is unexpecter&quot;
+    </span>)]
+    </span><span class="doccomment">/// registration failure, server is is closed for registration
+    </span>ClosedForRegistration,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;The value you entered for email is not an email&quot;</span>)]</span> <span class="comment">//405j</span>
-    <span class="doccomment">/// The value you entered for email is not an email&quot;</span>
-    <span class="ident">NotAnEmail</span>,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;The value you entered for email is not an email&quot;</span>)] </span><span class="comment">//405j
+    </span><span class="doccomment">/// The value you entered for email is not an email&quot;
+    </span>NotAnEmail,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Wrong password&quot;</span>)]</span>
-    <span class="doccomment">/// wrong password</span>
-    <span class="ident">WrongPassword</span>,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Wrong password&quot;</span>)]
+    </span><span class="doccomment">/// wrong password
+    </span>WrongPassword,
 
-    <span class="doccomment">/// when the value passed contains profanity</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Can&#39;t allow profanity in usernames&quot;</span>)]</span>
-    <span class="ident">ProfanityError</span>,
-    <span class="doccomment">/// when the value passed contains blacklisted words</span>
-    <span class="doccomment">/// see [blacklist](https://github.com/shuttlecraft/The-Big-Username-Blacklist)</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Username contains blacklisted words&quot;</span>)]</span>
-    <span class="ident">BlacklistError</span>,
-    <span class="doccomment">/// when the value passed contains characters not present</span>
-    <span class="doccomment">/// in [UsernameCaseMapped](https://tools.ietf.org/html/rfc8265#page-7)</span>
-    <span class="doccomment">/// profile</span>
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;username_case_mapped violation&quot;</span>)]</span>
-    <span class="ident">UsernameCaseMappedError</span>,
+    <span class="doccomment">/// when the value passed contains profanity
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;Can&#39;t allow profanity in usernames&quot;</span>)]
+    </span>ProfanityError,
+    <span class="doccomment">/// when the value passed contains blacklisted words
+    /// see [blacklist](https://github.com/shuttlecraft/The-Big-Username-Blacklist)
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;Username contains blacklisted words&quot;</span>)]
+    </span>BlacklistError,
+    <span class="doccomment">/// when the value passed contains characters not present
+    /// in [UsernameCaseMapped](https://tools.ietf.org/html/rfc8265#page-7)
+    /// profile
+    </span><span class="attribute">#[display(fmt = <span class="string">&quot;username_case_mapped violation&quot;</span>)]
+    </span>UsernameCaseMappedError,
 
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Passsword too short&quot;</span>)]</span>
-    <span class="doccomment">/// password too short</span>
-    <span class="ident">PasswordTooShort</span>,
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;password too long&quot;</span>)]</span>
-    <span class="doccomment">/// password too long</span>
-    <span class="ident">PasswordTooLong</span>,
-    <span class="attribute">#[<span class="ident">display</span>(<span class="ident">fmt</span> <span class="op">=</span> <span class="string">&quot;Passwords don&#39;t match&quot;</span>)]</span>
-    <span class="doccomment">/// passwords don&#39;t match</span>
-    <span class="ident">PasswordsDontMatch</span>,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Passsword too short&quot;</span>)]
+    </span><span class="doccomment">/// password too short
+    </span>PasswordTooShort,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;password too long&quot;</span>)]
+    </span><span class="doccomment">/// password too long
+    </span>PasswordTooLong,
+    <span class="attribute">#[display(fmt = <span class="string">&quot;Passwords don&#39;t match&quot;</span>)]
+    </span><span class="doccomment">/// passwords don&#39;t match
+    </span>PasswordsDontMatch,
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ParseError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="kw">_</span>: <span class="ident">ParseError</span>) -&gt; <span class="ident">ServiceError</span> {
-        <span class="ident">ServiceError::NotAUrl</span>
+<span class="kw">impl </span>From&lt;ParseError&gt; <span class="kw">for </span>ServiceError {
+    <span class="attribute">#[cfg(not(tarpaulin_include))]
+    </span><span class="kw">fn </span>from(<span class="kw">_</span>: ParseError) -&gt; ServiceError {
+        ServiceError::NotAUrl
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">GitError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">GitError</span>) -&gt; <span class="ident">ServiceError</span> {
-        <span class="ident">ServiceError::GitError</span>(<span class="ident">e</span>)
+<span class="kw">impl </span>From&lt;GitError&gt; <span class="kw">for </span>ServiceError {
+    <span class="attribute">#[cfg(not(tarpaulin_include))]
+    </span><span class="kw">fn </span>from(e: GitError) -&gt; ServiceError {
+        ServiceError::GitError(e)
     }
 }
 
-<span class="doccomment">/// Generic result data structure</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">V</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">std::result::Result</span><span class="op">&lt;</span><span class="ident">V</span>, <span class="ident">ServiceError</span><span class="op">&gt;</span>;
+<span class="doccomment">/// Generic result data structure
+</span><span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">pub type </span>ServiceResult&lt;V&gt; = std::result::Result&lt;V, ServiceError&gt;;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Debug</span>)]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ErrorToResponse</span> {
-    <span class="kw">pub</span> <span class="ident">error</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Serialize, Deserialize, Debug)]
+#[cfg(not(tarpaulin_include))]
+</span><span class="kw">pub struct </span>ErrorToResponse {
+    <span class="kw">pub </span>error: String,
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">impl</span> <span class="ident">ResponseError</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">error_response</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">HttpResponse</span> {
-        <span class="ident">HttpResponseBuilder::new</span>(<span class="self">self</span>.<span class="ident">status_code</span>())
-            .<span class="ident">append_header</span>((<span class="ident">header::CONTENT_TYPE</span>, <span class="string">&quot;application/json; charset=UTF-8&quot;</span>))
-            .<span class="ident">body</span>(
-                <span class="ident">serde_json::to_string</span>(<span class="kw-2">&amp;</span><span class="ident">ErrorToResponse</span> {
-                    <span class="ident">error</span>: <span class="self">self</span>.<span class="ident">to_string</span>(),
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">impl </span>ResponseError <span class="kw">for </span>ServiceError {
+    <span class="attribute">#[cfg(not(tarpaulin_include))]
+    </span><span class="kw">fn </span>error_response(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HttpResponse {
+        HttpResponseBuilder::new(<span class="self">self</span>.status_code())
+            .append_header((header::CONTENT_TYPE, <span class="string">&quot;application/json; charset=UTF-8&quot;</span>))
+            .body(
+                serde_json::to_string(<span class="kw-2">&amp;</span>ErrorToResponse {
+                    error: <span class="self">self</span>.to_string(),
                 })
-                .<span class="ident">unwrap</span>(),
+                .unwrap(),
             )
     }
 
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">status_code</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">StatusCode</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">ServiceError::InternalServerError</span> =&gt; <span class="ident">StatusCode::INTERNAL_SERVER_ERROR</span>, <span class="comment">// INTERNAL SERVER ERROR</span>
-            <span class="ident">ServiceError::ConfigError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::INTERNAL_SERVER_ERROR</span>, <span class="comment">// INTERNAL SERVER ERROR</span>
-            <span class="ident">ServiceError::NotAUrl</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,                  <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::URLTooLong</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,               <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::WebsiteNotFound</span> =&gt; <span class="ident">StatusCode::NOT_FOUND</span>,            <span class="comment">//NOT FOUND,</span>
+    <span class="attribute">#[cfg(not(tarpaulin_include))]
+    </span><span class="kw">fn </span>status_code(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; StatusCode {
+        <span class="kw">match </span><span class="self">self </span>{
+            ServiceError::InternalServerError =&gt; StatusCode::INTERNAL_SERVER_ERROR, <span class="comment">// INTERNAL SERVER ERROR
+            </span>ServiceError::ConfigError(<span class="kw">_</span>) =&gt; StatusCode::INTERNAL_SERVER_ERROR, <span class="comment">// INTERNAL SERVER ERROR
+            </span>ServiceError::NotAUrl =&gt; StatusCode::BAD_REQUEST,                  <span class="comment">//BADREQUEST,
+            </span>ServiceError::URLTooLong =&gt; StatusCode::BAD_REQUEST,               <span class="comment">//BADREQUEST,
+            </span>ServiceError::WebsiteNotFound =&gt; StatusCode::NOT_FOUND,            <span class="comment">//NOT FOUND,
 
-            <span class="ident">ServiceError::PathTaken</span>(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::DuplicateRepositoryURL</span>(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::SecretTaken</span>(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::FSError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::INTERNAL_SERVER_ERROR</span>,
+            </span>ServiceError::PathTaken(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::DuplicateRepositoryURL(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::SecretTaken(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::FSError(<span class="kw">_</span>) =&gt; StatusCode::INTERNAL_SERVER_ERROR,
 
-            <span class="ident">ServiceError::UnauthorizedOperation</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::UNAUTHORIZED</span>,
-            <span class="ident">ServiceError::BadRequest</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
-            <span class="ident">ServiceError::GitError</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
-            <span class="ident">ServiceError::BranchNotFound</span>(<span class="kw">_</span>) =&gt; <span class="ident">StatusCode::CONFLICT</span>,
+            ServiceError::UnauthorizedOperation(<span class="kw">_</span>) =&gt; StatusCode::UNAUTHORIZED,
+            ServiceError::BadRequest(<span class="kw">_</span>) =&gt; StatusCode::BAD_REQUEST,
+            ServiceError::GitError(<span class="kw">_</span>) =&gt; StatusCode::BAD_REQUEST,
+            ServiceError::BranchNotFound(<span class="kw">_</span>) =&gt; StatusCode::CONFLICT,
 
-            <span class="ident">ServiceError::EmailTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
-            <span class="ident">ServiceError::UsernameTaken</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,
-            <span class="ident">ServiceError::AccountNotFound</span> =&gt; <span class="ident">StatusCode::NOT_FOUND</span>,
+            ServiceError::EmailTaken =&gt; StatusCode::BAD_REQUEST,
+            ServiceError::UsernameTaken =&gt; StatusCode::BAD_REQUEST,
+            ServiceError::AccountNotFound =&gt; StatusCode::NOT_FOUND,
 
-            <span class="ident">ServiceError::ProfanityError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::BlacklistError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::UsernameCaseMappedError</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
+            ServiceError::ProfanityError =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::BlacklistError =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::UsernameCaseMappedError =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
 
-            <span class="ident">ServiceError::PasswordTooShort</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::PasswordTooLong</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,  <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::PasswordsDontMatch</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>, <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::ClosedForRegistration</span> =&gt; <span class="ident">StatusCode::FORBIDDEN</span>, <span class="comment">//FORBIDDEN,</span>
-            <span class="ident">ServiceError::NotAnEmail</span> =&gt; <span class="ident">StatusCode::BAD_REQUEST</span>,       <span class="comment">//BADREQUEST,</span>
-            <span class="ident">ServiceError::WrongPassword</span> =&gt; <span class="ident">StatusCode::UNAUTHORIZED</span>,   <span class="comment">//UNAUTHORIZED,</span>
-        }
+            </span>ServiceError::PasswordTooShort =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::PasswordTooLong =&gt; StatusCode::BAD_REQUEST,  <span class="comment">//BADREQUEST,
+            </span>ServiceError::PasswordsDontMatch =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
+            </span>ServiceError::ClosedForRegistration =&gt; StatusCode::FORBIDDEN, <span class="comment">//FORBIDDEN,
+            </span>ServiceError::NotAnEmail =&gt; StatusCode::BAD_REQUEST,       <span class="comment">//BADREQUEST,
+            </span>ServiceError::WrongPassword =&gt; StatusCode::UNAUTHORIZED,   <span class="comment">//UNAUTHORIZED,
+        </span>}
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">CredsError</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ServiceError</span> {
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">e</span>: <span class="ident">CredsError</span>) -&gt; <span class="ident">ServiceError</span> {
-        <span class="kw">match</span> <span class="ident">e</span> {
-            <span class="ident">CredsError::UsernameCaseMappedError</span> =&gt; <span class="ident">ServiceError::UsernameCaseMappedError</span>,
-            <span class="ident">CredsError::ProfainityError</span> =&gt; <span class="ident">ServiceError::ProfanityError</span>,
-            <span class="ident">CredsError::BlacklistError</span> =&gt; <span class="ident">ServiceError::BlacklistError</span>,
-            <span class="ident">CredsError::NotAnEmail</span> =&gt; <span class="ident">ServiceError::NotAnEmail</span>,
-            <span class="ident">CredsError::Argon2Error</span>(<span class="kw">_</span>) =&gt; <span class="ident">ServiceError::InternalServerError</span>,
-            <span class="ident">CredsError::PasswordTooLong</span> =&gt; <span class="ident">ServiceError::PasswordTooLong</span>,
-            <span class="ident">CredsError::PasswordTooShort</span> =&gt; <span class="ident">ServiceError::PasswordTooShort</span>,
+<span class="kw">impl </span>From&lt;CredsError&gt; <span class="kw">for </span>ServiceError {
+    <span class="attribute">#[cfg(not(tarpaulin_include))]
+    </span><span class="kw">fn </span>from(e: CredsError) -&gt; ServiceError {
+        <span class="kw">match </span>e {
+            CredsError::UsernameCaseMappedError =&gt; ServiceError::UsernameCaseMappedError,
+            CredsError::ProfainityError =&gt; ServiceError::ProfanityError,
+            CredsError::BlacklistError =&gt; ServiceError::BlacklistError,
+            CredsError::NotAnEmail =&gt; ServiceError::NotAnEmail,
+            CredsError::Argon2Error(<span class="kw">_</span>) =&gt; ServiceError::InternalServerError,
+            CredsError::PasswordTooLong =&gt; ServiceError::PasswordTooLong,
+            CredsError::PasswordTooShort =&gt; ServiceError::PasswordTooShort,
         }
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

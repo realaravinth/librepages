@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/git.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>git.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/git.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>git.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -311,141 +305,141 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
+ */
+</span><span class="kw">use </span>std::path::Path;
 
-<span class="kw">use</span> <span class="ident">git2</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">mime_guess::MimeGuess</span>;
-<span class="kw">use</span> <span class="ident">num_enum::FromPrimitive</span>;
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
+<span class="kw">use </span>git2::<span class="kw-2">*</span>;
+<span class="kw">use </span>mime_guess::MimeGuess;
+<span class="kw">use </span>num_enum::FromPrimitive;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// A FileMode represents the kind of tree entries used by git. It</span>
-<span class="doccomment">/// resembles regular file systems modes, although FileModes are</span>
-<span class="doccomment">/// considerably simpler (there are not so many), and there are some,</span>
-<span class="doccomment">/// like Submodule that has no file system equivalent.</span>
-<span class="comment">// Adapted from https://github.com/go-git/go-git/blob/master/plumbing/filemode/filemode.go(Apache-2.0 License)</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">FromPrimitive</span>)]</span>
-<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">isize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">GitFileMode</span> {
-    <span class="doccomment">/// Empty is used as the GitFileMode of tree elements when comparing</span>
-    <span class="doccomment">/// trees in the following situations:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - the mode of tree elements before their creation.  </span>
-    <span class="doccomment">/// - the mode of tree elements after their deletion.  </span>
-    <span class="doccomment">/// - the mode of unmerged elements when checking the index.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Empty has no file system equivalent.  As Empty is the zero value</span>
-    <span class="doccomment">/// of [GitFileMode]</span>
-    <span class="ident">Empty</span> <span class="op">=</span> <span class="number">0</span>,
-    <span class="doccomment">/// Regular represent non-executable files.</span>
-    <span class="ident">Regular</span> <span class="op">=</span> <span class="number">0o100644</span>,
-    <span class="doccomment">/// Dir represent a Directory.</span>
-    <span class="ident">Dir</span> <span class="op">=</span> <span class="number">0o40000</span>,
-    <span class="doccomment">/// Deprecated represent non-executable files with the group writable bit set.  This mode was</span>
-    <span class="doccomment">/// supported by the first versions of git, but it has been deprecated nowadays.  This</span>
-    <span class="doccomment">/// library(github.com/go-git/go-git uses it, not realaravinth/gitpad at the moment) uses them</span>
-    <span class="doccomment">/// internally, so you can read old packfiles, but will treat them as Regulars when interfacing</span>
-    <span class="doccomment">/// with the outside world.  This is the standard git behaviour.</span>
-    <span class="ident">Deprecated</span> <span class="op">=</span> <span class="number">0o100664</span>,
-    <span class="doccomment">/// Executable represents executable files.</span>
-    <span class="ident">Executable</span> <span class="op">=</span> <span class="number">0o100755</span>,
-    <span class="doccomment">/// Symlink represents symbolic links to files.</span>
-    <span class="ident">Symlink</span> <span class="op">=</span> <span class="number">0o120000</span>,
-    <span class="doccomment">/// Submodule represents git submodules.  This mode has no file system</span>
-    <span class="doccomment">/// equivalent.</span>
-    <span class="ident">Submodule</span> <span class="op">=</span> <span class="number">0o160000</span>,
+<span class="doccomment">/// A FileMode represents the kind of tree entries used by git. It
+/// resembles regular file systems modes, although FileModes are
+/// considerably simpler (there are not so many), and there are some,
+/// like Submodule that has no file system equivalent.
+</span><span class="comment">// Adapted from https://github.com/go-git/go-git/blob/master/plumbing/filemode/filemode.go(Apache-2.0 License)
+</span><span class="attribute">#[derive(Debug, PartialEq, Eq, Clone, FromPrimitive)]
+#[repr(isize)]
+</span><span class="kw">pub enum </span>GitFileMode {
+    <span class="doccomment">/// Empty is used as the GitFileMode of tree elements when comparing
+    /// trees in the following situations:
+    ///
+    /// - the mode of tree elements before their creation.  
+    /// - the mode of tree elements after their deletion.  
+    /// - the mode of unmerged elements when checking the index.
+    ///
+    /// Empty has no file system equivalent.  As Empty is the zero value
+    /// of [GitFileMode]
+    </span>Empty = <span class="number">0</span>,
+    <span class="doccomment">/// Regular represent non-executable files.
+    </span>Regular = <span class="number">0o100644</span>,
+    <span class="doccomment">/// Dir represent a Directory.
+    </span>Dir = <span class="number">0o40000</span>,
+    <span class="doccomment">/// Deprecated represent non-executable files with the group writable bit set.  This mode was
+    /// supported by the first versions of git, but it has been deprecated nowadays.  This
+    /// library(github.com/go-git/go-git uses it, not realaravinth/gitpad at the moment) uses them
+    /// internally, so you can read old packfiles, but will treat them as Regulars when interfacing
+    /// with the outside world.  This is the standard git behaviour.
+    </span>Deprecated = <span class="number">0o100664</span>,
+    <span class="doccomment">/// Executable represents executable files.
+    </span>Executable = <span class="number">0o100755</span>,
+    <span class="doccomment">/// Symlink represents symbolic links to files.
+    </span>Symlink = <span class="number">0o120000</span>,
+    <span class="doccomment">/// Submodule represents git submodules.  This mode has no file system
+    /// equivalent.
+    </span>Submodule = <span class="number">0o160000</span>,
 
-    <span class="doccomment">/// Unsupported file mode</span>
-    <span class="attribute">#[<span class="ident">num_enum</span>(<span class="ident">default</span>)]</span>
-    <span class="ident">Unsupported</span> <span class="op">=</span> <span class="op">-</span><span class="number">1</span>,
+    <span class="doccomment">/// Unsupported file mode
+    </span><span class="attribute">#[num_enum(default)]
+    </span>Unsupported = -<span class="number">1</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;_</span> <span class="ident">TreeEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GitFileMode</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">TreeEntry</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">GitFileMode::from</span>(<span class="ident">t</span>.<span class="ident">filemode</span>() <span class="kw">as</span> <span class="ident">isize</span>)
+<span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;_ </span>TreeEntry&lt;<span class="lifetime">&#39;_</span>&gt;&gt; <span class="kw">for </span>GitFileMode {
+    <span class="kw">fn </span>from(t: <span class="kw-2">&amp;</span>TreeEntry) -&gt; <span class="self">Self </span>{
+        GitFileMode::from(t.filemode() <span class="kw">as </span>isize)
     }
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">TreeEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">GitFileMode</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">t</span>: <span class="ident">TreeEntry</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">GitFileMode::from</span>(<span class="ident">t</span>.<span class="ident">filemode</span>() <span class="kw">as</span> <span class="ident">isize</span>)
+<span class="kw">impl </span>From&lt;TreeEntry&lt;<span class="lifetime">&#39;_</span>&gt;&gt; <span class="kw">for </span>GitFileMode {
+    <span class="kw">fn </span>from(t: TreeEntry) -&gt; <span class="self">Self </span>{
+        GitFileMode::from(t.filemode() <span class="kw">as </span>isize)
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FileInfo</span> {
-    <span class="kw">pub</span> <span class="ident">filename</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">content</span>: <span class="ident">ContentType</span>,
-    <span class="kw">pub</span> <span class="ident">mime</span>: <span class="ident">MimeGuess</span>,
+<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq)]
+</span><span class="kw">pub struct </span>FileInfo {
+    <span class="kw">pub </span>filename: String,
+    <span class="kw">pub </span>content: ContentType,
+    <span class="kw">pub </span>mime: MimeGuess,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>)]</span>
-<span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;lowercase&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ContentType</span> {
-    <span class="ident">Binary</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>),
-    <span class="ident">Text</span>(<span class="ident">String</span>),
+<span class="attribute">#[derive(Serialize, Eq, PartialEq, Clone, Debug, Deserialize)]
+#[serde(rename_all = <span class="string">&quot;lowercase&quot;</span>)]
+</span><span class="kw">pub enum </span>ContentType {
+    Binary(Vec&lt;u8&gt;),
+    Text(String),
 }
 
-<span class="kw">impl</span> <span class="ident">ContentType</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes</span>(<span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Text</span>(<span class="ident">text</span>) =&gt; <span class="ident">text</span>.<span class="ident">into</span>(),
-            <span class="ident"><span class="self">Self</span>::Binary</span>(<span class="ident">bin</span>) =&gt; <span class="ident">bin</span>,
+<span class="kw">impl </span>ContentType {
+    <span class="kw">pub fn </span>bytes(<span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
+        <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Text(text) =&gt; text.into(),
+            <span class="self">Self</span>::Binary(bin) =&gt; bin,
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_blob</span>(<span class="ident">blob</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Blob</span>) -&gt; <span class="self">Self</span> {
-        <span class="kw">if</span> <span class="ident">blob</span>.<span class="ident">is_binary</span>() {
-            <span class="ident"><span class="self">Self</span>::Binary</span>(<span class="ident">blob</span>.<span class="ident">content</span>().<span class="ident">to_vec</span>())
-        } <span class="kw">else</span> {
-            <span class="ident"><span class="self">Self</span>::Text</span>(<span class="ident">String::from_utf8_lossy</span>(<span class="ident">blob</span>.<span class="ident">content</span>()).<span class="ident">to_string</span>())
+    <span class="kw">pub fn </span>from_blob(blob: <span class="kw-2">&amp;</span>git2::Blob) -&gt; <span class="self">Self </span>{
+        <span class="kw">if </span>blob.is_binary() {
+            <span class="self">Self</span>::Binary(blob.content().to_vec())
+        } <span class="kw">else </span>{
+            <span class="self">Self</span>::Text(String::from_utf8_lossy(blob.content()).to_string())
         }
     }
 }
 
-<span class="doccomment">/// Please note that this method expects path to not contain any spaces</span>
-<span class="doccomment">/// Use [escape_spaces] before calling this method</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// For example, a read request for &quot;foo bar.md&quot; will fail even if that file is present</span>
-<span class="doccomment">/// in the repository. However, it will succeed if the output of [escape_spaces] is</span>
-<span class="doccomment">/// used in the request.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_file</span>(<span class="ident">repo_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">FileInfo</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="ident">git2::Repository::open</span>(<span class="ident">repo_path</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">head</span>().<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">head</span>.<span class="ident">peel_to_tree</span>().<span class="ident">unwrap</span>();
-    <span class="ident">read_file_inner</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">tree</span>)
+<span class="doccomment">/// Please note that this method expects path to not contain any spaces
+/// Use [escape_spaces] before calling this method
+///
+/// For example, a read request for &quot;foo bar.md&quot; will fail even if that file is present
+/// in the repository. However, it will succeed if the output of [escape_spaces] is
+/// used in the request.
+</span><span class="kw">pub fn </span>read_file(repo_path: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;FileInfo&gt; {
+    <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
+    <span class="kw">let </span>head = repo.head().unwrap();
+    <span class="kw">let </span>tree = head.peel_to_tree().unwrap();
+    read_file_inner(<span class="kw-2">&amp;</span>repo, path, <span class="kw-2">&amp;</span>tree)
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_preview_file</span>(
-    <span class="ident">repo_path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">preview_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">FileInfo</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="ident">git2::Repository::open</span>(<span class="ident">repo_path</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>
-        .<span class="ident">find_branch</span>(<span class="ident">preview_name</span>, <span class="ident">git2::BranchType::Local</span>)
-        .<span class="ident">unwrap</span>();
-    <span class="comment">//    let tree = head.peel_to_tree().unwrap();</span>
-    <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">branch</span>.<span class="ident">into_reference</span>();
-    <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">branch</span>.<span class="ident">peel_to_tree</span>().<span class="ident">unwrap</span>();
-    <span class="ident">read_file_inner</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">tree</span>)
+<span class="kw">pub fn </span>read_preview_file(
+    repo_path: <span class="kw-2">&amp;</span>str,
+    preview_name: <span class="kw-2">&amp;</span>str,
+    path: <span class="kw-2">&amp;</span>str,
+) -&gt; ServiceResult&lt;FileInfo&gt; {
+    <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
+    <span class="kw">let </span>branch = repo
+        .find_branch(preview_name, git2::BranchType::Local)
+        .unwrap();
+    <span class="comment">//    let tree = head.peel_to_tree().unwrap();
+    </span><span class="kw">let </span>branch = branch.into_reference();
+    <span class="kw">let </span>tree = branch.peel_to_tree().unwrap();
+    read_file_inner(<span class="kw-2">&amp;</span>repo, path, <span class="kw-2">&amp;</span>tree)
 }
 
-<span class="kw">fn</span> <span class="ident">read_file_inner</span>(
-    <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Repository</span>,
-    <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Tree</span>,
-) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">FileInfo</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">read_file</span>(<span class="ident">id</span>: <span class="ident">Oid</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Repository</span>) -&gt; <span class="ident">ContentType</span> {
-        <span class="kw">let</span> <span class="ident">blob</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_blob</span>(<span class="ident">id</span>).<span class="ident">unwrap</span>();
-        <span class="ident">ContentType::from_blob</span>(<span class="kw-2">&amp;</span><span class="ident">blob</span>)
+<span class="kw">fn </span>read_file_inner(
+    repo: <span class="kw-2">&amp;</span>git2::Repository,
+    path: <span class="kw-2">&amp;</span>str,
+    tree: <span class="kw-2">&amp;</span>git2::Tree,
+) -&gt; ServiceResult&lt;FileInfo&gt; {
+    <span class="kw">fn </span>read_file(id: Oid, repo: <span class="kw-2">&amp;</span>git2::Repository) -&gt; ContentType {
+        <span class="kw">let </span>blob = repo.find_blob(id).unwrap();
+        ContentType::from_blob(<span class="kw-2">&amp;</span>blob)
     }
 
-    <span class="kw">fn</span> <span class="ident">get_index_file</span>(<span class="ident">id</span>: <span class="ident">Oid</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ContentType</span> {
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_tree</span>(<span class="ident">id</span>).<span class="ident">unwrap</span>();
-        <span class="kw">const</span> <span class="ident">INDEX_FILES</span>: [<span class="kw-2">&amp;</span><span class="ident">str</span>; <span class="number">7</span>] <span class="op">=</span> [
+    <span class="kw">fn </span>get_index_file(id: Oid, repo: <span class="kw-2">&amp;</span>Repository) -&gt; ContentType {
+        <span class="kw">let </span>tree = repo.find_tree(id).unwrap();
+        <span class="kw">const </span>INDEX_FILES: [<span class="kw-2">&amp;</span>str; <span class="number">7</span>] = [
             <span class="string">&quot;index.html&quot;</span>,
             <span class="string">&quot;index.md&quot;</span>,
             <span class="string">&quot;INDEX.md&quot;</span>,
@@ -455,139 +449,138 @@
             <span class="string">&quot;readme&quot;</span>,
         ];
 
-        <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index_file</span>) <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">iter</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">x</span>.<span class="ident">name</span>() {
-                <span class="ident">INDEX_FILES</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">index_name</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">index_name</span> <span class="op">==</span> <span class="ident">name</span>)
-            } <span class="kw">else</span> {
-                <span class="bool-val">false</span>
-            }
+        <span class="kw">let </span>content = <span class="kw">if let </span><span class="prelude-val">Some</span>(index_file) = tree.iter().find(|x| {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = x.name() {
+                INDEX_FILES.iter().any(|index_name| <span class="kw-2">*</span>index_name == name)
+            } <span class="kw">else </span>{
+                <span class="bool-val">false
+            </span>}
         }) {
-            <span class="ident">read_file</span>(<span class="ident">index_file</span>.<span class="ident">id</span>(), <span class="ident">repo</span>)
-        } <span class="kw">else</span> {
+            read_file(index_file.id(), repo)
+        } <span class="kw">else </span>{
             <span class="macro">unimplemented!</span>(<span class="string">&quot;Index file not found&quot;</span>);
         };
-        <span class="ident">content</span>
+        content
     }
 
-    <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="op">|</span><span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Repository</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">git2::Tree</span><span class="op">|</span> -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">FileInfo</span><span class="op">&gt;</span> {
-        <span class="comment">//        let head = repo.head().unwrap();</span>
-        <span class="comment">//        let tree = head.peel_to_tree().unwrap();</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>;
-        <span class="kw">if</span> <span class="ident">path</span> <span class="op">==</span> <span class="string">&quot;/&quot;</span> {
-            <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">get_index_file</span>(<span class="ident">tree</span>.<span class="ident">id</span>(), <span class="ident">repo</span>);
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">FileInfo</span> {
-                <span class="ident">filename</span>: <span class="string">&quot;/&quot;</span>.<span class="ident">into</span>(),
-                <span class="ident">content</span>,
-                <span class="ident">mime</span>: <span class="ident">mime_guess::from_path</span>(<span class="string">&quot;index.html&quot;</span>),
+    <span class="kw">let </span>inner = |repo: <span class="kw-2">&amp;</span>git2::Repository, tree: <span class="kw-2">&amp;</span>git2::Tree| -&gt; ServiceResult&lt;FileInfo&gt; {
+        <span class="comment">//        let head = repo.head().unwrap();
+        //        let tree = head.peel_to_tree().unwrap();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>path = path;
+        <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
+            <span class="kw">let </span>content = get_index_file(tree.id(), repo);
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(FileInfo {
+                filename: <span class="string">&quot;/&quot;</span>.into(),
+                content,
+                mime: mime_guess::from_path(<span class="string">&quot;index.html&quot;</span>),
             });
         }
-        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="string">&#39;/&#39;</span>) {
-            <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">trim_start_matches</span>(<span class="string">&#39;/&#39;</span>);
+        <span class="kw">if </span>path.starts_with(<span class="string">&#39;/&#39;</span>) {
+            path = path.trim_start_matches(<span class="string">&#39;/&#39;</span>);
         }
-        <span class="kw">let</span> <span class="ident">entry</span> <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">get_path</span>(<span class="ident">Path::new</span>(<span class="ident">path</span>)).<span class="ident">unwrap</span>();
-        <span class="comment">//FileType::Dir(items)</span>
+        <span class="kw">let </span>entry = tree.get_path(Path::new(path)).unwrap();
+        <span class="comment">//FileType::Dir(items)
 
-        <span class="kw">let</span> <span class="ident">mode</span>: <span class="ident">GitFileMode</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">clone</span>().<span class="ident">into</span>();
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">name</span>() {
-            <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">mode</span> {
-                <span class="ident">GitFileMode::Dir</span> =&gt; <span class="ident">get_index_file</span>(<span class="ident">entry</span>.<span class="ident">id</span>(), <span class="ident">repo</span>),
-                <span class="ident">GitFileMode::Submodule</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="ident">GitFileMode::Empty</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="ident">GitFileMode::Deprecated</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="ident">GitFileMode::Unsupported</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="ident">GitFileMode::Symlink</span> =&gt; <span class="macro">unimplemented!</span>(),
-                <span class="ident">GitFileMode::Executable</span> =&gt; <span class="ident">read_file</span>(<span class="ident">entry</span>.<span class="ident">id</span>(), <span class="ident">repo</span>),
-                <span class="ident">GitFileMode::Regular</span> =&gt; <span class="ident">read_file</span>(<span class="ident">entry</span>.<span class="ident">id</span>(), <span class="ident">repo</span>),
+        </span><span class="kw">let </span>mode: GitFileMode = entry.clone().into();
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = entry.name() {
+            <span class="kw">let </span>file = <span class="kw">match </span>mode {
+                GitFileMode::Dir =&gt; get_index_file(entry.id(), repo),
+                GitFileMode::Submodule =&gt; <span class="macro">unimplemented!</span>(),
+                GitFileMode::Empty =&gt; <span class="macro">unimplemented!</span>(),
+                GitFileMode::Deprecated =&gt; <span class="macro">unimplemented!</span>(),
+                GitFileMode::Unsupported =&gt; <span class="macro">unimplemented!</span>(),
+                GitFileMode::Symlink =&gt; <span class="macro">unimplemented!</span>(),
+                GitFileMode::Executable =&gt; read_file(entry.id(), repo),
+                GitFileMode::Regular =&gt; read_file(entry.id(), repo),
             };
-            <span class="prelude-val">Ok</span>(<span class="ident">FileInfo</span> {
-                <span class="ident">filename</span>: <span class="ident">name</span>.<span class="ident">to_string</span>(),
-                <span class="ident">mime</span>: <span class="ident">mime_guess::from_path</span>(<span class="ident">path</span>),
-                <span class="ident">content</span>: <span class="ident">file</span>,
+            <span class="prelude-val">Ok</span>(FileInfo {
+                filename: name.to_string(),
+                mime: mime_guess::from_path(path),
+                content: file,
             })
-        } <span class="kw">else</span> {
+        } <span class="kw">else </span>{
             <span class="macro">unimplemented!</span>();
         }
     };
 
-    <span class="comment">//let repo = git2::Repository::open(repo_path).unwrap();</span>
-    <span class="ident">inner</span>(<span class="ident">repo</span>, <span class="ident">tree</span>)
+    <span class="comment">//let repo = git2::Repository::open(repo_path).unwrap();
+    </span>inner(repo, tree)
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">pub mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">const</span> <span class="ident">FILE_CONTENT</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;foobar&quot;</span>;
+    <span class="kw">const </span>FILE_CONTENT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;foobar&quot;</span>;
 
-    <span class="kw">fn</span> <span class="ident">write_file_util</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-        <span class="comment">// TODO change updated in DB</span>
-        <span class="kw">let</span> <span class="ident">inner</span> <span class="op">=</span> <span class="op">|</span><span class="ident">repo</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Repository</span><span class="op">|</span> -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tree_builder</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">repo</span>.<span class="ident">head</span>() {
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="ident">repo</span>.<span class="ident">treebuilder</span>(<span class="prelude-val">None</span>).<span class="ident">unwrap</span>(),
+    <span class="kw">fn </span>write_file_util(path: <span class="kw-2">&amp;</span>str) {
+        <span class="comment">// TODO change updated in DB
+        </span><span class="kw">let </span>inner = |repo: <span class="kw-2">&amp;mut </span>Repository| -&gt; ServiceResult&lt;()&gt; {
+            <span class="kw">let </span><span class="kw-2">mut </span>tree_builder = <span class="kw">match </span>repo.head() {
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; repo.treebuilder(<span class="prelude-val">None</span>).unwrap(),
 
-                <span class="prelude-val">Ok</span>(<span class="ident">h</span>) =&gt; <span class="ident">repo</span>.<span class="ident">treebuilder</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">h</span>.<span class="ident">peel_to_tree</span>().<span class="ident">unwrap</span>())).<span class="ident">unwrap</span>(),
+                <span class="prelude-val">Ok</span>(h) =&gt; repo.treebuilder(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>h.peel_to_tree().unwrap())).unwrap(),
             };
 
-            <span class="kw">let</span> <span class="ident">odb</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">odb</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let </span>odb = repo.odb().unwrap();
 
-            <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="ident">odb</span>
-                .<span class="ident">write</span>(<span class="ident">ObjectType::Blob</span>, <span class="ident">FILE_CONTENT</span>.<span class="ident">as_bytes</span>())
-                .<span class="ident">unwrap</span>();
-            <span class="ident">tree_builder</span>.<span class="ident">insert</span>(<span class="string">&quot;README.txt&quot;</span>, <span class="ident">obj</span>, <span class="number">0o100644</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">tree_hash</span> <span class="op">=</span> <span class="ident">tree_builder</span>.<span class="ident">write</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">author</span> <span class="op">=</span> <span class="ident">Signature::now</span>(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">committer</span> <span class="op">=</span> <span class="ident">Signature::now</span>(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).<span class="ident">unwrap</span>();
+            <span class="kw">let </span>obj = odb
+                .write(ObjectType::Blob, FILE_CONTENT.as_bytes())
+                .unwrap();
+            tree_builder.insert(<span class="string">&quot;README.txt&quot;</span>, obj, <span class="number">0o100644</span>).unwrap();
+            <span class="kw">let </span>tree_hash = tree_builder.write().unwrap();
+            <span class="kw">let </span>author = Signature::now(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).unwrap();
+            <span class="kw">let </span>committer = Signature::now(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).unwrap();
 
-            <span class="kw">let</span> <span class="ident">commit_tree</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_tree</span>(<span class="ident">tree_hash</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">head</span>() {
-                <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">code</span>() <span class="op">==</span> <span class="ident">ErrorCode::UnbornBranch</span> <span class="op">&amp;&amp;</span> <span class="ident">e</span>.<span class="ident">class</span>() <span class="op">==</span> <span class="ident">ErrorClass::Reference</span> {
-                    <span class="comment">// fisrt commit ever; set parent commit(s) to empty array</span>
-                    <span class="ident">repo</span>.<span class="ident">commit</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;HEAD&quot;</span>), <span class="kw-2">&amp;</span><span class="ident">author</span>, <span class="kw-2">&amp;</span><span class="ident">committer</span>, <span class="ident">msg</span>, <span class="kw-2">&amp;</span><span class="ident">commit_tree</span>, <span class="kw-2">&amp;</span>[])
-                        .<span class="ident">unwrap</span>();
-                } <span class="kw">else</span> {
-                    <span class="macro">panic!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">e</span>);
+            <span class="kw">let </span>commit_tree = repo.find_tree(tree_hash).unwrap();
+            <span class="kw">let </span>msg = <span class="string">&quot;&quot;</span>;
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = repo.head() {
+                <span class="kw">if </span>e.code() == ErrorCode::UnbornBranch &amp;&amp; e.class() == ErrorClass::Reference {
+                    <span class="comment">// fisrt commit ever; set parent commit(s) to empty array
+                    </span>repo.commit(<span class="prelude-val">Some</span>(<span class="string">&quot;HEAD&quot;</span>), <span class="kw-2">&amp;</span>author, <span class="kw-2">&amp;</span>committer, msg, <span class="kw-2">&amp;</span>commit_tree, <span class="kw-2">&amp;</span>[])
+                        .unwrap();
+                } <span class="kw">else </span>{
+                    <span class="macro">panic!</span>(<span class="string">&quot;{:?}&quot;</span>, e);
                 }
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">head_ref</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">head</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">head_commit</span> <span class="op">=</span> <span class="ident">head_ref</span>.<span class="ident">peel_to_commit</span>().<span class="ident">unwrap</span>();
-                <span class="ident">repo</span>.<span class="ident">commit</span>(
+            } <span class="kw">else </span>{
+                <span class="kw">let </span>head_ref = repo.head().unwrap();
+                <span class="kw">let </span>head_commit = head_ref.peel_to_commit().unwrap();
+                repo.commit(
                     <span class="prelude-val">Some</span>(<span class="string">&quot;HEAD&quot;</span>),
-                    <span class="kw-2">&amp;</span><span class="ident">author</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">committer</span>,
-                    <span class="ident">msg</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">commit_tree</span>,
-                    <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">head_commit</span>],
+                    <span class="kw-2">&amp;</span>author,
+                    <span class="kw-2">&amp;</span>committer,
+                    msg,
+                    <span class="kw-2">&amp;</span>commit_tree,
+                    <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>head_commit],
                 )
-                .<span class="ident">unwrap</span>();
+                .unwrap();
             };
 
             <span class="prelude-val">Ok</span>(())
         };
 
-        <span class="kw">if</span> <span class="ident">Repository::open</span>(<span class="ident">path</span>).<span class="ident">is_err</span>() {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">Repository::init</span>(<span class="ident">path</span>);
+        <span class="kw">if </span>Repository::open(path).is_err() {
+            <span class="kw">let _ </span>= Repository::init(path);
         }
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">repo</span> <span class="op">=</span> <span class="ident">Repository::open</span>(<span class="ident">path</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">inner</span>(<span class="kw-2">&amp;mut</span> <span class="ident">repo</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>repo = Repository::open(path).unwrap();
+        <span class="kw">let _ </span>= inner(<span class="kw-2">&amp;mut </span>repo);
     }
 
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">test_git_write_read_works</span>() {
-        <span class="kw">const</span> <span class="ident">PATH</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;/tmp/librepges/test_git_write_read_works&quot;</span>;
+    <span class="attribute">#[test]
+    </span><span class="kw">fn </span>test_git_write_read_works() {
+        <span class="kw">const </span>PATH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;/tmp/librepges/test_git_write_read_works&quot;</span>;
 
-        <span class="ident">write_file_util</span>(<span class="ident">PATH</span>);
-        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">read_file</span>(<span class="ident">PATH</span>, <span class="string">&quot;README.txt&quot;</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">filename</span>, <span class="string">&quot;README.txt&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">content</span>.<span class="ident">bytes</span>(), <span class="ident">FILE_CONTENT</span>.<span class="ident">as_bytes</span>());
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">mime</span>.<span class="ident">first</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;text/plain&quot;</span>);
+        write_file_util(PATH);
+        <span class="kw">let </span>resp = read_file(PATH, <span class="string">&quot;README.txt&quot;</span>).unwrap();
+        <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
+        <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
+        <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">resp</span> <span class="op">=</span> <span class="ident">read_preview_file</span>(<span class="ident">PATH</span>, <span class="string">&quot;master&quot;</span>, <span class="string">&quot;README.txt&quot;</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">filename</span>, <span class="string">&quot;README.txt&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">content</span>.<span class="ident">bytes</span>(), <span class="ident">FILE_CONTENT</span>.<span class="ident">as_bytes</span>());
-        <span class="macro">assert_eq!</span>(<span class="ident">resp</span>.<span class="ident">mime</span>.<span class="ident">first</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;text/plain&quot;</span>);
+        <span class="kw">let </span>resp = read_preview_file(PATH, <span class="string">&quot;master&quot;</span>, <span class="string">&quot;README.txt&quot;</span>).unwrap();
+        <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
+        <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
+        <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

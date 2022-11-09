@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/page.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>page.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/page.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>page.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -308,280 +302,279 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
+ */
 
-<span class="kw">use</span> <span class="ident">git2</span>::{<span class="ident">build::CheckoutBuilder</span>, <span class="ident">BranchType</span>, <span class="ident">Direction</span>, <span class="ident">Oid</span>, <span class="ident">Remote</span>, <span class="ident">Repository</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
-<span class="kw">use</span> <span class="ident">log::info</span>;
+</span><span class="kw">use </span>git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
+<span class="attribute">#[cfg(not(test))]
+</span><span class="kw">use </span>log::info;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">use</span> <span class="ident">std::println</span> <span class="kw">as</span> <span class="ident">info</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">use </span>std::println <span class="kw">as </span>info;
 
-<span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
-<span class="kw">use</span> <span class="ident">serde::Serialize</span>;
+<span class="kw">use </span>serde::Deserialize;
+<span class="kw">use </span>serde::Serialize;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Serialize</span>, <span class="ident">Deserialize</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Page</span> {
-    <span class="kw">pub</span> <span class="ident">secret</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">repo</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">branch</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">domain</span>: <span class="ident">String</span>,
+<span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+</span><span class="kw">pub struct </span>Page {
+    <span class="kw">pub </span>secret: String,
+    <span class="kw">pub </span>repo: String,
+    <span class="kw">pub </span>path: String,
+    <span class="kw">pub </span>branch: String,
+    <span class="kw">pub </span>domain: String,
 }
 
-<span class="kw">impl</span> <span class="ident">Page</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">open_repo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Repository</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">Repository::open</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>)<span class="question-mark">?</span>)
+<span class="kw">impl </span>Page {
+    <span class="kw">pub fn </span>open_repo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;Repository&gt; {
+        <span class="prelude-val">Ok</span>(Repository::open(<span class="kw-2">&amp;</span><span class="self">self</span>.path)<span class="question-mark">?</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">create_repo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Repository</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">open_repo</span>();
+    <span class="kw">fn </span>create_repo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;Repository&gt; {
+        <span class="kw">let </span>repo = <span class="self">self</span>.open_repo();
 
-        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">repo</span>) <span class="op">=</span> <span class="ident">repo</span> {
-            <span class="ident">repo</span>
-        } <span class="kw">else</span> {
-            <span class="macro">info!</span>(<span class="string">&quot;Cloning repository {} at {}&quot;</span>, <span class="self">self</span>.<span class="ident">repo</span>, <span class="self">self</span>.<span class="ident">path</span>);
-            <span class="ident">Repository::clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">repo</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>)<span class="question-mark">?</span>;
-            <span class="ident">Repository::open</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">path</span>)<span class="question-mark">?</span>
-        };
+        <span class="kw">let </span>repo = <span class="kw">if let </span><span class="prelude-val">Ok</span>(repo) = repo {
+            repo
+        } <span class="kw">else </span>{
+            <span class="macro">info!</span>(<span class="string">&quot;Cloning repository {} at {}&quot;</span>, <span class="self">self</span>.repo, <span class="self">self</span>.path);
+            Repository::clone(<span class="kw-2">&amp;</span><span class="self">self</span>.repo, <span class="kw-2">&amp;</span><span class="self">self</span>.path)<span class="question-mark">?</span>;
+            Repository::open(<span class="kw-2">&amp;</span><span class="self">self</span>.path)<span class="question-mark">?
+        </span>};
 
-        <span class="self">self</span>.<span class="ident">_fetch_remote_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
+        <span class="self">self</span>._fetch_remote_branch(<span class="kw-2">&amp;</span>repo, <span class="kw-2">&amp;</span><span class="self">self</span>.branch)<span class="question-mark">?</span>;
+        <span class="self">self</span>.deploy_branch(<span class="kw-2">&amp;</span>repo).unwrap();
 
-        <span class="prelude-val">Ok</span>(<span class="ident">repo</span>)
+        <span class="prelude-val">Ok</span>(repo)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deploy_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checkout_options</span> <span class="op">=</span> <span class="ident">CheckoutBuilder::default</span>();
-        <span class="ident">checkout_options</span>
-            .<span class="ident">allow_conflicts</span>(<span class="bool-val">true</span>)
-            .<span class="ident">conflict_style_merge</span>(<span class="bool-val">true</span>)
-            .<span class="ident">force</span>();
+    <span class="kw">pub fn </span>deploy_branch(<span class="kw-2">&amp;</span><span class="self">self</span>, repo: <span class="kw-2">&amp;</span>Repository) -&gt; ServiceResult&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>checkout_options = CheckoutBuilder::default();
+        checkout_options
+            .allow_conflicts(<span class="bool-val">true</span>)
+            .conflict_style_merge(<span class="bool-val">true</span>)
+            .force();
 
-        <span class="kw">let</span> <span class="ident">refname</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="self">self</span>.<span class="ident">branch</span>);
+        <span class="kw">let </span>refname = <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="self">self</span>.branch);
 
-        <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="kw-2">&amp;</span><span class="ident">refname</span>).<span class="ident">unwrap</span>();
-        <span class="ident">repo</span>.<span class="ident">checkout_head</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="ident">checkout_options</span>)).<span class="ident">unwrap</span>();
+        repo.set_head(<span class="kw-2">&amp;</span>refname).unwrap();
+        repo.checkout_head(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span>checkout_options)).unwrap();
 
-        <span class="macro">info!</span>(<span class="string">&quot;Deploying branch {}&quot;</span>, <span class="self">self</span>.<span class="ident">branch</span>);
+        <span class="macro">info!</span>(<span class="string">&quot;Deploying branch {}&quot;</span>, <span class="self">self</span>.branch);
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">fetch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
+    <span class="kw">fn </span>fetch&lt;<span class="lifetime">&#39;a</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">git2::Repository</span>,
-        <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">git2::AnnotatedCommit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remote</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_remote</span>(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">log::info!</span>(<span class="string">&quot;Fetching {} for repo&quot;</span>, <span class="ident">remote</span>.<span class="ident">name</span>().<span class="ident">unwrap</span>());
-        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="ident">branch</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">fetch_head</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_reference</span>(<span class="string">&quot;FETCH_HEAD&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">repo</span>.<span class="ident">reference_to_annotated_commit</span>(<span class="kw-2">&amp;</span><span class="ident">fetch_head</span>)<span class="question-mark">?</span>)
+        repo: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>git2::Repository,
+        branch: <span class="kw-2">&amp;</span>str,
+    ) -&gt; ServiceResult&lt;git2::AnnotatedCommit&lt;<span class="lifetime">&#39;a</span>&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>remote = repo.find_remote(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">log::info!</span>(<span class="string">&quot;Fetching {} for repo&quot;</span>, remote.name().unwrap());
+        remote.fetch(<span class="kw-2">&amp;</span>[branch], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>fetch_head = repo.find_reference(<span class="string">&quot;FETCH_HEAD&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(repo.reference_to_annotated_commit(<span class="kw-2">&amp;</span>fetch_head)<span class="question-mark">?</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">merge</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
+    <span class="kw">fn </span>merge&lt;<span class="lifetime">&#39;a</span>&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Repository</span>,
-        <span class="ident">fetch_commit</span>: <span class="ident">git2::AnnotatedCommit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
-        <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-    ) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="comment">// 1. do a merge analysis</span>
-        <span class="kw">let</span> <span class="ident">analysis</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">merge_analysis</span>(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>])<span class="question-mark">?</span>;
+        repo: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Repository,
+        fetch_commit: git2::AnnotatedCommit&lt;<span class="lifetime">&#39;a</span>&gt;,
+        branch: <span class="kw-2">&amp;</span>str,
+    ) -&gt; ServiceResult&lt;()&gt; {
+        <span class="comment">// 1. do a merge analysis
+        </span><span class="kw">let </span>analysis = repo.merge_analysis(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>fetch_commit])<span class="question-mark">?</span>;
 
-        <span class="comment">// 2. Do the appropriate merge</span>
-        <span class="kw">if</span> <span class="ident">analysis</span>.<span class="number">0</span>.<span class="ident">is_fast_forward</span>() {
-            <span class="comment">//log::debug!(&quot;Doing a fast forward&quot;);</span>
-            <span class="macro">log::debug!</span>(<span class="string">&quot;Doing a fast forward&quot;</span>);
-            <span class="comment">// do a fast forward</span>
-            <span class="kw">let</span> <span class="ident">refname</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, <span class="ident">branch</span>);
-            <span class="kw">match</span> <span class="ident">repo</span>.<span class="ident">find_reference</span>(<span class="kw-2">&amp;</span><span class="ident">refname</span>) {
-                <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">r</span>) =&gt; {
+        <span class="comment">// 2. Do the appropriate merge
+        </span><span class="kw">if </span>analysis.<span class="number">0</span>.is_fast_forward() {
+            <span class="comment">//log::debug!(&quot;Doing a fast forward&quot;);
+            </span><span class="macro">log::debug!</span>(<span class="string">&quot;Doing a fast forward&quot;</span>);
+            <span class="comment">// do a fast forward
+            </span><span class="kw">let </span>refname = <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, branch);
+            <span class="kw">match </span>repo.find_reference(<span class="kw-2">&amp;</span>refname) {
+                <span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>r) =&gt; {
                     <span class="macro">log::debug!</span>(<span class="string">&quot;fast forwarding&quot;</span>);
-                    <span class="ident"><span class="self">Self</span>::fast_forward</span>(<span class="ident">repo</span>, <span class="kw-2">&amp;mut</span> <span class="ident">r</span>, <span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>).<span class="ident">unwrap</span>();
+                    <span class="self">Self</span>::fast_forward(repo, <span class="kw-2">&amp;mut </span>r, <span class="kw-2">&amp;</span>fetch_commit).unwrap();
                 }
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                    <span class="comment">// The branch doesn&#39;t exist so just set the reference to the</span>
-                    <span class="comment">// commit directly. Usually this is because you are pulling</span>
-                    <span class="comment">// into an empty repository.</span>
-                    <span class="macro">log::error!</span>(<span class="string">&quot;Error in find ref&quot;</span>);
-                    <span class="ident">repo</span>.<span class="ident">reference</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">refname</span>,
-                        <span class="ident">fetch_commit</span>.<span class="ident">id</span>(),
+                    <span class="comment">// The branch doesn&#39;t exist so just set the reference to the
+                    // commit directly. Usually this is because you are pulling
+                    // into an empty repository.
+                    </span><span class="macro">log::error!</span>(<span class="string">&quot;Error in find ref&quot;</span>);
+                    repo.reference(
+                        <span class="kw-2">&amp;</span>refname,
+                        fetch_commit.id(),
                         <span class="bool-val">true</span>,
-                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Setting {} to {}&quot;</span>, <span class="ident">branch</span>, <span class="ident">fetch_commit</span>.<span class="ident">id</span>()),
+                        <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Setting {} to {}&quot;</span>, branch, fetch_commit.id()),
                     )
-                    .<span class="ident">unwrap</span>();
-                    <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="kw-2">&amp;</span><span class="ident">refname</span>).<span class="ident">unwrap</span>();
-                    <span class="ident">repo</span>.<span class="ident">checkout_head</span>(<span class="prelude-val">Some</span>(
-                        <span class="ident">git2::build::CheckoutBuilder::default</span>()
-                            .<span class="ident">allow_conflicts</span>(<span class="bool-val">true</span>)
-                            .<span class="ident">conflict_style_merge</span>(<span class="bool-val">true</span>)
-                            .<span class="ident">force</span>(),
+                    .unwrap();
+                    repo.set_head(<span class="kw-2">&amp;</span>refname).unwrap();
+                    repo.checkout_head(<span class="prelude-val">Some</span>(
+                        git2::build::CheckoutBuilder::default()
+                            .allow_conflicts(<span class="bool-val">true</span>)
+                            .conflict_style_merge(<span class="bool-val">true</span>)
+                            .force(),
                     ))
-                    .<span class="ident">unwrap</span>();
+                    .unwrap();
                 }
             };
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">analysis</span>.<span class="number">0</span>.<span class="ident">is_normal</span>() {
-            <span class="comment">// do a normal merge</span>
-            <span class="comment">// expects repo.head to point to the branch when is going to receive merges</span>
-            <span class="kw">let</span> <span class="ident">head_commit</span> <span class="op">=</span> <span class="ident">repo</span>
-                .<span class="ident">reference_to_annotated_commit</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>.<span class="ident">head</span>().<span class="ident">unwrap</span>())
-                .<span class="ident">unwrap</span>();
-            <span class="ident"><span class="self">Self</span>::normal_merge</span>(<span class="ident">repo</span>, <span class="kw-2">&amp;</span><span class="ident">head_commit</span>, <span class="kw-2">&amp;</span><span class="ident">fetch_commit</span>).<span class="ident">unwrap</span>();
-        } <span class="kw">else</span> {
+        } <span class="kw">else if </span>analysis.<span class="number">0</span>.is_normal() {
+            <span class="comment">// do a normal merge
+            // expects repo.head to point to the branch when is going to receive merges
+            </span><span class="kw">let </span>head_commit = repo
+                .reference_to_annotated_commit(<span class="kw-2">&amp;</span>repo.head().unwrap())
+                .unwrap();
+            <span class="self">Self</span>::normal_merge(repo, <span class="kw-2">&amp;</span>head_commit, <span class="kw-2">&amp;</span>fetch_commit).unwrap();
+        } <span class="kw">else </span>{
             <span class="macro">log::info!</span>(<span class="string">&quot;Nothing to do...&quot;</span>);
         }
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">_fetch_remote_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>, <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remote</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::get_deploy_remote</span>(<span class="ident">repo</span>)<span class="question-mark">?</span>;
-        <span class="ident">remote</span>.<span class="ident">connect</span>(<span class="ident">Direction::Fetch</span>)<span class="question-mark">?</span>;
-        <span class="macro">info!</span>(<span class="string">&quot;Updating repository {}&quot;</span>, <span class="self">self</span>.<span class="ident">repo</span>);
-        <span class="kw">let</span> <span class="ident">remote_branch_name</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;origin/{branch}&quot;</span>);
-        <span class="ident">remote</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">remote_branch_name</span>], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
-        <span class="ident">remote</span>.<span class="ident">disconnect</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="ident">remote_branch_name</span>, <span class="ident">BranchType::Remote</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">commit</span> <span class="op">=</span> <span class="ident">branch</span>.<span class="ident">get</span>().<span class="ident">peel_to_commit</span>()<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="ident">BranchType::Local</span>).<span class="ident">is_err</span>() {
-            <span class="ident">repo</span>.<span class="ident">branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="kw-2">&amp;</span><span class="ident">commit</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
+    <span class="kw">fn </span>_fetch_remote_branch(<span class="kw-2">&amp;</span><span class="self">self</span>, repo: <span class="kw-2">&amp;</span>Repository, branch: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;()&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>remote = <span class="self">Self</span>::get_deploy_remote(repo)<span class="question-mark">?</span>;
+        remote.connect(Direction::Fetch)<span class="question-mark">?</span>;
+        <span class="macro">info!</span>(<span class="string">&quot;Updating repository {}&quot;</span>, <span class="self">self</span>.repo);
+        <span class="kw">let </span>remote_branch_name = <span class="macro">format!</span>(<span class="string">&quot;origin/{branch}&quot;</span>);
+        remote.fetch(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>remote_branch_name], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        remote.disconnect()<span class="question-mark">?</span>;
+        <span class="kw">let </span>branch = repo.find_branch(<span class="kw-2">&amp;</span>remote_branch_name, BranchType::Remote)<span class="question-mark">?</span>;
+        <span class="kw">let </span>commit = branch.get().peel_to_commit()<span class="question-mark">?</span>;
+        <span class="kw">if </span>repo.find_branch(<span class="kw-2">&amp;</span><span class="self">self</span>.branch, BranchType::Local).is_err() {
+            repo.branch(<span class="kw-2">&amp;</span><span class="self">self</span>.branch, <span class="kw-2">&amp;</span>commit, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">normal_merge</span>(
-        <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>,
-        <span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="ident">git2::AnnotatedCommit</span>,
-        <span class="ident">remote</span>: <span class="kw-2">&amp;</span><span class="ident">git2::AnnotatedCommit</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">git2::Error</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">local_tree</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_commit</span>(<span class="ident">local</span>.<span class="ident">id</span>())<span class="question-mark">?</span>.<span class="ident">tree</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">remote_tree</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_commit</span>(<span class="ident">remote</span>.<span class="ident">id</span>())<span class="question-mark">?</span>.<span class="ident">tree</span>().<span class="ident">unwrap</span>();
-        <span class="macro">println!</span>(<span class="string">&quot;{} {}&quot;</span>, <span class="ident">local</span>.<span class="ident">id</span>(), <span class="ident">remote</span>.<span class="ident">id</span>());
-        <span class="kw">let</span> <span class="ident">ancestor</span> <span class="op">=</span> <span class="ident">repo</span>
-            .<span class="ident">find_commit</span>(<span class="ident">repo</span>.<span class="ident">merge_base</span>(<span class="ident">local</span>.<span class="ident">id</span>(), <span class="ident">remote</span>.<span class="ident">id</span>()).<span class="ident">unwrap</span>())
-            .<span class="ident">unwrap</span>()
-            .<span class="ident">tree</span>()
-            .<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">repo</span>
-            .<span class="ident">merge_trees</span>(<span class="kw-2">&amp;</span><span class="ident">ancestor</span>, <span class="kw-2">&amp;</span><span class="ident">local_tree</span>, <span class="kw-2">&amp;</span><span class="ident">remote_tree</span>, <span class="prelude-val">None</span>)
-            .<span class="ident">unwrap</span>();
+    <span class="kw">fn </span>normal_merge(
+        repo: <span class="kw-2">&amp;</span>Repository,
+        local: <span class="kw-2">&amp;</span>git2::AnnotatedCommit,
+        remote: <span class="kw-2">&amp;</span>git2::AnnotatedCommit,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), git2::Error&gt; {
+        <span class="kw">let </span>local_tree = repo.find_commit(local.id())<span class="question-mark">?</span>.tree().unwrap();
+        <span class="kw">let </span>remote_tree = repo.find_commit(remote.id())<span class="question-mark">?</span>.tree().unwrap();
+        <span class="macro">println!</span>(<span class="string">&quot;{} {}&quot;</span>, local.id(), remote.id());
+        <span class="kw">let </span>ancestor = repo
+            .find_commit(repo.merge_base(local.id(), remote.id()).unwrap())
+            .unwrap()
+            .tree()
+            .unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>idx = repo
+            .merge_trees(<span class="kw-2">&amp;</span>ancestor, <span class="kw-2">&amp;</span>local_tree, <span class="kw-2">&amp;</span>remote_tree, <span class="prelude-val">None</span>)
+            .unwrap();
 
-        <span class="kw">if</span> <span class="ident">idx</span>.<span class="ident">has_conflicts</span>() {
+        <span class="kw">if </span>idx.has_conflicts() {
             <span class="macro">log::debug!</span>(<span class="string">&quot;Merge conflicts detected...&quot;</span>);
-            <span class="ident">repo</span>.<span class="ident">checkout_index</span>(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="ident">idx</span>), <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
+            repo.checkout_index(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span>idx), <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+            <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
-        <span class="kw">let</span> <span class="ident">result_tree</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_tree</span>(<span class="ident">idx</span>.<span class="ident">write_tree_to</span>(<span class="ident">repo</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
-        <span class="comment">// now create the merge commit</span>
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;Merge: {} into {}&quot;</span>, <span class="ident">remote</span>.<span class="ident">id</span>(), <span class="ident">local</span>.<span class="ident">id</span>());
-        <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">signature</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">local_commit</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_commit</span>(<span class="ident">local</span>.<span class="ident">id</span>())<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">remote_commit</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_commit</span>(<span class="ident">remote</span>.<span class="ident">id</span>())<span class="question-mark">?</span>;
-        <span class="comment">// Do our merge commit and set current branch head to that commit.</span>
-        <span class="kw">let</span> <span class="ident">_merge_commit</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">commit</span>(
+        <span class="kw">let </span>result_tree = repo.find_tree(idx.write_tree_to(repo)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+        <span class="comment">// now create the merge commit
+        </span><span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;Merge: {} into {}&quot;</span>, remote.id(), local.id());
+        <span class="kw">let </span>sig = repo.signature()<span class="question-mark">?</span>;
+        <span class="kw">let </span>local_commit = repo.find_commit(local.id())<span class="question-mark">?</span>;
+        <span class="kw">let </span>remote_commit = repo.find_commit(remote.id())<span class="question-mark">?</span>;
+        <span class="comment">// Do our merge commit and set current branch head to that commit.
+        </span><span class="kw">let </span>_merge_commit = repo.commit(
             <span class="prelude-val">Some</span>(<span class="string">&quot;HEAD&quot;</span>),
-            <span class="kw-2">&amp;</span><span class="ident">sig</span>,
-            <span class="kw-2">&amp;</span><span class="ident">sig</span>,
-            <span class="kw-2">&amp;</span><span class="ident">msg</span>,
-            <span class="kw-2">&amp;</span><span class="ident">result_tree</span>,
-            <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">local_commit</span>, <span class="kw-2">&amp;</span><span class="ident">remote_commit</span>],
+            <span class="kw-2">&amp;</span>sig,
+            <span class="kw-2">&amp;</span>sig,
+            <span class="kw-2">&amp;</span>msg,
+            <span class="kw-2">&amp;</span>result_tree,
+            <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>local_commit, <span class="kw-2">&amp;</span>remote_commit],
         )<span class="question-mark">?</span>;
-        <span class="comment">// Set working tree to match head.</span>
-        <span class="ident">repo</span>.<span class="ident">checkout_head</span>(<span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="comment">// Set working tree to match head.
+        </span>repo.checkout_head(<span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">fast_forward</span>(
-        <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>,
-        <span class="ident">lb</span>: <span class="kw-2">&amp;mut</span> <span class="ident">git2::Reference</span>,
-        <span class="ident">rc</span>: <span class="kw-2">&amp;</span><span class="ident">git2::AnnotatedCommit</span>,
-    ) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lb</span>.<span class="ident">name</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">s</span>) =&gt; <span class="ident">s</span>.<span class="ident">to_string</span>(),
-            <span class="prelude-val">None</span> =&gt; <span class="ident">String::from_utf8_lossy</span>(<span class="ident">lb</span>.<span class="ident">name_bytes</span>()).<span class="ident">to_string</span>(),
+    <span class="kw">fn </span>fast_forward(
+        repo: <span class="kw-2">&amp;</span>Repository,
+        lb: <span class="kw-2">&amp;mut </span>git2::Reference,
+        rc: <span class="kw-2">&amp;</span>git2::AnnotatedCommit,
+    ) -&gt; ServiceResult&lt;()&gt; {
+        <span class="kw">let </span>name = <span class="kw">match </span>lb.name() {
+            <span class="prelude-val">Some</span>(s) =&gt; s.to_string(),
+            <span class="prelude-val">None </span>=&gt; String::from_utf8_lossy(lb.name_bytes()).to_string(),
         };
-        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format!</span>(<span class="string">&quot;Fast-Forward: Setting {} to id: {}&quot;</span>, <span class="ident">name</span>, <span class="ident">rc</span>.<span class="ident">id</span>());
-        <span class="macro">log::debug!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
-        <span class="ident">lb</span>.<span class="ident">set_target</span>(<span class="ident">rc</span>.<span class="ident">id</span>(), <span class="kw-2">&amp;</span><span class="ident">msg</span>)<span class="question-mark">?</span>;
-        <span class="ident">repo</span>.<span class="ident">set_head</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>)<span class="question-mark">?</span>;
-        <span class="ident">repo</span>.<span class="ident">checkout_head</span>(<span class="prelude-val">Some</span>(<span class="ident">git2::build::CheckoutBuilder::default</span>().<span class="ident">force</span>()))<span class="question-mark">?</span>;
+        <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;Fast-Forward: Setting {} to id: {}&quot;</span>, name, rc.id());
+        <span class="macro">log::debug!</span>(<span class="string">&quot;{}&quot;</span>, msg);
+        lb.set_target(rc.id(), <span class="kw-2">&amp;</span>msg)<span class="question-mark">?</span>;
+        repo.set_head(<span class="kw-2">&amp;</span>name)<span class="question-mark">?</span>;
+        repo.checkout_head(<span class="prelude-val">Some</span>(git2::build::CheckoutBuilder::default().force()))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">branch</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_repo</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">fetch_commit</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fetch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">branch</span>)<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">merge</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>, <span class="ident">fetch_commit</span>, <span class="ident">branch</span>)<span class="question-mark">?</span>;
+    <span class="kw">pub fn </span>update(<span class="kw-2">&amp;</span><span class="self">self</span>, branch: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;()&gt; {
+        <span class="kw">let </span>repo = <span class="self">self</span>.create_repo()<span class="question-mark">?</span>;
+        <span class="kw">let </span>fetch_commit = <span class="self">self</span>.fetch(<span class="kw-2">&amp;</span>repo, branch)<span class="question-mark">?</span>;
+        <span class="self">self</span>.merge(<span class="kw-2">&amp;</span>repo, fetch_commit, branch)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">branch</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">find_branch</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">branch</span>, <span class="ident">BranchType::Local</span>)<span class="question-mark">?</span>;
-        <span class="kw">if</span> <span class="ident">branch</span>.<span class="ident">is_head</span>() {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">branch</span>.<span class="ident">clone</span>())
-        } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="ident">ServiceError::BranchNotFound</span>(<span class="self">self</span>.<span class="ident">branch</span>.<span class="ident">clone</span>()))
+    <span class="kw">pub fn </span>get_deploy_branch(<span class="kw-2">&amp;</span><span class="self">self</span>, repo: <span class="kw-2">&amp;</span>Repository) -&gt; ServiceResult&lt;String&gt; {
+        <span class="kw">let </span>branch = repo.find_branch(<span class="kw-2">&amp;</span><span class="self">self</span>.branch, BranchType::Local)<span class="question-mark">?</span>;
+        <span class="kw">if </span>branch.is_head() {
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.branch.clone())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ServiceError::BranchNotFound(<span class="self">self</span>.branch.clone()))
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_commit</span>(<span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Oid</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">head</span> <span class="op">=</span> <span class="ident">repo</span>.<span class="ident">head</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">commit</span> <span class="op">=</span> <span class="ident">head</span>.<span class="ident">peel_to_commit</span>()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">commit</span>.<span class="ident">id</span>())
+    <span class="kw">pub fn </span>get_deploy_commit(repo: <span class="kw-2">&amp;</span>Repository) -&gt; ServiceResult&lt;Oid&gt; {
+        <span class="kw">let </span>head = repo.head()<span class="question-mark">?</span>;
+        <span class="kw">let </span>commit = head.peel_to_commit()<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(commit.id())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_deploy_remote</span>(<span class="ident">repo</span>: <span class="kw-2">&amp;</span><span class="ident">Repository</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Remote</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">repo</span>.<span class="ident">find_remote</span>(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>)
+    <span class="kw">pub fn </span>get_deploy_remote(repo: <span class="kw-2">&amp;</span>Repository) -&gt; ServiceResult&lt;Remote&gt; {
+        <span class="prelude-val">Ok</span>(repo.find_remote(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>)
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="kw">use</span> <span class="ident">git2::Repository</span>;
-    <span class="kw">use</span> <span class="ident">mktemp::Temp</span>;
+    <span class="kw">use </span>git2::Repository;
+    <span class="kw">use </span>mktemp::Temp;
 
-    <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">pages_works</span>() {
-        <span class="kw">let</span> <span class="ident">tmp_dir</span> <span class="op">=</span> <span class="ident">Temp::new_dir</span>().<span class="ident">unwrap</span>();
-        <span class="macro">assert!</span>(<span class="ident">tmp_dir</span>.<span class="ident">exists</span>(), <span class="string">&quot;tmp directory successully created&quot;</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">page</span> <span class="op">=</span> <span class="ident">Page</span> {
-            <span class="ident">secret</span>: <span class="ident">String::default</span>(),
-            <span class="ident">repo</span>: <span class="string">&quot;https://github.com/mcaptcha/website&quot;</span>.<span class="ident">to_owned</span>(),
-            <span class="ident">path</span>: <span class="ident">tmp_dir</span>.<span class="ident">to_str</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>(),
-            <span class="ident">branch</span>: <span class="string">&quot;gh-pages&quot;</span>.<span class="ident">to_string</span>(),
-            <span class="ident">domain</span>: <span class="string">&quot;mcaptcha.org&quot;</span>.<span class="ident">into</span>(),
+    <span class="attribute">#[actix_rt::test]
+    </span><span class="kw">async fn </span>pages_works() {
+        <span class="kw">let </span>tmp_dir = Temp::new_dir().unwrap();
+        <span class="macro">assert!</span>(tmp_dir.exists(), <span class="string">&quot;tmp directory successully created&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>page = Page {
+            secret: String::default(),
+            repo: <span class="string">&quot;https://github.com/mcaptcha/website&quot;</span>.to_owned(),
+            path: tmp_dir.to_str().unwrap().to_string(),
+            branch: <span class="string">&quot;gh-pages&quot;</span>.to_string(),
+            domain: <span class="string">&quot;mcaptcha.org&quot;</span>.into(),
         };
 
         <span class="macro">assert!</span>(
-            <span class="ident">Repository::open</span>(<span class="ident">tmp_dir</span>.<span class="ident">as_path</span>()).<span class="ident">is_err</span>(),
-            <span class="string">&quot;repository doesn&#39;t exist yet&quot;</span>
-        );
+            Repository::open(tmp_dir.as_path()).is_err(),
+            <span class="string">&quot;repository doesn&#39;t exist yet&quot;
+        </span>);
 
-        <span class="kw">let</span> <span class="ident">repo</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">create_repo</span>().<span class="ident">unwrap</span>();
-        <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">repo</span>.<span class="ident">is_bare</span>(), <span class="string">&quot;repository isn&#39;t bare&quot;</span>);
-        <span class="ident">page</span>.<span class="ident">create_repo</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let </span>repo = page.create_repo().unwrap();
+        <span class="macro">assert!</span>(!repo.is_bare(), <span class="string">&quot;repository isn&#39;t bare&quot;</span>);
+        page.create_repo().unwrap();
         <span class="macro">assert!</span>(
-            <span class="ident">Repository::open</span>(<span class="ident">tmp_dir</span>.<span class="ident">as_path</span>()).<span class="ident">is_ok</span>(),
-            <span class="string">&quot;repository exists yet&quot;</span>
-        );
+            Repository::open(tmp_dir.as_path()).is_ok(),
+            <span class="string">&quot;repository exists yet&quot;
+        </span>);
 
-        <span class="kw">let</span> <span class="ident">gh_pages</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">gh_pages</span>, <span class="string">&quot;gh-pages&quot;</span>);
-        <span class="ident">page</span>.<span class="ident">branch</span> <span class="op">=</span> <span class="string">&quot;master&quot;</span>.<span class="ident">to_string</span>();
-        <span class="ident">page</span>.<span class="ident">update</span>(<span class="kw-2">&amp;</span><span class="ident">page</span>.<span class="ident">branch</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">master</span> <span class="op">=</span> <span class="ident">page</span>.<span class="ident">get_deploy_branch</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">master</span>, <span class="string">&quot;master&quot;</span>);
+        <span class="kw">let </span>gh_pages = page.get_deploy_branch(<span class="kw-2">&amp;</span>repo).unwrap();
+        <span class="macro">assert_eq!</span>(gh_pages, <span class="string">&quot;gh-pages&quot;</span>);
+        page.branch = <span class="string">&quot;master&quot;</span>.to_string();
+        page.update(<span class="kw-2">&amp;</span>page.branch).unwrap();
+        <span class="kw">let </span>master = page.get_deploy_branch(<span class="kw-2">&amp;</span>repo).unwrap();
+        <span class="macro">assert_eq!</span>(master, <span class="string">&quot;master&quot;</span>);
 
         <span class="macro">assert_eq!</span>(
-            <span class="ident">Page::get_deploy_remote</span>(<span class="kw-2">&amp;</span><span class="ident">repo</span>).<span class="ident">unwrap</span>().<span class="ident">url</span>().<span class="ident">unwrap</span>(),
-            <span class="ident">page</span>.<span class="ident">repo</span>
+            Page::get_deploy_remote(<span class="kw-2">&amp;</span>repo).unwrap().url().unwrap(),
+            page.repo
         );
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

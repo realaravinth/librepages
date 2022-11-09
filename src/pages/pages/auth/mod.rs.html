@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pages/auth/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../pages/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/pages/auth/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../../normalize.css"><link rel="stylesheet" href="../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../../ayu.css" disabled><link rel="stylesheet" href="../../../../dark.css" disabled><link rel="stylesheet" href="../../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../../storage.js"></script><script defer src="../../../../source-script.js"></script><script defer src="../../../../source-files.js"></script><script defer src="../../../../main.js"></script><noscript><link rel="stylesheet" href="../../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../../pages/index.html"><img class="rust-logo" src="../../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -181,153 +175,152 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident">actix_identity::Identity</span>;
-<span class="kw">use</span> <span class="ident">actix_web</span>::<span class="kw-2">*</span>;
+ */
+</span><span class="kw">use </span>actix_identity::Identity;
+<span class="kw">use </span>actix_web::<span class="kw-2">*</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">context</span>, <span class="ident">Footer</span>, <span class="ident">TemplateFile</span>, <span class="ident">PAGES</span>, <span class="ident">PAYLOAD_KEY</span>, <span class="ident">TEMPLATES</span>};
+<span class="kw">pub use super</span>::{context, Footer, TemplateFile, PAGES, PAYLOAD_KEY, TEMPLATES};
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">login</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">register</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">test</span>;
+<span class="kw">pub mod </span>login;
+<span class="kw">pub mod </span>register;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>test;
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">AUTH_BASE</span>: <span class="ident">TemplateFile</span> <span class="op">=</span> <span class="ident">TemplateFile::new</span>(<span class="string">&quot;authbase&quot;</span>, <span class="string">&quot;pages/auth/base.html&quot;</span>);
+<span class="kw">pub const </span>AUTH_BASE: TemplateFile = TemplateFile::new(<span class="string">&quot;authbase&quot;</span>, <span class="string">&quot;pages/auth/base.html&quot;</span>);
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">register_templates</span>(<span class="ident">t</span>: <span class="kw-2">&amp;mut</span> <span class="ident">tera::Tera</span>) {
-    <span class="kw">for</span> <span class="ident">template</span> <span class="kw">in</span> [<span class="ident">AUTH_BASE</span>, <span class="ident">login::LOGIN</span>, <span class="ident">register::REGISTER</span>].<span class="ident">iter</span>() {
-        <span class="ident">template</span>.<span class="ident">register</span>(<span class="ident">t</span>).<span class="ident">expect</span>(<span class="ident">template</span>.<span class="ident">name</span>);
+<span class="kw">pub fn </span>register_templates(t: <span class="kw-2">&amp;mut </span>tera::Tera) {
+    <span class="kw">for </span>template <span class="kw">in </span>[AUTH_BASE, login::LOGIN, register::REGISTER].iter() {
+        template.register(t).expect(template.name);
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="ident">cfg</span>: <span class="kw-2">&amp;mut</span> <span class="ident">web::ServiceConfig</span>) {
-    <span class="ident">cfg</span>.<span class="ident">service</span>(<span class="ident">signout</span>);
-    <span class="ident">register::services</span>(<span class="ident">cfg</span>);
-    <span class="ident">login::services</span>(<span class="ident">cfg</span>);
+<span class="kw">pub fn </span>services(cfg: <span class="kw-2">&amp;mut </span>web::ServiceConfig) {
+    cfg.service(signout);
+    register::services(cfg);
+    login::services(cfg);
 }
 
-<span class="attribute">#[<span class="ident">actix_web_codegen_const_routes::get</span>(
-    <span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;PAGES.auth.logout&quot;</span>,
-    <span class="ident">wrap</span> <span class="op">=</span> <span class="string">&quot;super::get_auth_middleware()&quot;</span>
-)]</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">signout</span>(<span class="ident">id</span>: <span class="ident">Identity</span>) -&gt; <span class="kw">impl</span> <span class="ident">Responder</span> {
-    <span class="kw">use</span> <span class="ident">actix_auth_middleware::GetLoginRoute</span>;
+<span class="attribute">#[actix_web_codegen_const_routes::get(
+    path = <span class="string">&quot;PAGES.auth.logout&quot;</span>,
+    wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
+</span>)]
+</span><span class="kw">async fn </span>signout(id: Identity) -&gt; <span class="kw">impl </span>Responder {
+    <span class="kw">use </span>actix_auth_middleware::GetLoginRoute;
 
-    <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">identity</span>().<span class="ident">is_some</span>() {
-        <span class="ident">id</span>.<span class="ident">forget</span>();
+    <span class="kw">if </span>id.identity().is_some() {
+        id.forget();
     }
     <span class="macro">println!</span>(<span class="string">&quot;received signout&quot;</span>);
-    <span class="ident">HttpResponse::Found</span>()
-        .<span class="ident">append_header</span>((<span class="ident">http::header::LOCATION</span>, <span class="ident">PAGES</span>.<span class="ident">get_login_route</span>(<span class="prelude-val">None</span>)))
-        .<span class="ident">finish</span>()
+    HttpResponse::Found()
+        .append_header((http::header::LOCATION, PAGES.get_login_route(<span class="prelude-val">None</span>)))
+        .finish()
 }
 
-<span class="comment">//#[post(path = &quot;PAGES.auth.login&quot;)]</span>
-<span class="comment">//pub async fn login_submit(</span>
-<span class="comment">//    id: Identity,</span>
-<span class="comment">//    payload: web::Form&lt;runners::Login&gt;,</span>
-<span class="comment">//    data: AppData,</span>
-<span class="comment">//) -&gt; PageResult&lt;impl Responder&gt; {</span>
-<span class="comment">//    let payload = payload.into_inner();</span>
-<span class="comment">//    match runners::login_runner(&amp;payload, &amp;data).await {</span>
-<span class="comment">//        Ok(username) =&gt; {</span>
-<span class="comment">//            id.remember(username);</span>
-<span class="comment">//            Ok(HttpResponse::Found()</span>
-<span class="comment">//                .insert_header((header::LOCATION, PAGES.home))</span>
-<span class="comment">//                .finish())</span>
-<span class="comment">//        }</span>
-<span class="comment">//        Err(e) =&gt; {</span>
-<span class="comment">//            let status = e.status_code();</span>
-<span class="comment">//            let heading = status.canonical_reason().unwrap_or(&quot;Error&quot;);</span>
-<span class="comment">//</span>
-<span class="comment">//            Ok(HttpResponseBuilder::new(status)</span>
-<span class="comment">//                .content_type(&quot;text/html; charset=utf-8&quot;)</span>
-<span class="comment">//                .body(</span>
-<span class="comment">//                    IndexPage::new(heading, &amp;format!(&quot;{}&quot;, e))</span>
-<span class="comment">//                        .render_once()</span>
-<span class="comment">//                        .unwrap(),</span>
-<span class="comment">//                ))</span>
-<span class="comment">//        }</span>
-<span class="comment">//    }</span>
-<span class="comment">//}</span>
-<span class="comment">//</span>
-<span class="comment">//#[cfg(test)]</span>
-<span class="comment">//mod tests {</span>
-<span class="comment">//    use actix_web::test;</span>
-<span class="comment">//</span>
-<span class="comment">//    use super::*;</span>
-<span class="comment">//</span>
-<span class="comment">//    use crate::api::v1::auth::runners::{Login, Register};</span>
-<span class="comment">//    use crate::data::Data;</span>
-<span class="comment">//    use crate::tests::*;</span>
-<span class="comment">//    use crate::*;</span>
-<span class="comment">//    use actix_web::http::StatusCode;</span>
-<span class="comment">//</span>
-<span class="comment">//    #[actix_rt::test]</span>
-<span class="comment">//    async fn auth_form_works() {</span>
-<span class="comment">//        let data = Data::new().await;</span>
-<span class="comment">//        const NAME: &amp;str = &quot;testuserform&quot;;</span>
-<span class="comment">//        const PASSWORD: &amp;str = &quot;longpassword&quot;;</span>
-<span class="comment">//</span>
-<span class="comment">//        let app = get_app!(data).await;</span>
-<span class="comment">//</span>
-<span class="comment">//        delete_user(NAME, &amp;data).await;</span>
-<span class="comment">//</span>
-<span class="comment">//        // 1. Register with email == None</span>
-<span class="comment">//        let msg = Register {</span>
-<span class="comment">//            username: NAME.into(),</span>
-<span class="comment">//            password: PASSWORD.into(),</span>
-<span class="comment">//            confirm_password: PASSWORD.into(),</span>
-<span class="comment">//            email: None,</span>
-<span class="comment">//        };</span>
-<span class="comment">//        let resp = test::call_service(</span>
-<span class="comment">//            &amp;app,</span>
-<span class="comment">//            post_request!(&amp;msg, V1_API_ROUTES.auth.register).to_request(),</span>
-<span class="comment">//        )</span>
-<span class="comment">//        .await;</span>
-<span class="comment">//        assert_eq!(resp.status(), StatusCode::OK);</span>
-<span class="comment">//</span>
-<span class="comment">//        // correct form login</span>
-<span class="comment">//        let msg = Login {</span>
-<span class="comment">//            login: NAME.into(),</span>
-<span class="comment">//            password: PASSWORD.into(),</span>
-<span class="comment">//        };</span>
-<span class="comment">//</span>
-<span class="comment">//        let resp = test::call_service(</span>
-<span class="comment">//            &amp;app,</span>
-<span class="comment">//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),</span>
-<span class="comment">//        )</span>
-<span class="comment">//        .await;</span>
-<span class="comment">//        assert_eq!(resp.status(), StatusCode::FOUND);</span>
-<span class="comment">//        let headers = resp.headers();</span>
-<span class="comment">//        assert_eq!(headers.get(header::LOCATION).unwrap(), PAGES.home,);</span>
-<span class="comment">//</span>
-<span class="comment">//        // incorrect form login</span>
-<span class="comment">//        let msg = Login {</span>
-<span class="comment">//            login: NAME.into(),</span>
-<span class="comment">//            password: NAME.into(),</span>
-<span class="comment">//        };</span>
-<span class="comment">//        let resp = test::call_service(</span>
-<span class="comment">//            &amp;app,</span>
-<span class="comment">//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),</span>
-<span class="comment">//        )</span>
-<span class="comment">//        .await;</span>
-<span class="comment">//        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);</span>
-<span class="comment">//</span>
-<span class="comment">//        // non-existent form login</span>
-<span class="comment">//        let msg = Login {</span>
-<span class="comment">//            login: PASSWORD.into(),</span>
-<span class="comment">//            password: PASSWORD.into(),</span>
-<span class="comment">//        };</span>
-<span class="comment">//        let resp = test::call_service(</span>
-<span class="comment">//            &amp;app,</span>
-<span class="comment">//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),</span>
-<span class="comment">//        )</span>
-<span class="comment">//        .await;</span>
-<span class="comment">//        assert_eq!(resp.status(), StatusCode::NOT_FOUND);</span>
-<span class="comment">//    }</span>
-<span class="comment">//}</span>
-<span class="comment">//</span>
-</code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+<span class="comment">//#[post(path = &quot;PAGES.auth.login&quot;)]
+//pub async fn login_submit(
+//    id: Identity,
+//    payload: web::Form&lt;runners::Login&gt;,
+//    data: AppData,
+//) -&gt; PageResult&lt;impl Responder&gt; {
+//    let payload = payload.into_inner();
+//    match runners::login_runner(&amp;payload, &amp;data).await {
+//        Ok(username) =&gt; {
+//            id.remember(username);
+//            Ok(HttpResponse::Found()
+//                .insert_header((header::LOCATION, PAGES.home))
+//                .finish())
+//        }
+//        Err(e) =&gt; {
+//            let status = e.status_code();
+//            let heading = status.canonical_reason().unwrap_or(&quot;Error&quot;);
+//
+//            Ok(HttpResponseBuilder::new(status)
+//                .content_type(&quot;text/html; charset=utf-8&quot;)
+//                .body(
+//                    IndexPage::new(heading, &amp;format!(&quot;{}&quot;, e))
+//                        .render_once()
+//                        .unwrap(),
+//                ))
+//        }
+//    }
+//}
+//
+//#[cfg(test)]
+//mod tests {
+//    use actix_web::test;
+//
+//    use super::*;
+//
+//    use crate::api::v1::auth::runners::{Login, Register};
+//    use crate::data::Data;
+//    use crate::tests::*;
+//    use crate::*;
+//    use actix_web::http::StatusCode;
+//
+//    #[actix_rt::test]
+//    async fn auth_form_works() {
+//        let data = Data::new().await;
+//        const NAME: &amp;str = &quot;testuserform&quot;;
+//        const PASSWORD: &amp;str = &quot;longpassword&quot;;
+//
+//        let app = get_app!(data).await;
+//
+//        delete_user(NAME, &amp;data).await;
+//
+//        // 1. Register with email == None
+//        let msg = Register {
+//            username: NAME.into(),
+//            password: PASSWORD.into(),
+//            confirm_password: PASSWORD.into(),
+//            email: None,
+//        };
+//        let resp = test::call_service(
+//            &amp;app,
+//            post_request!(&amp;msg, V1_API_ROUTES.auth.register).to_request(),
+//        )
+//        .await;
+//        assert_eq!(resp.status(), StatusCode::OK);
+//
+//        // correct form login
+//        let msg = Login {
+//            login: NAME.into(),
+//            password: PASSWORD.into(),
+//        };
+//
+//        let resp = test::call_service(
+//            &amp;app,
+//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),
+//        )
+//        .await;
+//        assert_eq!(resp.status(), StatusCode::FOUND);
+//        let headers = resp.headers();
+//        assert_eq!(headers.get(header::LOCATION).unwrap(), PAGES.home,);
+//
+//        // incorrect form login
+//        let msg = Login {
+//            login: NAME.into(),
+//            password: NAME.into(),
+//        };
+//        let resp = test::call_service(
+//            &amp;app,
+//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),
+//        )
+//        .await;
+//        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+//
+//        // non-existent form login
+//        let msg = Login {
+//            login: PASSWORD.into(),
+//            password: PASSWORD.into(),
+//        };
+//        let resp = test::call_service(
+//            &amp;app,
+//            post_request!(&amp;msg, PAGES.auth.login, FORM).to_request(),
+//        )
+//        .await;
+//        assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+//    }
+//}
+//
+</span></code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/db.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>db.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/db.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>db.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -461,6 +455,167 @@
 <span id="455">455</span>
 <span id="456">456</span>
 <span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -476,448 +631,608 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
+ */
+</span><span class="kw">use </span>std::str::FromStr;
 
-<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
-<span class="kw">use</span> <span class="ident">sqlx::postgres::PgPoolOptions</span>;
-<span class="kw">use</span> <span class="ident">sqlx::types::time::OffsetDateTime</span>;
-<span class="comment">//use sqlx::types::Json;</span>
-<span class="kw">use</span> <span class="ident">sqlx::ConnectOptions</span>;
-<span class="kw">use</span> <span class="ident">sqlx::PgPool</span>;
+<span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>sqlx::postgres::PgPoolOptions;
+<span class="kw">use </span>sqlx::types::time::OffsetDateTime;
+<span class="comment">//use sqlx::types::Json;
+</span><span class="kw">use </span>sqlx::ConnectOptions;
+<span class="kw">use </span>sqlx::PgPool;
+<span class="kw">use </span>url::quirks::hostname;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::errors</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 
-<span class="doccomment">/// Connect to databse</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ConnectionOptions</span> {
-    <span class="doccomment">/// fresh connection</span>
-    <span class="ident">Fresh</span>(<span class="ident">Fresh</span>),
-    <span class="doccomment">/// existing connection</span>
-    <span class="ident">Existing</span>(<span class="ident">Conn</span>),
+<span class="doccomment">/// Connect to databse
+</span><span class="kw">pub enum </span>ConnectionOptions {
+    <span class="doccomment">/// fresh connection
+    </span>Fresh(Fresh),
+    <span class="doccomment">/// existing connection
+    </span>Existing(Conn),
 }
 
-<span class="doccomment">/// Use an existing database pool</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Conn</span>(<span class="kw">pub</span> <span class="ident">PgPool</span>);
+<span class="doccomment">/// Use an existing database pool
+</span><span class="kw">pub struct </span>Conn(<span class="kw">pub </span>PgPool);
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Fresh</span> {
-    <span class="kw">pub</span> <span class="ident">pool_options</span>: <span class="ident">PgPoolOptions</span>,
-    <span class="kw">pub</span> <span class="ident">disable_logging</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span> <span class="ident">url</span>: <span class="ident">String</span>,
+<span class="kw">pub struct </span>Fresh {
+    <span class="kw">pub </span>pool_options: PgPoolOptions,
+    <span class="kw">pub </span>disable_logging: bool,
+    <span class="kw">pub </span>url: String,
 }
 
-<span class="kw">impl</span> <span class="ident">ConnectionOptions</span> {
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">connect</span>(<span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">Database</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">pool</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident"><span class="self">Self</span>::Fresh</span>(<span class="ident">fresh</span>) =&gt; {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">connect_options</span> <span class="op">=</span>
-                    <span class="ident">sqlx::postgres::PgConnectOptions::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">fresh</span>.<span class="ident">url</span>).<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="ident">fresh</span>.<span class="ident">disable_logging</span> {
-                    <span class="ident">connect_options</span>.<span class="ident">disable_statement_logging</span>();
+<span class="kw">impl </span>ConnectionOptions {
+    <span class="kw">async fn </span>connect(<span class="self">self</span>) -&gt; ServiceResult&lt;Database&gt; {
+        <span class="kw">let </span>pool = <span class="kw">match </span><span class="self">self </span>{
+            <span class="self">Self</span>::Fresh(fresh) =&gt; {
+                <span class="kw">let </span><span class="kw-2">mut </span>connect_options =
+                    sqlx::postgres::PgConnectOptions::from_str(<span class="kw-2">&amp;</span>fresh.url).unwrap();
+                <span class="kw">if </span>fresh.disable_logging {
+                    connect_options.disable_statement_logging();
                 }
-                <span class="ident">sqlx::postgres::PgConnectOptions::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">fresh</span>.<span class="ident">url</span>)
-                    .<span class="ident">unwrap</span>()
-                    .<span class="ident">disable_statement_logging</span>();
-                <span class="ident">fresh</span>
-                    .<span class="ident">pool_options</span>
-                    .<span class="ident">connect_with</span>(<span class="ident">connect_options</span>)
-                    .<span class="kw">await</span>
-                    .<span class="ident">unwrap</span>()
-                <span class="comment">//.map_err(|e| ServiceError::ServiceError(Box::new(e)))?</span>
-            }
+                sqlx::postgres::PgConnectOptions::from_str(<span class="kw-2">&amp;</span>fresh.url)
+                    .unwrap()
+                    .disable_statement_logging();
+                fresh
+                    .pool_options
+                    .connect_with(connect_options)
+                    .<span class="kw">await
+                    </span>.unwrap()
+                <span class="comment">//.map_err(|e| ServiceError::ServiceError(Box::new(e)))?
+            </span>}
 
-            <span class="ident"><span class="self">Self</span>::Existing</span>(<span class="ident">conn</span>) =&gt; <span class="ident">conn</span>.<span class="number">0</span>,
+            <span class="self">Self</span>::Existing(conn) =&gt; conn.<span class="number">0</span>,
         };
-        <span class="prelude-val">Ok</span>(<span class="ident">Database</span> { <span class="ident">pool</span> })
+        <span class="prelude-val">Ok</span>(Database { pool })
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Database</span> {
-    <span class="kw">pub</span> <span class="ident">pool</span>: <span class="ident">PgPool</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>Database {
+    <span class="kw">pub </span>pool: PgPool,
 }
 
-<span class="kw">impl</span> <span class="ident">Database</span> {
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">migrate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">impl </span>Database {
+    <span class="kw">pub async fn </span>migrate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;()&gt; {
         <span class="macro">sqlx::migrate!</span>(<span class="string">&quot;./migrations/&quot;</span>)
-            .<span class="ident">run</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-            .<span class="kw">await</span>
-            .<span class="ident">unwrap</span>();
-        <span class="comment">//.map_err(|e| ServiceError::ServiceError(Box::new(e)))?;</span>
-        <span class="prelude-val">Ok</span>(())
+            .run(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+            .<span class="kw">await
+            </span>.unwrap();
+        <span class="comment">//.map_err(|e| ServiceError::ServiceError(Box::new(e)))?;
+        </span><span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">ping</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="kw">use</span> <span class="ident">sqlx::Connection</span>;
+    <span class="kw">pub async fn </span>ping(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="kw">use </span>sqlx::Connection;
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="kw-2">mut</span> <span class="ident">con</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">pool</span>.<span class="ident">acquire</span>().<span class="kw">await</span> {
-            <span class="ident">con</span>.<span class="ident">ping</span>().<span class="kw">await</span>.<span class="ident">is_ok</span>()
-        } <span class="kw">else</span> {
-            <span class="bool-val">false</span>
-        }
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>con) = <span class="self">self</span>.pool.acquire().<span class="kw">await </span>{
+            con.ping().<span class="kw">await</span>.is_ok()
+        } <span class="kw">else </span>{
+            <span class="bool-val">false
+        </span>}
     }
 
-    <span class="doccomment">/// register a new user</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">Register</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// register a new user
+    </span><span class="kw">pub async fn </span>register(<span class="kw-2">&amp;</span><span class="self">self</span>, p: <span class="kw-2">&amp;</span>Register&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; ServiceResult&lt;()&gt; {
         <span class="macro">sqlx::query!</span>(
-            <span class="string">&quot;insert into librepages_users
-            (name , password, email) values ($1, $2, $3)&quot;</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">username</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">hash</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">email</span>,
+            <span class="string">&quot;INSERT INTO librepages_users
+            (name , password, email) VALUES ($1, $2, $3)&quot;</span>,
+            <span class="kw-2">&amp;</span>p.username,
+            <span class="kw-2">&amp;</span>p.hash,
+            <span class="kw-2">&amp;</span>p.email,
         )
-        .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="ident">map_register_err</span>)<span class="question-mark">?</span>;
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(map_register_err)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// delete a user</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">delete_user</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="macro">sqlx::query!</span>(<span class="string">&quot;DELETE FROM librepages_users WHERE name = ($1)&quot;</span>, <span class="ident">username</span>)
-            .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-            .<span class="kw">await</span>
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>;
+    <span class="doccomment">/// delete a user
+    </span><span class="kw">pub async fn </span>delete_user(<span class="kw-2">&amp;</span><span class="self">self</span>, username: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;()&gt; {
+        <span class="macro">sqlx::query!</span>(<span class="string">&quot;DELETE FROM librepages_users WHERE name = ($1)&quot;</span>, username)
+            .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+            .<span class="kw">await
+            </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// check if username exists</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">username_exists</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">sqlx::query!</span>(
+    <span class="doccomment">/// check if username exists
+    </span><span class="kw">pub async fn </span>username_exists(<span class="kw-2">&amp;</span><span class="self">self</span>, username: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;bool&gt; {
+        <span class="kw">let </span>res = <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;SELECT EXISTS (SELECT 1 from librepages_users WHERE name = $1)&quot;</span>,
-            <span class="ident">username</span>,
+            username,
         )
-        .<span class="ident">fetch_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="ident">map_register_err</span>)<span class="question-mark">?</span>;
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(map_register_err)<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resp</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">res</span>.<span class="ident">exists</span> {
-            <span class="ident">resp</span> <span class="op">=</span> <span class="ident">x</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>resp = <span class="bool-val">false</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(x) = res.exists {
+            resp = x;
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">resp</span>)
+        <span class="prelude-val">Ok</span>(resp)
     }
 
-    <span class="doccomment">/// get user email</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_email</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-        <span class="kw">struct</span> <span class="ident">Email</span> {
-            <span class="ident">email</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// get user email
+    </span><span class="kw">pub async fn </span>get_email(<span class="kw-2">&amp;</span><span class="self">self</span>, username: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;String&gt; {
+        <span class="kw">struct </span>Email {
+            email: String,
         }
 
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">sqlx::query_as!</span>(
-            <span class="ident">Email</span>,
+        <span class="kw">let </span>res = <span class="macro">sqlx::query_as!</span>(
+            Email,
             <span class="string">&quot;SELECT email FROM librepages_users WHERE name = $1&quot;</span>,
-            <span class="ident">username</span>
+            username
         )
-        .<span class="ident">fetch_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>.<span class="ident">email</span>)
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(res.email)
     }
 
-    <span class="doccomment">/// check if email exists</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">email_exists</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">email</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">sqlx::query!</span>(
+    <span class="doccomment">/// check if email exists
+    </span><span class="kw">pub async fn </span>email_exists(<span class="kw-2">&amp;</span><span class="self">self</span>, email: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;bool&gt; {
+        <span class="kw">let </span>res = <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;SELECT EXISTS (SELECT 1 from librepages_users WHERE email = $1)&quot;</span>,
-            <span class="ident">email</span>
+            email
         )
-        .<span class="ident">fetch_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="ident">map_register_err</span>)<span class="question-mark">?</span>;
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(map_register_err)<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resp</span> <span class="op">=</span> <span class="bool-val">false</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="ident">res</span>.<span class="ident">exists</span> {
-            <span class="ident">resp</span> <span class="op">=</span> <span class="ident">x</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>resp = <span class="bool-val">false</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(x) = res.exists {
+            resp = x;
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">resp</span>)
+        <span class="prelude-val">Ok</span>(resp)
     }
 
-    <span class="doccomment">/// update a user&#39;s email</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">update_email</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">UpdateEmail</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// update a user&#39;s email
+    </span><span class="kw">pub async fn </span>update_email(<span class="kw-2">&amp;</span><span class="self">self</span>, p: <span class="kw-2">&amp;</span>UpdateEmail&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; ServiceResult&lt;()&gt; {
         <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;UPDATE librepages_users set email = $1
             WHERE name = $2&quot;</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">new_email</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">username</span>,
+            <span class="kw-2">&amp;</span>p.new_email,
+            <span class="kw-2">&amp;</span>p.username,
         )
-        .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>;
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// get a user&#39;s password</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_password</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="ident">Login</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span><span class="ident">NameHash</span><span class="op">&gt;</span> {
-        <span class="kw">struct</span> <span class="ident">Password</span> {
-            <span class="ident">name</span>: <span class="ident">String</span>,
-            <span class="ident">password</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// get a user&#39;s password
+    </span><span class="kw">pub async fn </span>get_password(<span class="kw-2">&amp;</span><span class="self">self</span>, l: <span class="kw-2">&amp;</span>Login&lt;<span class="lifetime">&#39;_</span>&gt;) -&gt; ServiceResult&lt;NameHash&gt; {
+        <span class="kw">struct </span>Password {
+            name: String,
+            password: String,
         }
 
-        <span class="kw">let</span> <span class="ident">rec</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">l</span> {
-            <span class="ident">Login::Username</span>(<span class="ident">u</span>) =&gt; <span class="macro">sqlx::query_as!</span>(
-                <span class="ident">Password</span>,
+        <span class="kw">let </span>rec = <span class="kw">match </span>l {
+            Login::Username(u) =&gt; <span class="macro">sqlx::query_as!</span>(
+                Password,
                 <span class="string">r#&quot;SELECT name, password  FROM librepages_users WHERE name = ($1)&quot;#</span>,
-                <span class="ident">u</span>,
+                u,
             )
-            .<span class="ident">fetch_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-            .<span class="kw">await</span>
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>,
-            <span class="ident">Login::Email</span>(<span class="ident">e</span>) =&gt; <span class="macro">sqlx::query_as!</span>(
-                <span class="ident">Password</span>,
+            .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+            .<span class="kw">await
+            </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>,
+            Login::Email(e) =&gt; <span class="macro">sqlx::query_as!</span>(
+                Password,
                 <span class="string">r#&quot;SELECT name, password  FROM librepages_users WHERE email = ($1)&quot;#</span>,
-                <span class="ident">e</span>,
+                e,
             )
-            .<span class="ident">fetch_one</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-            .<span class="kw">await</span>
-            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>,
+            .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+            .<span class="kw">await
+            </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>,
         };
 
-        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">NameHash</span> {
-            <span class="ident">hash</span>: <span class="ident">rec</span>.<span class="ident">password</span>,
-            <span class="ident">username</span>: <span class="ident">rec</span>.<span class="ident">name</span>,
+        <span class="kw">let </span>res = NameHash {
+            hash: rec.password,
+            username: rec.name,
         };
 
-        <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
+        <span class="prelude-val">Ok</span>(res)
     }
 
-    <span class="doccomment">/// update user&#39;s password</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">update_password</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">p</span>: <span class="kw-2">&amp;</span><span class="ident">NameHash</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// update user&#39;s password
+    </span><span class="kw">pub async fn </span>update_password(<span class="kw-2">&amp;</span><span class="self">self</span>, p: <span class="kw-2">&amp;</span>NameHash) -&gt; ServiceResult&lt;()&gt; {
         <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;UPDATE librepages_users set password = $1
             WHERE name = $2&quot;</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">hash</span>,
-            <span class="kw-2">&amp;</span><span class="ident">p</span>.<span class="ident">username</span>,
+            <span class="kw-2">&amp;</span>p.hash,
+            <span class="kw-2">&amp;</span>p.username,
         )
-        .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>;
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="doccomment">/// update username</span>
-    <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">update_username</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">current</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">new</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">ServiceResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// update username
+    </span><span class="kw">pub async fn </span>update_username(<span class="kw-2">&amp;</span><span class="self">self</span>, current: <span class="kw-2">&amp;</span>str, new: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;()&gt; {
         <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;UPDATE librepages_users set name = $1
             WHERE name = $2&quot;</span>,
-            <span class="ident">new</span>,
-            <span class="ident">current</span>,
+            new,
+            current,
         )
-        .<span class="ident">execute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pool</span>)
-        .<span class="kw">await</span>
-        .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>, <span class="ident">ServiceError::AccountNotFound</span>))<span class="question-mark">?</span>;
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(())
     }
-}
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// Data required to register a new user</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Register</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// username of new user</span>
-    <span class="kw">pub</span> <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="doccomment">/// hashed password of new use</span>
-    <span class="kw">pub</span> <span class="ident">hash</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="doccomment">/// Optionally, email of new use</span>
-    <span class="kw">pub</span> <span class="ident">email</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-}
+    <span class="kw">pub async fn </span>add_site(<span class="kw-2">&amp;</span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>Site) -&gt; ServiceResult&lt;()&gt; {
+        <span class="macro">sqlx::query!</span>(
+            <span class="string">&quot;
+            INSERT INTO librepages_sites
+                (site_secret, repo_url, branch, hostname, owned_by)
+            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));
+            &quot;</span>,
+            msg.site_secret,
+            msg.repo_url,
+            msg.branch,
+            msg.hostname,
+            msg.owner,
+        )
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// data required to update them email of a user</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpdateEmail</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// username of the user</span>
-    <span class="kw">pub</span> <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-    <span class="doccomment">/// new email address of the user</span>
-    <span class="kw">pub</span> <span class="ident">new_email</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>,
-}
+        <span class="prelude-val">Ok</span>(())
+    }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// types of credentials used as identifiers during login</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Login</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// username as login</span>
-    <span class="ident">Username</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>),
-    <span class="doccomment">/// email as login</span>
-    <span class="ident">Email</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>),
-}
+    <span class="kw">pub async fn </span>get_site(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str, hostname: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Site&gt; {
+        <span class="kw">let </span>site = <span class="macro">sqlx::query_as!</span>(
+            InnerSite,
+            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname
+            FROM librepages_sites
+            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
+            AND hostname = $2;
+            &quot;</span>,
+            owner,
+            hostname
+        )
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="doccomment">/// type encapsulating username and hashed password of a user</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NameHash</span> {
-    <span class="doccomment">/// username</span>
-    <span class="kw">pub</span> <span class="ident">username</span>: <span class="ident">String</span>,
-    <span class="doccomment">/// hashed password</span>
-    <span class="kw">pub</span> <span class="ident">hash</span>: <span class="ident">String</span>,
-}
+        <span class="kw">let </span>res = site.to_site(owner.into());
 
-<span class="kw">fn</span> <span class="ident">now_unix_time_stamp</span>() -&gt; <span class="ident">OffsetDateTime</span> {
-    <span class="ident">OffsetDateTime::now_utc</span>()
-}
+        <span class="prelude-val">Ok</span>(res)
+    }
 
-<span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">get_db</span>(<span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="kw">crate</span>::settings::Settings</span>) -&gt; <span class="ident">Database</span> {
-    <span class="kw">let</span> <span class="ident">pool_options</span> <span class="op">=</span> <span class="ident">PgPoolOptions::new</span>().<span class="ident">max_connections</span>(<span class="ident">settings</span>.<span class="ident">database</span>.<span class="ident">pool</span>);
-    <span class="ident">ConnectionOptions::Fresh</span>(<span class="ident">Fresh</span> {
-        <span class="ident">pool_options</span>,
-        <span class="ident">url</span>: <span class="ident">settings</span>.<span class="ident">database</span>.<span class="ident">url</span>.<span class="ident">clone</span>(),
-        <span class="ident">disable_logging</span>: <span class="op">!</span><span class="ident">settings</span>.<span class="ident">debug</span>,
-    })
-    .<span class="ident">connect</span>()
-    .<span class="kw">await</span>
-    .<span class="ident">unwrap</span>()
-}
+    <span class="kw">pub async fn </span>list_all_sites(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Vec&lt;Site&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>sites = <span class="macro">sqlx::query_as!</span>(
+            InnerSite,
+            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname
+            FROM librepages_sites
+            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
+            &quot;</span>,
+            owner,
+        )
+        .fetch_all(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
 
-<span class="doccomment">/// map custom row not found error to DB error</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_row_not_found_err</span>(<span class="ident">e</span>: <span class="ident">sqlx::Error</span>, <span class="ident">row_not_found</span>: <span class="ident">ServiceError</span>) -&gt; <span class="ident">ServiceError</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">sqlx::Error::RowNotFound</span> <span class="op">=</span> <span class="ident">e</span> {
-        <span class="ident">row_not_found</span>
-    } <span class="kw">else</span> {
-        <span class="ident">map_register_err</span>(<span class="ident">e</span>)
+        <span class="kw">let </span>res = sites.drain(<span class="number">0</span>..).map(|s| s.to_site(owner.into())).collect();
+
+        <span class="prelude-val">Ok</span>(res)
+    }
+
+    <span class="kw">pub async fn </span>delete_site(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str, hostname: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;()&gt; {
+        <span class="macro">sqlx::query!</span>(
+            <span class="string">&quot;DELETE FROM librepages_sites
+            WHERE hostname = ($1)
+            AND owned_by = ( SELECT ID FROM librepages_users WHERE name = $2);
+            &quot;</span>,
+            hostname,
+            owner
+        )
+        .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
     }
 }
+<span class="kw">struct </span>InnerSite {
+    site_secret: String,
+    repo_url: String,
+    branch: String,
+    hostname: String,
+}
 
-<span class="doccomment">/// map postgres errors to [ServiceError](ServiceError) types</span>
-<span class="kw">fn</span> <span class="ident">map_register_err</span>(<span class="ident">e</span>: <span class="ident">sqlx::Error</span>) -&gt; <span class="ident">ServiceError</span> {
-    <span class="kw">use</span> <span class="ident">sqlx::Error</span>;
-    <span class="kw">use</span> <span class="ident">std::borrow::Cow</span>;
-
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Error::Database</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">e</span> {
-        <span class="kw">if</span> <span class="ident">err</span>.<span class="ident">code</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">Cow::from</span>(<span class="string">&quot;23505&quot;</span>)) {
-            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">message</span>();
-            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
-            <span class="kw">if</span> <span class="ident">msg</span>.<span class="ident">contains</span>(<span class="string">&quot;librepages_users_name_key&quot;</span>) {
-                <span class="ident">ServiceError::UsernameTaken</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">msg</span>.<span class="ident">contains</span>(<span class="string">&quot;librepages_users_email_key&quot;</span>) {
-                <span class="ident">ServiceError::EmailTaken</span>
-            } <span class="kw">else</span> {
-                <span class="macro">log::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
-                <span class="ident">ServiceError::InternalServerError</span>
-            }
-        } <span class="kw">else</span> {
-            <span class="ident">ServiceError::InternalServerError</span>
+<span class="kw">impl </span>InnerSite {
+    <span class="kw">fn </span>to_site(<span class="self">self</span>, owner: String) -&gt; Site {
+        Site {
+            site_secret: <span class="self">self</span>.site_secret,
+            repo_url: <span class="self">self</span>.repo_url,
+            branch: <span class="self">self</span>.branch,
+            hostname: <span class="self">self</span>.hostname,
+            owner,
         }
-    } <span class="kw">else</span> {
-        <span class="ident">ServiceError::InternalServerError</span>
     }
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings::Settings</span>;
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+</span><span class="doccomment">/// Data required to add a new site
+</span><span class="kw">pub struct </span>Site {
+    <span class="kw">pub </span>site_secret: String,
+    <span class="kw">pub </span>repo_url: String,
+    <span class="kw">pub </span>branch: String,
+    <span class="kw">pub </span>hostname: String,
+    <span class="kw">pub </span>owner: String,
+}
 
-    <span class="attribute">#[<span class="ident">actix_rt::test</span>]</span>
-    <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">db_works</span>() {
-        <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">Settings::new</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">pool_options</span> <span class="op">=</span> <span class="ident">PgPoolOptions::new</span>().<span class="ident">max_connections</span>(<span class="number">1</span>);
-        <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="ident">ConnectionOptions::Fresh</span>(<span class="ident">Fresh</span> {
-            <span class="ident">pool_options</span>,
-            <span class="ident">url</span>: <span class="ident">settings</span>.<span class="ident">database</span>.<span class="ident">url</span>.<span class="ident">clone</span>(),
-            <span class="ident">disable_logging</span>: <span class="op">!</span><span class="ident">settings</span>.<span class="ident">debug</span>,
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+</span><span class="doccomment">/// Data required to register a new user
+</span><span class="kw">pub struct </span>Register&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// username of new user
+    </span><span class="kw">pub </span>username: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    <span class="doccomment">/// hashed password of new use
+    </span><span class="kw">pub </span>hash: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    <span class="doccomment">/// Optionally, email of new use
+    </span><span class="kw">pub </span>email: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+}
+
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+</span><span class="doccomment">/// data required to update them email of a user
+</span><span class="kw">pub struct </span>UpdateEmail&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// username of the user
+    </span><span class="kw">pub </span>username: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    <span class="doccomment">/// new email address of the user
+    </span><span class="kw">pub </span>new_email: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+}
+
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+</span><span class="doccomment">/// types of credentials used as identifiers during login
+</span><span class="kw">pub enum </span>Login&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="doccomment">/// username as login
+    </span>Username(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str),
+    <span class="doccomment">/// email as login
+    </span>Email(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str),
+}
+
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+</span><span class="doccomment">/// type encapsulating username and hashed password of a user
+</span><span class="kw">pub struct </span>NameHash {
+    <span class="doccomment">/// username
+    </span><span class="kw">pub </span>username: String,
+    <span class="doccomment">/// hashed password
+    </span><span class="kw">pub </span>hash: String,
+}
+
+<span class="kw">fn </span>now_unix_time_stamp() -&gt; OffsetDateTime {
+    OffsetDateTime::now_utc()
+}
+
+<span class="kw">pub async fn </span>get_db(settings: <span class="kw-2">&amp;</span><span class="kw">crate</span>::settings::Settings) -&gt; Database {
+    <span class="kw">let </span>pool_options = PgPoolOptions::new().max_connections(settings.database.pool);
+    ConnectionOptions::Fresh(Fresh {
+        pool_options,
+        url: settings.database.url.clone(),
+        disable_logging: !settings.debug,
+    })
+    .connect()
+    .<span class="kw">await
+    </span>.unwrap()
+}
+
+<span class="doccomment">/// map custom row not found error to DB error
+</span><span class="kw">pub fn </span>map_row_not_found_err(e: sqlx::Error, row_not_found: ServiceError) -&gt; ServiceError {
+    <span class="kw">if let </span>sqlx::Error::RowNotFound = e {
+        row_not_found
+    } <span class="kw">else </span>{
+        map_register_err(e)
+    }
+}
+
+<span class="doccomment">/// map postgres errors to [ServiceError](ServiceError) types
+</span><span class="kw">fn </span>map_register_err(e: sqlx::Error) -&gt; ServiceError {
+    <span class="kw">use </span>sqlx::Error;
+    <span class="kw">use </span>std::borrow::Cow;
+
+    <span class="kw">if let </span>Error::Database(err) = e {
+        <span class="kw">if </span>err.code() == <span class="prelude-val">Some</span>(Cow::from(<span class="string">&quot;23505&quot;</span>)) {
+            <span class="kw">let </span>msg = err.message();
+            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, msg);
+            <span class="kw">if </span>msg.contains(<span class="string">&quot;librepages_users_name_key&quot;</span>) {
+                ServiceError::UsernameTaken
+            } <span class="kw">else if </span>msg.contains(<span class="string">&quot;librepages_users_email_key&quot;</span>) {
+                ServiceError::EmailTaken
+            } <span class="kw">else </span>{
+                <span class="macro">log::error!</span>(<span class="string">&quot;{}&quot;</span>, msg);
+                ServiceError::InternalServerError
+            }
+        } <span class="kw">else </span>{
+            ServiceError::InternalServerError
+        }
+    } <span class="kw">else </span>{
+        ServiceError::InternalServerError
+    }
+}
+
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests {
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
+
+    <span class="attribute">#[actix_rt::test]
+    </span><span class="kw">async fn </span>db_works() {
+        <span class="kw">let </span>settings = Settings::new().unwrap();
+        <span class="kw">let </span>pool_options = PgPoolOptions::new().max_connections(<span class="number">1</span>);
+        <span class="kw">let </span>db = ConnectionOptions::Fresh(Fresh {
+            pool_options,
+            url: settings.database.url.clone(),
+            disable_logging: !settings.debug,
         })
-        .<span class="ident">connect</span>()
-        .<span class="kw">await</span>
-        .<span class="ident">unwrap</span>();
-        <span class="macro">assert!</span>(<span class="ident">db</span>.<span class="ident">ping</span>().<span class="kw">await</span>);
+        .connect()
+        .<span class="kw">await
+        </span>.unwrap();
+        <span class="macro">assert!</span>(db.ping().<span class="kw">await</span>);
 
-        <span class="kw">const</span> <span class="ident">EMAIL</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;postgresuser@foo.com&quot;</span>;
-        <span class="kw">const</span> <span class="ident">EMAIL2</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;postgresuser2@foo.com&quot;</span>;
-        <span class="kw">const</span> <span class="ident">NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;postgresuser&quot;</span>;
-        <span class="kw">const</span> <span class="ident">PASSWORD</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;pasdfasdfasdfadf&quot;</span>;
+        <span class="kw">const </span>EMAIL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;postgresuser@foo.com&quot;</span>;
+        <span class="kw">const </span>EMAIL2: <span class="kw-2">&amp;</span>str = <span class="string">&quot;postgresuser2@foo.com&quot;</span>;
+        <span class="kw">const </span>NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;postgresuser&quot;</span>;
+        <span class="kw">const </span>PASSWORD: <span class="kw-2">&amp;</span>str = <span class="string">&quot;pasdfasdfasdfadf&quot;</span>;
 
-        <span class="ident">db</span>.<span class="ident">migrate</span>().<span class="kw">await</span>.<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident"><span class="kw">super</span>::Register</span> {
-            <span class="ident">username</span>: <span class="ident">NAME</span>,
-            <span class="ident">email</span>: <span class="ident">EMAIL</span>,
-            <span class="ident">hash</span>: <span class="ident">PASSWORD</span>,
+        db.migrate().<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>p = <span class="kw">super</span>::Register {
+            username: NAME,
+            email: EMAIL,
+            hash: PASSWORD,
         };
 
-        <span class="kw">if</span> <span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">username</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>() {
-            <span class="ident">db</span>.<span class="ident">delete_user</span>(<span class="ident">p</span>.<span class="ident">username</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        <span class="kw">if </span>db.username_exists(p.username).<span class="kw">await</span>.unwrap() {
+            db.delete_user(p.username).<span class="kw">await</span>.unwrap();
             <span class="macro">assert!</span>(
-                <span class="op">!</span><span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">username</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-                <span class="string">&quot;user is deleted so username shouldn&#39;t exist&quot;</span>
-            );
+                !db.username_exists(p.username).<span class="kw">await</span>.unwrap(),
+                <span class="string">&quot;user is deleted so username shouldn&#39;t exist&quot;
+            </span>);
         }
 
-        <span class="ident">db</span>.<span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        db.register(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.unwrap();
 
         <span class="macro">assert!</span>(<span class="macro">matches!</span>(
-            <span class="ident">db</span>.<span class="ident">register</span>(<span class="kw-2">&amp;</span><span class="ident">p</span>).<span class="kw">await</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">ServiceError::UsernameTaken</span>)
+            db.register(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>,
+            <span class="prelude-val">Err</span>(ServiceError::UsernameTaken)
         ));
 
-        <span class="comment">// testing get_password</span>
+        <span class="comment">// testing get_password
 
-        <span class="comment">// with username</span>
-        <span class="kw">let</span> <span class="ident">name_hash</span> <span class="op">=</span> <span class="ident">db</span>.<span class="ident">get_password</span>(<span class="kw-2">&amp;</span><span class="ident">Login::Username</span>(<span class="ident">p</span>.<span class="ident">username</span>)).<span class="kw">await</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">name_hash</span>.<span class="ident">hash</span>, <span class="ident">p</span>.<span class="ident">hash</span>, <span class="string">&quot;user password matches&quot;</span>);
+        // with username
+        </span><span class="kw">let </span>name_hash = db.get_password(<span class="kw-2">&amp;</span>Login::Username(p.username)).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert_eq!</span>(name_hash.hash, p.hash, <span class="string">&quot;user password matches&quot;</span>);
 
-        <span class="macro">assert_eq!</span>(<span class="ident">name_hash</span>.<span class="ident">username</span>, <span class="ident">p</span>.<span class="ident">username</span>, <span class="string">&quot;username matches&quot;</span>);
+        <span class="macro">assert_eq!</span>(name_hash.username, p.username, <span class="string">&quot;username matches&quot;</span>);
 
-        <span class="comment">// with email</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name_hash</span> <span class="op">=</span> <span class="ident">db</span>.<span class="ident">get_password</span>(<span class="kw-2">&amp;</span><span class="ident">Login::Email</span>(<span class="ident">p</span>.<span class="ident">email</span>)).<span class="kw">await</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert_eq!</span>(<span class="ident">name_hash</span>.<span class="ident">hash</span>, <span class="ident">p</span>.<span class="ident">hash</span>, <span class="string">&quot;user password matches&quot;</span>);
-        <span class="macro">assert_eq!</span>(<span class="ident">name_hash</span>.<span class="ident">username</span>, <span class="ident">p</span>.<span class="ident">username</span>, <span class="string">&quot;username matches&quot;</span>);
+        <span class="comment">// with email
+        </span><span class="kw">let </span><span class="kw-2">mut </span>name_hash = db.get_password(<span class="kw-2">&amp;</span>Login::Email(p.email)).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert_eq!</span>(name_hash.hash, p.hash, <span class="string">&quot;user password matches&quot;</span>);
+        <span class="macro">assert_eq!</span>(name_hash.username, p.username, <span class="string">&quot;username matches&quot;</span>);
 
-        <span class="comment">// testing get_email</span>
-        <span class="macro">assert_eq!</span>(<span class="ident">db</span>.<span class="ident">get_email</span>(<span class="ident">p</span>.<span class="ident">username</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(), <span class="ident">p</span>.<span class="ident">email</span>);
+        <span class="comment">// testing get_email
+        </span><span class="macro">assert_eq!</span>(db.get_email(p.username).<span class="kw">await</span>.unwrap(), p.email);
 
-        <span class="comment">// testing email exists</span>
+        <span class="comment">// testing email exists
+        </span><span class="macro">assert!</span>(
+            db.email_exists(p.email).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user is registered so email should exist&quot;
+        </span>);
         <span class="macro">assert!</span>(
-            <span class="ident">db</span>.<span class="ident">email_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user is registered so email should exist&quot;</span>
-        );
-        <span class="macro">assert!</span>(
-            <span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">username</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user is registered so username should exist&quot;</span>
-        );
+            db.username_exists(p.username).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user is registered so username should exist&quot;
+        </span>);
 
-        <span class="comment">// update password test. setting password = username</span>
-        <span class="ident">name_hash</span>.<span class="ident">hash</span> <span class="op">=</span> <span class="ident">name_hash</span>.<span class="ident">username</span>.<span class="ident">clone</span>();
-        <span class="ident">db</span>.<span class="ident">update_password</span>(<span class="kw-2">&amp;</span><span class="ident">name_hash</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        <span class="comment">// update password test. setting password = username
+        </span>name_hash.hash = name_hash.username.clone();
+        db.update_password(<span class="kw-2">&amp;</span>name_hash).<span class="kw">await</span>.unwrap();
 
-        <span class="kw">let</span> <span class="ident">name_hash</span> <span class="op">=</span> <span class="ident">db</span>.<span class="ident">get_password</span>(<span class="kw-2">&amp;</span><span class="ident">Login::Username</span>(<span class="ident">p</span>.<span class="ident">username</span>)).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        <span class="kw">let </span>name_hash = db.get_password(<span class="kw-2">&amp;</span>Login::Username(p.username)).<span class="kw">await</span>.unwrap();
         <span class="macro">assert_eq!</span>(
-            <span class="ident">name_hash</span>.<span class="ident">hash</span>, <span class="ident">p</span>.<span class="ident">username</span>,
-            <span class="string">&quot;user password matches with changed value&quot;</span>
-        );
-        <span class="macro">assert_eq!</span>(<span class="ident">name_hash</span>.<span class="ident">username</span>, <span class="ident">p</span>.<span class="ident">username</span>, <span class="string">&quot;username matches&quot;</span>);
+            name_hash.hash, p.username,
+            <span class="string">&quot;user password matches with changed value&quot;
+        </span>);
+        <span class="macro">assert_eq!</span>(name_hash.username, p.username, <span class="string">&quot;username matches&quot;</span>);
 
-        <span class="comment">// update username to p.email</span>
+        <span class="comment">// update username to p.email
+        </span><span class="macro">assert!</span>(
+            !db.username_exists(p.email).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user with p.email doesn&#39;t exist. pre-check to update username to p.email&quot;
+        </span>);
+        db.update_username(p.username, p.email).<span class="kw">await</span>.unwrap();
         <span class="macro">assert!</span>(
-            <span class="op">!</span><span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user with p.email doesn&#39;t exist. pre-check to update username to p.email&quot;</span>
-        );
-        <span class="ident">db</span>.<span class="ident">update_username</span>(<span class="ident">p</span>.<span class="ident">username</span>, <span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
-        <span class="macro">assert!</span>(
-            <span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user with p.email exist post-update&quot;</span>
-        );
+            db.username_exists(p.email).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user with p.email exist post-update&quot;
+        </span>);
 
-        <span class="comment">// testing update email</span>
-        <span class="kw">let</span> <span class="ident">update_email</span> <span class="op">=</span> <span class="ident">UpdateEmail</span> {
-            <span class="ident">username</span>: <span class="ident">p</span>.<span class="ident">username</span>,
-            <span class="ident">new_email</span>: <span class="ident">EMAIL2</span>,
+        <span class="comment">// testing update email
+        </span><span class="kw">let </span>update_email = UpdateEmail {
+            username: p.username,
+            new_email: EMAIL2,
         };
-        <span class="ident">db</span>.<span class="ident">update_email</span>(<span class="kw-2">&amp;</span><span class="ident">update_email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        db.update_email(<span class="kw-2">&amp;</span>update_email).<span class="kw">await</span>.unwrap();
         <span class="macro">println!</span>(
             <span class="string">&quot;null user email: {}&quot;</span>,
-            <span class="ident">db</span>.<span class="ident">email_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>()
+            db.email_exists(p.email).<span class="kw">await</span>.unwrap()
         );
         <span class="macro">assert!</span>(
-            <span class="ident">db</span>.<span class="ident">email_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user was with empty email but email is set; so email should exist&quot;</span>
-        );
+            db.email_exists(p.email).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user was with empty email but email is set; so email should exist&quot;
+        </span>);
 
-        <span class="comment">// deleting user</span>
-        <span class="ident">db</span>.<span class="ident">delete_user</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>();
+        <span class="comment">// deleting user
+        </span>db.delete_user(p.email).<span class="kw">await</span>.unwrap();
         <span class="macro">assert!</span>(
-            <span class="op">!</span><span class="ident">db</span>.<span class="ident">username_exists</span>(<span class="ident">p</span>.<span class="ident">email</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-            <span class="string">&quot;user is deleted so username shouldn&#39;t exist&quot;</span>
-        );
+            !db.username_exists(p.email).<span class="kw">await</span>.unwrap(),
+            <span class="string">&quot;user is deleted so username shouldn&#39;t exist&quot;
+        </span>);
+    }
+
+    <span class="attribute">#[actix_rt::test]
+    </span><span class="kw">pub async fn </span>test_db_sites() {
+        <span class="kw">let </span>settings = Settings::new().unwrap();
+        <span class="kw">let </span>pool_options = PgPoolOptions::new().max_connections(<span class="number">1</span>);
+        <span class="kw">let </span>db = ConnectionOptions::Fresh(Fresh {
+            pool_options,
+            url: settings.database.url.clone(),
+            disable_logging: !settings.debug,
+        })
+        .connect()
+        .<span class="kw">await
+        </span>.unwrap();
+        <span class="macro">assert!</span>(db.ping().<span class="kw">await</span>);
+
+        <span class="kw">const </span>EMAIL: <span class="kw-2">&amp;</span>str = <span class="string">&quot;postgresdbsiteuser@foo.com&quot;</span>;
+        <span class="kw">const </span>NAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;postgresdbsiteuser&quot;</span>;
+        <span class="kw">const </span>PASSWORD: <span class="kw-2">&amp;</span>str = <span class="string">&quot;pasdfasdfasdfadf&quot;</span>;
+
+        db.migrate().<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>p = <span class="kw">super</span>::Register {
+            username: NAME,
+            email: EMAIL,
+            hash: PASSWORD,
+        };
+
+        <span class="kw">if </span>db.username_exists(p.username).<span class="kw">await</span>.unwrap() {
+            db.delete_user(p.username).<span class="kw">await</span>.unwrap();
+            <span class="macro">assert!</span>(
+                !db.username_exists(p.username).<span class="kw">await</span>.unwrap(),
+                <span class="string">&quot;user is deleted so username shouldn&#39;t exist&quot;
+            </span>);
+        }
+
+        db.register(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.unwrap();
+
+        <span class="comment">// testing adding site
+        </span><span class="kw">let </span>site = Site {
+            site_secret: <span class="string">&quot;foobar&quot;</span>.into(),
+            repo_url: <span class="string">&quot;https://git.batsense.net/LibrePages/librepages.git&quot;</span>.into(),
+            branch: <span class="string">&quot;librepages&quot;</span>.into(),
+            hostname: <span class="string">&quot;db_works.tests.librepages.librepages.org&quot;</span>.into(),
+            owner: p.username.into(),
+        };
+        db.add_site(<span class="kw-2">&amp;</span>site).<span class="kw">await</span>.unwrap();
+
+        <span class="comment">// get site
+        </span><span class="kw">let </span>db_site = db.get_site(p.username, <span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert_eq!</span>(db_site, site);
+
+        <span class="comment">// list all sites owned by user
+        </span><span class="kw">let </span>db_sites = db.list_all_sites(p.username).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert_eq!</span>(db_sites.len(), <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(db_sites, <span class="macro">vec!</span>[site.clone()]);
+
+        <span class="comment">// delete site
+        </span>db.delete_site(p.username, <span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert!</span>(db.list_all_sites(p.username).<span class="kw">await</span>.unwrap().is_empty());
     }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

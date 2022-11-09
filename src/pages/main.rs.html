@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/main.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>main.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/main.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>main.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../pages/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../pages/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -162,6 +156,8 @@
 <span id="156">156</span>
 <span id="157">157</span>
 <span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -177,149 +173,150 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
- */</span>
-<span class="kw">use</span> <span class="ident">std::env</span>;
+ */
+</span><span class="kw">use </span>std::env;
 
-<span class="kw">use</span> <span class="ident">actix_identity</span>::{<span class="ident">CookieIdentityPolicy</span>, <span class="ident">IdentityService</span>};
-<span class="kw">use</span> <span class="ident">actix_web</span>::{
-    <span class="ident">error::InternalError</span>, <span class="ident">http::StatusCode</span>, <span class="ident">middleware</span> <span class="kw">as</span> <span class="ident">actix_middleware</span>, <span class="ident">web::Data</span> <span class="kw">as</span> <span class="ident">WebData</span>,
-    <span class="ident">web::JsonConfig</span>, <span class="ident">App</span>, <span class="ident">HttpServer</span>,
+<span class="kw">use </span>actix_identity::{CookieIdentityPolicy, IdentityService};
+<span class="kw">use </span>actix_web::{
+    error::InternalError, http::StatusCode, middleware <span class="kw">as </span>actix_middleware, web::Data <span class="kw">as </span>WebData,
+    web::JsonConfig, App, HttpServer,
 };
-<span class="kw">use</span> <span class="ident">clap</span>::{<span class="ident">Parser</span>, <span class="ident">Subcommand</span>};
-<span class="kw">use</span> <span class="ident">log::info</span>;
-<span class="kw">use</span> <span class="ident">static_assets::FileMap</span>;
+<span class="kw">use </span>clap::{Parser, Subcommand};
+<span class="kw">use </span>log::info;
+<span class="kw">use </span>static_assets::FileMap;
 
-<span class="kw">mod</span> <span class="ident">api</span>;
-<span class="kw">mod</span> <span class="ident">ctx</span>;
-<span class="kw">mod</span> <span class="ident">db</span>;
-<span class="kw">mod</span> <span class="ident">deploy</span>;
-<span class="kw">mod</span> <span class="ident">errors</span>;
-<span class="kw">mod</span> <span class="ident">git</span>;
-<span class="kw">mod</span> <span class="ident">meta</span>;
-<span class="kw">mod</span> <span class="ident">page</span>;
-<span class="kw">mod</span> <span class="ident">pages</span>;
-<span class="kw">mod</span> <span class="ident">preview</span>;
-<span class="kw">mod</span> <span class="ident">serve</span>;
-<span class="kw">mod</span> <span class="ident">settings</span>;
-<span class="kw">mod</span> <span class="ident">static_assets</span>;
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
-<span class="kw">mod</span> <span class="ident">tests</span>;
-<span class="kw">mod</span> <span class="ident">utils</span>;
+<span class="kw">mod </span>api;
+<span class="kw">mod </span>ctx;
+<span class="kw">mod </span>db;
+<span class="kw">mod </span>deploy;
+<span class="kw">mod </span>errors;
+<span class="kw">mod </span>git;
+<span class="kw">mod </span>meta;
+<span class="kw">mod </span>page;
+<span class="kw">mod </span>pages;
+<span class="kw">mod </span>preview;
+<span class="kw">mod </span>serve;
+<span class="kw">mod </span>settings;
+<span class="kw">mod </span>static_assets;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">mod </span>tests;
+<span class="kw">mod </span>utils;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::api::v1::ROUTES</span> <span class="kw">as</span> <span class="ident">V1_API_ROUTES</span>;
-<span class="kw">use</span> <span class="ident">ctx::Ctx</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">settings::Settings</span>;
+<span class="kw">pub use </span><span class="kw">crate</span>::api::v1::ROUTES <span class="kw">as </span>V1_API_ROUTES;
+<span class="kw">use </span>ctx::Ctx;
+<span class="kw">pub use </span>settings::Settings;
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">CACHE_AGE</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">604800</span>;
+<span class="kw">pub const </span>CACHE_AGE: u32 = <span class="number">604800</span>;
 
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">GIT_COMMIT_HASH</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;GIT_HASH&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">VERSION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PKG_NAME</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_NAME&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PKG_DESCRIPTION</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_DESCRIPTION&quot;</span>);
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">PKG_HOMEPAGE</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_HOMEPAGE&quot;</span>);
+<span class="kw">pub const </span>GIT_COMMIT_HASH: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;GIT_HASH&quot;</span>);
+<span class="kw">pub const </span>VERSION: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_VERSION&quot;</span>);
+<span class="kw">pub const </span>PKG_NAME: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_NAME&quot;</span>);
+<span class="kw">pub const </span>PKG_DESCRIPTION: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_DESCRIPTION&quot;</span>);
+<span class="kw">pub const </span>PKG_HOMEPAGE: <span class="kw-2">&amp;</span>str = <span class="macro">env!</span>(<span class="string">&quot;CARGO_PKG_HOMEPAGE&quot;</span>);
 
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">AppCtx</span> <span class="op">=</span> <span class="ident">WebData</span><span class="op">&lt;</span><span class="ident">ctx::ArcCtx</span><span class="op">&gt;</span>;
+<span class="kw">pub type </span>AppCtx = WebData&lt;ctx::ArcCtx&gt;;
 
-<span class="macro">lazy_static::lazy_static!</span> {
-    <span class="kw">pub</span> <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">FILES</span>: <span class="ident">FileMap</span> <span class="op">=</span> <span class="ident">FileMap::new</span>();
+<span class="macro">lazy_static::lazy_static! </span>{
+    <span class="kw">pub static </span><span class="kw-2">ref </span>FILES: FileMap = FileMap::new();
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Parser</span>)]</span>
-<span class="attribute">#[<span class="ident">clap</span>(<span class="ident">author</span>, <span class="ident">version</span>, <span class="ident">about</span>, <span class="ident">long_about</span> <span class="op">=</span> <span class="prelude-val">None</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Cli</span> {
-    <span class="attribute">#[<span class="ident">clap</span>(<span class="ident">subcommand</span>)]</span>
-    <span class="ident">command</span>: <span class="ident">Commands</span>,
+<span class="attribute">#[derive(Parser)]
+#[clap(author, version, about, long_about = <span class="prelude-val">None</span>)]
+</span><span class="kw">struct </span>Cli {
+    <span class="attribute">#[clap(subcommand)]
+    </span>command: Commands,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Subcommand</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Commands</span> {
-    <span class="doccomment">/// run database migrations</span>
-    <span class="ident">Migrate</span>,
+<span class="attribute">#[derive(Subcommand)]
+</span><span class="kw">enum </span>Commands {
+    <span class="doccomment">/// run database migrations
+    </span>Migrate,
 
-    <span class="doccomment">/// run server</span>
-    <span class="ident">Serve</span>,
+    <span class="doccomment">/// run server
+    </span>Serve,
 }
 
-<span class="attribute">#[<span class="ident">actix_web::main</span>]</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">main</span>() -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="ident">env::set_var</span>(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info&quot;</span>);
+<span class="attribute">#[actix_web::main]
+#[cfg(not(tarpaulin_include))]
+</span><span class="kw">async fn </span>main() -&gt; std::io::Result&lt;()&gt; {
+    env::set_var(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info&quot;</span>);
 
-    <span class="ident">pretty_env_logger::init</span>();
+    pretty_env_logger::init();
 
-    <span class="kw">let</span> <span class="ident">cli</span> <span class="op">=</span> <span class="ident">Cli::parse</span>();
+    <span class="kw">let </span>cli = Cli::parse();
 
     <span class="macro">info!</span>(
         <span class="string">&quot;{}: {}.\nFor more information, see: {}\nBuild info:\nVersion: {} commit: {}&quot;</span>,
-        <span class="ident">PKG_NAME</span>, <span class="ident">PKG_DESCRIPTION</span>, <span class="ident">PKG_HOMEPAGE</span>, <span class="ident">VERSION</span>, <span class="ident">GIT_COMMIT_HASH</span>
+        PKG_NAME, PKG_DESCRIPTION, PKG_HOMEPAGE, VERSION, GIT_COMMIT_HASH
     );
 
-    <span class="kw">let</span> <span class="ident">settings</span> <span class="op">=</span> <span class="ident">Settings::new</span>().<span class="ident">unwrap</span>();
-    <span class="ident">settings</span>.<span class="ident">init</span>();
-    <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">Ctx::new</span>(<span class="ident">settings</span>.<span class="ident">clone</span>()).<span class="kw">await</span>;
-    <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">actix_web::web::Data::new</span>(<span class="ident">ctx</span>);
+    <span class="kw">let </span>settings = Settings::new().unwrap();
 
-    <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">cli</span>.<span class="ident">command</span> {
-        <span class="ident">Commands::Migrate</span> =&gt; <span class="ident">ctx</span>.<span class="ident">db</span>.<span class="ident">migrate</span>().<span class="kw">await</span>.<span class="ident">unwrap</span>(),
-        <span class="ident">Commands::Serve</span> =&gt; <span class="ident">serve</span>(<span class="ident">settings</span>, <span class="ident">ctx</span>).<span class="kw">await</span>.<span class="ident">unwrap</span>(),
+    <span class="kw">match </span><span class="kw-2">&amp;</span>cli.command {
+        Commands::Migrate =&gt; db::get_db(<span class="kw-2">&amp;</span>settings).<span class="kw">await</span>.migrate().<span class="kw">await</span>.unwrap(),
+        Commands::Serve =&gt; {
+            <span class="kw">let </span>ctx = Ctx::new(settings.clone()).<span class="kw">await</span>;
+            <span class="kw">let </span>ctx = actix_web::web::Data::new(ctx);
+            settings.init();
+            serve(settings, ctx).<span class="kw">await</span>.unwrap();
+        }
     }
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">serve</span>(<span class="ident">settings</span>: <span class="ident">Settings</span>, <span class="ident">ctx</span>: <span class="ident">AppCtx</span>) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">ip</span> <span class="op">=</span> <span class="ident">settings</span>.<span class="ident">server</span>.<span class="ident">get_ip</span>();
+<span class="kw">async fn </span>serve(settings: Settings, ctx: AppCtx) -&gt; std::io::Result&lt;()&gt; {
+    <span class="kw">let </span>ip = settings.server.get_ip();
 
-    <span class="macro">info!</span>(<span class="string">&quot;Starting server on: http://{}&quot;</span>, <span class="ident">ip</span>);
-    <span class="ident">HttpServer::new</span>(<span class="kw">move</span> <span class="op">|</span><span class="op">|</span> {
-        <span class="ident">App::new</span>()
-            .<span class="ident">wrap</span>(<span class="ident">actix_middleware::Logger::default</span>())
-            .<span class="ident">wrap</span>(<span class="ident">actix_middleware::Compress::default</span>())
-            .<span class="ident">app_data</span>(<span class="ident">ctx</span>.<span class="ident">clone</span>())
-            .<span class="ident">app_data</span>(<span class="ident">get_json_err</span>())
-            .<span class="ident">wrap</span>(
-                <span class="ident">actix_middleware::DefaultHeaders::new</span>()
-                    .<span class="ident">add</span>((<span class="string">&quot;Permissions-Policy&quot;</span>, <span class="string">&quot;interest-cohort=()&quot;</span>)),
+    <span class="macro">info!</span>(<span class="string">&quot;Starting server on: http://{}&quot;</span>, ip);
+    HttpServer::new(<span class="kw">move </span>|| {
+        App::new()
+            .wrap(actix_middleware::Logger::default())
+            .wrap(actix_middleware::Compress::default())
+            .app_data(ctx.clone())
+            .app_data(get_json_err())
+            .wrap(
+                actix_middleware::DefaultHeaders::new()
+                    .add((<span class="string">&quot;Permissions-Policy&quot;</span>, <span class="string">&quot;interest-cohort=()&quot;</span>)),
             )
-            .<span class="ident">wrap</span>(<span class="ident">actix_middleware::NormalizePath::new</span>(
-                <span class="ident">actix_middleware::TrailingSlash::Trim</span>,
+            .wrap(actix_middleware::NormalizePath::new(
+                actix_middleware::TrailingSlash::Trim,
             ))
-            .<span class="ident">configure</span>(<span class="ident">services</span>)
+            .configure(services)
     })
-    .<span class="ident">workers</span>(<span class="ident">settings</span>.<span class="ident">server</span>.<span class="ident">workers</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">num_cpus::get</span>))
-    .<span class="ident">bind</span>(<span class="ident">ip</span>)
-    .<span class="ident">unwrap</span>()
-    .<span class="ident">run</span>()
-    .<span class="kw">await</span>
+    .workers(settings.server.workers.unwrap_or_else(num_cpus::get))
+    .bind(ip)
+    .unwrap()
+    .run()
+    .<span class="kw">await
+</span>}
+
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">pub fn </span>get_json_err() -&gt; JsonConfig {
+    JsonConfig::default().error_handler(|err, <span class="kw">_</span>| {
+        <span class="comment">//debug!(&quot;JSON deserialization error: {:?}&quot;, &amp;err);
+        </span>InternalError::new(err, StatusCode::BAD_REQUEST).into()
+    })
 }
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_json_err</span>() -&gt; <span class="ident">JsonConfig</span> {
-    <span class="ident">JsonConfig::default</span>().<span class="ident">error_handler</span>(<span class="op">|</span><span class="ident">err</span>, <span class="kw">_</span><span class="op">|</span> {
-        <span class="comment">//debug!(&quot;JSON deserialization error: {:?}&quot;, &amp;err);</span>
-        <span class="ident">InternalError::new</span>(<span class="ident">err</span>, <span class="ident">StatusCode::BAD_REQUEST</span>).<span class="ident">into</span>()
-    })
-}
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">tarpaulin_include</span>))]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_identity_service</span>(<span class="ident">settings</span>: <span class="kw-2">&amp;</span><span class="ident">Settings</span>) -&gt; <span class="ident">IdentityService</span><span class="op">&lt;</span><span class="ident">CookieIdentityPolicy</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">cookie_secret</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">settings</span>.<span class="ident">server</span>.<span class="ident">cookie_secret</span>;
-    <span class="ident">IdentityService::new</span>(
-        <span class="ident">CookieIdentityPolicy::new</span>(<span class="ident">cookie_secret</span>.<span class="ident">as_bytes</span>())
-            .<span class="ident">path</span>(<span class="string">&quot;/&quot;</span>)
-            .<span class="ident">name</span>(<span class="string">&quot;Authorization&quot;</span>)
-            <span class="comment">//TODO change cookie age</span>
-            .<span class="ident">max_age_secs</span>(<span class="number">216000</span>)
-            .<span class="ident">domain</span>(<span class="kw-2">&amp;</span><span class="ident">settings</span>.<span class="ident">server</span>.<span class="ident">domain</span>)
-            .<span class="ident">secure</span>(<span class="bool-val">false</span>),
+<span class="attribute">#[cfg(not(tarpaulin_include))]
+</span><span class="kw">pub fn </span>get_identity_service(settings: <span class="kw-2">&amp;</span>Settings) -&gt; IdentityService&lt;CookieIdentityPolicy&gt; {
+    <span class="kw">let </span>cookie_secret = <span class="kw-2">&amp;</span>settings.server.cookie_secret;
+    IdentityService::new(
+        CookieIdentityPolicy::new(cookie_secret.as_bytes())
+            .path(<span class="string">&quot;/&quot;</span>)
+            .name(<span class="string">&quot;Authorization&quot;</span>)
+            <span class="comment">//TODO change cookie age
+            </span>.max_age_secs(<span class="number">216000</span>)
+            .domain(<span class="kw-2">&amp;</span>settings.server.domain)
+            .secure(<span class="bool-val">false</span>),
     )
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">services</span>(<span class="ident">cfg</span>: <span class="kw-2">&amp;mut</span> <span class="ident">actix_web::web::ServiceConfig</span>) {
-    <span class="ident"><span class="kw">crate</span>::api::v1::services</span>(<span class="ident">cfg</span>);
-    <span class="ident"><span class="kw">crate</span>::pages::services</span>(<span class="ident">cfg</span>);
-    <span class="ident"><span class="kw">crate</span>::static_assets::services</span>(<span class="ident">cfg</span>);
-    <span class="ident"><span class="kw">crate</span>::serve::services</span>(<span class="ident">cfg</span>);
+<span class="kw">pub fn </span>services(cfg: <span class="kw-2">&amp;mut </span>actix_web::web::ServiceConfig) {
+    <span class="kw">crate</span>::api::v1::services(cfg);
+    <span class="kw">crate</span>::pages::services(cfg);
+    <span class="kw">crate</span>::static_assets::services(cfg);
+    <span class="kw">crate</span>::serve::services(cfg);
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
