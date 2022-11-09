@@ -41,6 +41,7 @@ pub async fn get_ctx() -> (Temp, Arc<Ctx>) {
     let tmp_dir = Temp::new_dir().unwrap();
     println!("[log] Test temp directory: {}", tmp_dir.to_str().unwrap());
     let mut pages = Vec::with_capacity(settings.pages.len());
+    let page_base_path = tmp_dir.as_path().join("base_path");
     for page in settings.pages.iter() {
         let name = Path::new(&page.path).file_name().unwrap().to_str().unwrap();
         let path = tmp_dir.as_path().join(name);

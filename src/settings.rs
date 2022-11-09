@@ -84,6 +84,12 @@ pub struct Settings {
     pub source_code: String,
     pub pages: Vec<Arc<Page>>,
     pub database: Database,
+    pub page: PageConfig,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PageConfig {
+    pub base_path: String,
 }
 
 #[cfg(not(tarpaulin_include))]
@@ -174,14 +180,20 @@ impl Settings {
     pub fn init(&self) {
         for (index, page) in self.pages.iter().enumerate() {
             Url::parse(&page.repo).unwrap();
-            let path = Path::new(&page.path);
-            if path.exists() && path.is_file() {
-                panic!("Path is a file, should be a directory: {:?}", page);
+
+            fn create_dir_util(path: &Path) {
+                if path.exists() && path.is_file() {
+                    panic!("Path is a file, should be a directory: {:?}", path);
+                }
+
+                if !path.exists() {
+                    std::fs::create_dir_all(&path).unwrap();
+                }
             }
 
-            if !path.exists() {
-                std::fs::create_dir_all(&path).unwrap();
-            }
+            create_dir_util(Path::new(&page.path));
+            create_dir_util(Path::new(&self.page.base_path));
+
             for (index2, page2) in self.pages.iter().enumerate() {
                 if index2 == index {
                     continue;
