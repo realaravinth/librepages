@@ -22,6 +22,7 @@ use sqlx::types::time::OffsetDateTime;
 //use sqlx::types::Json;
 use sqlx::ConnectOptions;
 use sqlx::PgPool;
+use url::quirks::hostname;
 
 use crate::errors::*;
 
@@ -96,8 +97,8 @@ impl Database {
     /// register a new user
     pub async fn register(&self, p: &Register<'_>) -> ServiceResult<()> {
         sqlx::query!(
-            "insert into librepages_users
-            (name , password, email) values ($1, $2, $3)",
+            "INSERT INTO librepages_users
+            (name , password, email) VALUES ($1, $2, $3)",
             &p.username,
             &p.hash,
             &p.email,
@@ -248,6 +249,107 @@ impl Database {
 
         Ok(())
     }
+
+    pub async fn add_site(&self, msg: &Site) -> ServiceResult<()> {
+        sqlx::query!(
+            "
+            INSERT INTO librepages_sites
+                (site_secret, repo_url, branch, hostname, owned_by)
+            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));
+            ",
+            msg.site_secret,
+            msg.repo_url,
+            msg.branch,
+            msg.hostname,
+            msg.owner,
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        Ok(())
+    }
+
+    pub async fn get_site(&self, owner: &str, hostname: &str) -> ServiceResult<Site> {
+        let site = sqlx::query_as!(
+            InnerSite,
+            "SELECT site_secret, repo_url, branch, hostname
+            FROM librepages_sites
+            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
+            AND hostname = $2;
+            ",
+            owner,
+            hostname
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        let res = site.to_site(owner.into());
+
+        Ok(res)
+    }
+
+    pub async fn list_all_sites(&self, owner: &str) -> ServiceResult<Vec<Site>> {
+        let mut sites = sqlx::query_as!(
+            InnerSite,
+            "SELECT site_secret, repo_url, branch, hostname
+            FROM librepages_sites
+            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
+            ",
+            owner,
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        let res = sites.drain(0..).map(|s| s.to_site(owner.into())).collect();
+
+        Ok(res)
+    }
+
+    pub async fn delete_site(&self, owner: &str, hostname: &str) -> ServiceResult<()> {
+        sqlx::query!(
+            "DELETE FROM librepages_sites
+            WHERE hostname = ($1)
+            AND owned_by = ( SELECT ID FROM librepages_users WHERE name = $2);
+            ",
+            hostname,
+            owner
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+        Ok(())
+    }
+}
+struct InnerSite {
+    site_secret: String,
+    repo_url: String,
+    branch: String,
+    hostname: String,
+}
+
+impl InnerSite {
+    fn to_site(self, owner: String) -> Site {
+        Site {
+            site_secret: self.site_secret,
+            repo_url: self.repo_url,
+            branch: self.branch,
+            hostname: self.hostname,
+            owner,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+/// Data required to add a new site
+pub struct Site {
+    pub site_secret: String,
+    pub repo_url: String,
+    pub branch: String,
+    pub hostname: String,
+    pub owner: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -453,5 +555,64 @@ mod tests {
             !db.username_exists(p.email).await.unwrap(),
             "user is deleted so username shouldn't exist"
         );
+    }
+
+    #[actix_rt::test]
+    pub async fn test_db_sites() {
+        let settings = Settings::new().unwrap();
+        let pool_options = PgPoolOptions::new().max_connections(1);
+        let db = ConnectionOptions::Fresh(Fresh {
+            pool_options,
+            url: settings.database.url.clone(),
+            disable_logging: !settings.debug,
+        })
+        .connect()
+        .await
+        .unwrap();
+        assert!(db.ping().await);
+
+        const EMAIL: &str = "postgresdbsiteuser@foo.com";
+        const NAME: &str = "postgresdbsiteuser";
+        const PASSWORD: &str = "pasdfasdfasdfadf";
+
+        db.migrate().await.unwrap();
+        let p = super::Register {
+            username: NAME,
+            email: EMAIL,
+            hash: PASSWORD,
+        };
+
+        if db.username_exists(p.username).await.unwrap() {
+            db.delete_user(p.username).await.unwrap();
+            assert!(
+                !db.username_exists(p.username).await.unwrap(),
+                "user is deleted so username shouldn't exist"
+            );
+        }
+
+        db.register(&p).await.unwrap();
+
+        // testing adding site
+        let site = Site {
+            site_secret: "foobar".into(),
+            repo_url: "https://git.batsense.net/LibrePages/librepages.git".into(),
+            branch: "librepages".into(),
+            hostname: "db_works.tests.librepages.librepages.org".into(),
+            owner: p.username.into(),
+        };
+        db.add_site(&site).await.unwrap();
+
+        // get site
+        let db_site = db.get_site(p.username, &site.hostname).await.unwrap();
+        assert_eq!(db_site, site);
+
+        // list all sites owned by user
+        let db_sites = db.list_all_sites(p.username).await.unwrap();
+        assert_eq!(db_sites.len(), 1);
+        assert_eq!(db_sites, vec![site.clone()]);
+
+        // delete site
+        db.delete_site(p.username, &site.hostname).await.unwrap();
+        assert!(db.list_all_sites(p.username).await.unwrap().is_empty());
     }
 }

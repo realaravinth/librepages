@@ -39,6 +39,19 @@
     },
     "query": "UPDATE librepages_users set name = $1\n            WHERE name = $2"
   },
+  "416b9f0412f0d7ee05d4a350839c5a6d1e06c1d7f8942744f6d806ddc47084c2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "DELETE FROM librepages_sites\n            WHERE hostname = ($1)\n            AND owned_by = ( SELECT ID FROM librepages_users WHERE name = $2);\n            "
+  },
   "5c5d774bde06c0ab83c3616a56a28f12dfd9c546cbaac9f246d3b350c587823e": {
     "describe": {
       "columns": [],
@@ -50,6 +63,22 @@
       }
     },
     "query": "DELETE FROM librepages_users WHERE name = ($1)"
+  },
+  "67311c6196639edd153b7b7dd56a37703b67abe750b88f5afdcf0d3d779432e7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Text",
+          "Varchar",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO librepages_sites\n                (site_secret, repo_url, branch, hostname, owned_by)\n            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));\n            "
   },
   "6a557f851d4f47383b864085093beb0954e79779f21b655978f07e285281e0ac": {
     "describe": {
@@ -97,19 +126,82 @@
     },
     "query": "UPDATE librepages_users set password = $1\n            WHERE name = $2"
   },
-  "aa0e7d72a4542f28db816a8cc20e3f7b778e90e3cbe982a5a24af0b682adaf7d": {
+  "9fd163d10860ad4519f9398582aaa0615d6d7b784e844ee71038f77dcd069eed": {
     "describe": {
-      "columns": [],
-      "nullable": [],
+      "columns": [
+        {
+          "name": "site_secret",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "repo_url",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
       "parameters": {
         "Left": [
-          "Varchar",
-          "Text",
-          "Varchar"
+          "Text"
         ]
       }
     },
-    "query": "insert into librepages_users\n            (name , password, email) values ($1, $2, $3)"
+    "query": "SELECT site_secret, repo_url, branch, hostname\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );\n            "
+  },
+  "aad26d1f932001cbe49b147348aa528eca5101ec6ef83cb034e1ccd0dbd17878": {
+    "describe": {
+      "columns": [
+        {
+          "name": "site_secret",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "repo_url",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT site_secret, repo_url, branch, hostname\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )\n            AND hostname = $2;\n            "
   },
   "b48c77db6e663d97df44bf9ec2ee92fd3e02f2dcbcdbd1d491e09fab2da68494": {
     "describe": {
@@ -176,5 +268,19 @@
       }
     },
     "query": "SELECT email FROM librepages_users WHERE name = $1"
+  },
+  "faa4170a309f19a4abf1ca3f8dd3c0526945aa00f028ebf8bd7063825d448f5b": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Text",
+          "Varchar"
+        ]
+      }
+    },
+    "query": "INSERT INTO librepages_users\n            (name , password, email) VALUES ($1, $2, $3)"
   }
 }
