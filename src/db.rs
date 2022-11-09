@@ -270,6 +270,49 @@ impl Database {
         Ok(())
     }
 
+    pub async fn get_site_from_secret(&self, site_secret: &str) -> ServiceResult<Site> {
+        struct S {
+            repo_url: String,
+            branch: String,
+            hostname: String,
+            owned_by: i32,
+        }
+
+        let site = sqlx::query_as!(
+            S,
+            "SELECT repo_url, branch, hostname, owned_by
+            FROM librepages_sites
+            WHERE site_secret = $1
+            ",
+            site_secret,
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        struct Owner {
+            name: String,
+        }
+        let owner = sqlx::query_as!(
+            Owner,
+            "SELECT name FROM librepages_users WHERE ID = $1",
+            site.owned_by
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        let site = Site {
+            site_secret: site_secret.to_owned(),
+            branch: site.branch,
+            hostname: site.hostname,
+            owner: owner.name,
+            repo_url: site.repo_url,
+        };
+
+        Ok(site)
+    }
+
     pub async fn get_site(&self, owner: &str, hostname: &str) -> ServiceResult<Site> {
         let site = sqlx::query_as!(
             InnerSite,
@@ -605,6 +648,12 @@ mod tests {
         // get site
         let db_site = db.get_site(p.username, &site.hostname).await.unwrap();
         assert_eq!(db_site, site);
+
+        // get site by secret
+        assert_eq!(
+            db_site,
+            db.get_site_from_secret(&site.site_secret).await.unwrap()
+        );
 
         // list all sites owned by user
         let db_sites = db.list_all_sites(p.username).await.unwrap();

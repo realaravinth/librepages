@@ -1,5 +1,43 @@
 {
   "db": "PostgreSQL",
+  "1ac91b492001493430c686d9cd7d6be03ada4b4c431d7bc112ef2105eba0e82d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "repo_url",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "owned_by",
+          "ordinal": 3,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT repo_url, branch, hostname, owned_by\n            FROM librepages_sites\n            WHERE site_secret = $1\n            "
+  },
   "1be33ea4fe0e6079c88768ff912b824f4b0250193f2d086046c1fd0da125ae0c": {
     "describe": {
       "columns": [
@@ -51,6 +89,26 @@
       }
     },
     "query": "DELETE FROM librepages_sites\n            WHERE hostname = ($1)\n            AND owned_by = ( SELECT ID FROM librepages_users WHERE name = $2);\n            "
+  },
+  "53f3c21c06c8d1c218537dfa9183fd0604aaf28200d8aa12e97db4ac317df39e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT name FROM librepages_users WHERE ID = $1"
   },
   "5c5d774bde06c0ab83c3616a56a28f12dfd9c546cbaac9f246d3b350c587823e": {
     "describe": {
