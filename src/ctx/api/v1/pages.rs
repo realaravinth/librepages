@@ -22,6 +22,8 @@ use crate::ctx::Ctx;
 use crate::db::Site;
 use crate::errors::*;
 use crate::page::Page;
+use crate::settings::Settings;
+use crate::subdomains::get_random_subdomain;
 use crate::utils::get_random;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -29,30 +31,30 @@ use crate::utils::get_random;
 pub struct AddSite {
     pub repo_url: String,
     pub branch: String,
-    pub hostname: String,
     pub owner: String,
 }
 
 impl AddSite {
-    fn to_site(self) -> Site {
+    fn to_site(self, s: &Settings) -> Site {
         let site_secret = get_random(32);
+        let hostname = get_random_subdomain(s);
         Site {
             site_secret,
             repo_url: self.repo_url,
             branch: self.branch,
-            hostname: self.hostname,
+            hostname,
             owner: self.owner,
         }
     }
 }
 
 impl Ctx {
-    pub async fn add_site(&self, site: AddSite) -> ServiceResult<()> {
-        let db_site = site.to_site();
+    pub async fn add_site(&self, site: AddSite) -> ServiceResult<Page> {
+        let db_site = site.to_site(&self.settings);
         self.db.add_site(&db_site).await?;
         let page = Page::from_site(&self.settings, db_site);
         page.update(&page.branch)?;
-        Ok(())
+        Ok(page)
     }
 
     pub async fn update_site(&self, secret: &str, branch: Option<String>) -> ServiceResult<()> {

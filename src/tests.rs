@@ -29,10 +29,10 @@ use crate::ctx::api::v1::auth::{Login, Register};
 use crate::ctx::api::v1::pages::AddSite;
 use crate::ctx::Ctx;
 use crate::errors::*;
+use crate::page::Page;
 use crate::settings::Settings;
 use crate::*;
 
-const HOSTNAME: &str = "example.org";
 pub const REPO_URL: &str = "https://github.com/mCaptcha/website/";
 pub const BRANCH: &str = "gh-pages";
 
@@ -268,17 +268,12 @@ impl Ctx {
         assert_eq!(resp_err.error, format!("{}", err));
     }
 
-    pub async fn add_test_site(&self, owner: String, hostname: String) {
+    pub async fn add_test_site(&self, owner: String) -> Page {
         let msg = AddSite {
             repo_url: REPO_URL.into(),
             branch: BRANCH.into(),
-            hostname,
             owner,
         };
-        self.add_site(msg).await.unwrap();
-    }
-
-    pub fn get_test_hostname(&self, unique: &str) -> String {
-        format!("{unique}.{HOSTNAME}")
+        self.add_site(msg).await.unwrap()
     }
 }

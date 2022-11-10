@@ -25,7 +25,7 @@ pub struct Preview<'a> {
 impl<'a> Preview<'a> {
     pub fn new(ctx: &'a AppCtx) -> Self {
         Self {
-            base: &ctx.settings.server.domain,
+            base: &ctx.settings.page.base_domain,
             delimiter: ".",
             prefix: "deploy-preview-",
         }

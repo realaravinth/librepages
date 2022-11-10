@@ -117,14 +117,11 @@ mod tests {
         let (_dir, ctx) = tests::get_ctx().await;
         let _ = ctx.delete_user(NAME, PASSWORD).await;
         let (_, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
-        let hostname = ctx.get_test_hostname(NAME);
-        ctx.add_test_site(NAME.into(), hostname.clone()).await;
+        let page = ctx.add_test_site(NAME.into()).await;
         let app = get_app!(ctx).await;
 
-        let page = ctx.db.get_site(NAME, &hostname).await.unwrap();
-
         let mut payload = DeployEvent {
-            secret: page.site_secret.clone(),
+            secret: page.secret.clone(),
             branch: page.branch.clone(),
         };
 
@@ -154,13 +151,11 @@ mod tests {
         let (_dir, ctx) = tests::get_ctx().await;
         let _ = ctx.delete_user(NAME, PASSWORD).await;
         let (_, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
-        let hostname = ctx.get_test_hostname(NAME);
-        ctx.add_test_site(NAME.into(), hostname.clone()).await;
+        let page = ctx.add_test_site(NAME.into()).await;
         let app = get_app!(ctx).await;
 
-        let page = ctx.db.get_site(NAME, &hostname).await.unwrap();
         let mut payload = DeploySecret {
-            secret: page.site_secret.clone(),
+            secret: page.secret.clone(),
         };
 
         let resp = test::call_service(
@@ -173,7 +168,7 @@ mod tests {
 
         let response: DeployInfo = actix_web::test::read_body_json(resp).await;
         assert_eq!(response.head, page.branch);
-        assert_eq!(response.remote, page.repo_url);
+        assert_eq!(response.remote, page.repo);
 
         payload.secret = page.branch.clone();
 
