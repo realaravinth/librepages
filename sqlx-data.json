@@ -77,6 +77,26 @@
     },
     "query": "UPDATE librepages_users set name = $1\n            WHERE name = $2"
   },
+  "3705b8869aab99d749c08d9c9633931f0b74216957b6a2881bd56a33c33a8c47": {
+    "describe": {
+      "columns": [
+        {
+          "name": "exists",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1)"
+  },
   "416b9f0412f0d7ee05d4a350839c5a6d1e06c1d7f8942744f6d806ddc47084c2": {
     "describe": {
       "columns": [],

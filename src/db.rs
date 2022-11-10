@@ -365,6 +365,24 @@ impl Database {
         .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
         Ok(())
     }
+
+    /// check if hostname exists
+    pub async fn hostname_exists(&self, hostname: &str) -> ServiceResult<bool> {
+        let res = sqlx::query!(
+            "SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1)",
+            hostname,
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+
+        let mut resp = false;
+        if let Some(x) = res.exists {
+            resp = x;
+        }
+
+        Ok(resp)
+    }
 }
 struct InnerSite {
     site_secret: String,
@@ -635,7 +653,6 @@ mod tests {
 
         db.register(&p).await.unwrap();
 
-        // testing adding site
         let site = Site {
             site_secret: "foobar".into(),
             repo_url: "https://git.batsense.net/LibrePages/librepages.git".into(),
@@ -643,7 +660,15 @@ mod tests {
             hostname: "db_works.tests.librepages.librepages.org".into(),
             owner: p.username.into(),
         };
+
+        // test if hostname exists. Should be false
+        assert!(!db.hostname_exists(&site.hostname).await.unwrap());
+
+        // testing adding site
         db.add_site(&site).await.unwrap();
+
+        // test if hostname exists. Should be true
+        assert!(db.hostname_exists(&site.hostname).await.unwrap());
 
         // get site
         let db_site = db.get_site(p.username, &site.hostname).await.unwrap();
@@ -662,6 +687,8 @@ mod tests {
 
         // delete site
         db.delete_site(p.username, &site.hostname).await.unwrap();
-        assert!(db.list_all_sites(p.username).await.unwrap().is_empty());
+
+        // test if hostname exists. Should be false
+        assert!(!db.hostname_exists(&site.hostname).await.unwrap());
     }
 }
