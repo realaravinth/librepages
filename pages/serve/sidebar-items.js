@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["find_page",""],["services",""]],"mod":[["routes",""]],"struct":[["index",""]]};
+window.SIDEBAR_ITEMS = {"fn":[["services",""]],"mod":[["routes",""]],"struct":[["index",""]]};

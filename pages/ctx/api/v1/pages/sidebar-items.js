@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["AddSite","Data required to add site"]]};

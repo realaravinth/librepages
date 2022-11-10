@@ -27,6 +27,13 @@
 <span id="27">27</span>
 <span id="28">28</span>
 <span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -43,7 +50,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
-</span><span class="doccomment">/// Get random string of specific length
+</span><span class="kw">use </span><span class="kw">crate</span>::Settings;
+<span class="kw">use </span>std::path::{Path, PathBuf};
+
+<span class="doccomment">/// Get random string of specific length
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_random(len: usize) -&gt; String {
     <span class="kw">use </span>rand::{distributions::Alphanumeric, rngs::ThreadRng, thread_rng, Rng};
     <span class="kw">use </span>std::iter;
@@ -55,6 +65,10 @@
         .map(char::from)
         .take(len)
         .collect::&lt;String&gt;()
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_website_path(s: <span class="kw-2">&amp;</span>Settings, hostname: <span class="kw-2">&amp;</span>str) -&gt; PathBuf {
+    Path::new(<span class="kw-2">&amp;</span>s.page.base_path).join(hostname)
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

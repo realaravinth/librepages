@@ -290,6 +290,7 @@
 <span id="290">290</span>
 <span id="291">291</span>
 <span id="292">292</span>
+<span id="293">293</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -307,6 +308,7 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 </span><span class="kw">use </span>std::path::Path;
+<span class="kw">use </span>std::path::PathBuf;
 
 <span class="kw">use </span>git2::<span class="kw-2">*</span>;
 <span class="kw">use </span>mime_guess::MimeGuess;
@@ -405,7 +407,7 @@
 /// For example, a read request for &quot;foo bar.md&quot; will fail even if that file is present
 /// in the repository. However, it will succeed if the output of [escape_spaces] is
 /// used in the request.
-</span><span class="kw">pub fn </span>read_file(repo_path: <span class="kw-2">&amp;</span>str, path: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;FileInfo&gt; {
+</span><span class="kw">pub fn </span>read_file(repo_path: <span class="kw-2">&amp;</span>PathBuf, path: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;FileInfo&gt; {
     <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
     <span class="kw">let </span>head = repo.head().unwrap();
     <span class="kw">let </span>tree = head.peel_to_tree().unwrap();
@@ -413,7 +415,7 @@
 }
 
 <span class="kw">pub fn </span>read_preview_file(
-    repo_path: <span class="kw-2">&amp;</span>str,
+    repo_path: <span class="kw-2">&amp;</span>PathBuf,
     preview_name: <span class="kw-2">&amp;</span>str,
     path: <span class="kw-2">&amp;</span>str,
 ) -&gt; ServiceResult&lt;FileInfo&gt; {
@@ -571,12 +573,12 @@
         <span class="kw">const </span>PATH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;/tmp/librepges/test_git_write_read_works&quot;</span>;
 
         write_file_util(PATH);
-        <span class="kw">let </span>resp = read_file(PATH, <span class="string">&quot;README.txt&quot;</span>).unwrap();
+        <span class="kw">let </span>resp = read_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;README.txt&quot;</span>).unwrap();
         <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
         <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
         <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
 
-        <span class="kw">let </span>resp = read_preview_file(PATH, <span class="string">&quot;master&quot;</span>, <span class="string">&quot;README.txt&quot;</span>).unwrap();
+        <span class="kw">let </span>resp = read_preview_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;master&quot;</span>, <span class="string">&quot;README.txt&quot;</span>).unwrap();
         <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
         <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
         <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);

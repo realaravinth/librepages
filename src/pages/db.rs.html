@@ -616,6 +616,82 @@
 <span id="616">616</span>
 <span id="617">617</span>
 <span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -888,6 +964,49 @@
         <span class="prelude-val">Ok</span>(())
     }
 
+    <span class="kw">pub async fn </span>get_site_from_secret(<span class="kw-2">&amp;</span><span class="self">self</span>, site_secret: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Site&gt; {
+        <span class="kw">struct </span>S {
+            repo_url: String,
+            branch: String,
+            hostname: String,
+            owned_by: i32,
+        }
+
+        <span class="kw">let </span>site = <span class="macro">sqlx::query_as!</span>(
+            S,
+            <span class="string">&quot;SELECT repo_url, branch, hostname, owned_by
+            FROM librepages_sites
+            WHERE site_secret = $1
+            &quot;</span>,
+            site_secret,
+        )
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))<span class="question-mark">?</span>;
+
+        <span class="kw">struct </span>Owner {
+            name: String,
+        }
+        <span class="kw">let </span>owner = <span class="macro">sqlx::query_as!</span>(
+            Owner,
+            <span class="string">&quot;SELECT name FROM librepages_users WHERE ID = $1&quot;</span>,
+            site.owned_by
+        )
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>site = Site {
+            site_secret: site_secret.to_owned(),
+            branch: site.branch,
+            hostname: site.hostname,
+            owner: owner.name,
+            repo_url: site.repo_url,
+        };
+
+        <span class="prelude-val">Ok</span>(site)
+    }
+
     <span class="kw">pub async fn </span>get_site(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str, hostname: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Site&gt; {
         <span class="kw">let </span>site = <span class="macro">sqlx::query_as!</span>(
             InnerSite,
@@ -901,7 +1020,7 @@
         )
         .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
         .<span class="kw">await
-        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))<span class="question-mark">?</span>;
 
         <span class="kw">let </span>res = site.to_site(owner.into());
 
@@ -937,8 +1056,26 @@
         )
         .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
         .<span class="kw">await
-        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))<span class="question-mark">?</span>;
+        </span>.map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="doccomment">/// check if hostname exists
+    </span><span class="kw">pub async fn </span>hostname_exists(<span class="kw-2">&amp;</span><span class="self">self</span>, hostname: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;bool&gt; {
+        <span class="kw">let </span>res = <span class="macro">sqlx::query!</span>(
+            <span class="string">&quot;SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1)&quot;</span>,
+            hostname,
+        )
+        .fetch_one(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
+        .<span class="kw">await
+        </span>.map_err(map_register_err)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span><span class="kw-2">mut </span>resp = <span class="bool-val">false</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(x) = res.exists {
+            resp = x;
+        }
+
+        <span class="prelude-val">Ok</span>(resp)
     }
 }
 <span class="kw">struct </span>InnerSite {
@@ -1210,19 +1347,32 @@
 
         db.register(<span class="kw-2">&amp;</span>p).<span class="kw">await</span>.unwrap();
 
-        <span class="comment">// testing adding site
-        </span><span class="kw">let </span>site = Site {
+        <span class="kw">let </span>site = Site {
             site_secret: <span class="string">&quot;foobar&quot;</span>.into(),
             repo_url: <span class="string">&quot;https://git.batsense.net/LibrePages/librepages.git&quot;</span>.into(),
             branch: <span class="string">&quot;librepages&quot;</span>.into(),
             hostname: <span class="string">&quot;db_works.tests.librepages.librepages.org&quot;</span>.into(),
             owner: p.username.into(),
         };
-        db.add_site(<span class="kw-2">&amp;</span>site).<span class="kw">await</span>.unwrap();
+
+        <span class="comment">// test if hostname exists. Should be false
+        </span><span class="macro">assert!</span>(!db.hostname_exists(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap());
+
+        <span class="comment">// testing adding site
+        </span>db.add_site(<span class="kw-2">&amp;</span>site).<span class="kw">await</span>.unwrap();
+
+        <span class="comment">// test if hostname exists. Should be true
+        </span><span class="macro">assert!</span>(db.hostname_exists(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap());
 
         <span class="comment">// get site
         </span><span class="kw">let </span>db_site = db.get_site(p.username, <span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
         <span class="macro">assert_eq!</span>(db_site, site);
+
+        <span class="comment">// get site by secret
+        </span><span class="macro">assert_eq!</span>(
+            db_site,
+            db.get_site_from_secret(<span class="kw-2">&amp;</span>site.site_secret).<span class="kw">await</span>.unwrap()
+        );
 
         <span class="comment">// list all sites owned by user
         </span><span class="kw">let </span>db_sites = db.list_all_sites(p.username).<span class="kw">await</span>.unwrap();
@@ -1231,7 +1381,9 @@
 
         <span class="comment">// delete site
         </span>db.delete_site(p.username, <span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
-        <span class="macro">assert!</span>(db.list_all_sites(p.username).<span class="kw">await</span>.unwrap().is_empty());
+
+        <span class="comment">// test if hostname exists. Should be false
+        </span><span class="macro">assert!</span>(!db.hostname_exists(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap());
     }
 }
 </code></pre></div>

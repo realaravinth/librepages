@@ -93,27 +93,6 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
-<span id="100">100</span>
-<span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -133,7 +112,6 @@
 </span><span class="kw">use </span>actix_web::{http::header::ContentType, web, HttpRequest, HttpResponse, Responder};
 
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::page::Page;
 <span class="kw">use </span><span class="kw">crate</span>::AppCtx;
 
 <span class="kw">pub mod </span>routes {
@@ -149,19 +127,6 @@
         }
     }
 }
-
-<span class="kw">pub fn </span>find_page&lt;<span class="lifetime">&#39;a</span>&gt;(domain: <span class="kw-2">&amp;</span>str, ctx: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>AppCtx) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Page&gt; {
-    <span class="macro">log::info!</span>(<span class="string">&quot;looking for {domain}&quot;</span>);
-    <span class="kw">for </span>page <span class="kw">in </span>ctx.settings.pages.iter() {
-        <span class="macro">log::debug!</span>(<span class="string">&quot;configured domains: {}&quot;</span>, page.domain);
-        <span class="macro">log::debug!</span>(<span class="string">&quot;{}&quot;</span>, page.domain.trim() == domain.trim());
-        <span class="kw">if </span>page.domain.trim() == domain.trim() {
-            <span class="macro">log::debug!</span>(<span class="string">&quot;found configured domains: {}&quot;</span>, page.domain);
-            <span class="kw">return </span><span class="prelude-val">Some</span>(page);
-        }
-    }
-    <span class="prelude-val">None
-</span>}
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;crate::V1_API_ROUTES.serve.catch_all&quot;</span>)]
 </span><span class="kw">async fn </span>index(req: HttpRequest, ctx: AppCtx) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
@@ -183,47 +148,40 @@
             <span class="macro">unimplemented!</span>(
                 <span class="string">&quot;map a local subdomain on settings.server.domain and use it to fetch page&quot;
             </span>);
-            <span class="kw">let </span>res = <span class="kw">match </span>find_page(host, <span class="kw-2">&amp;</span>ctx) {
-                <span class="prelude-val">Some</span>(page) =&gt; {
-                    <span class="macro">log::debug!</span>(<span class="string">&quot;Page found&quot;</span>);
-                    <span class="kw">let </span>content = <span class="kw">crate</span>::git::read_preview_file(
-                        <span class="kw-2">&amp;</span>page.path,
-                        preview_branch,
-                        req.uri().path(),
-                    )<span class="question-mark">?</span>;
-                    <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
-                        mime
-                    } <span class="kw">else </span>{
-                        <span class="string">&quot;text/html; charset=utf-8&quot;
-                    </span>};
 
-                    <span class="prelude-val">Ok</span>(HttpResponse::Ok()
-                        <span class="comment">//.content_type(ContentType::html())
-                        </span>.content_type(mime)
-                        .body(content.content.bytes()))
-                }
-                <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound),
+            <span class="kw">let </span>res = <span class="kw">if </span>ctx.db.hostname_exists(<span class="kw-2">&amp;</span>host).<span class="kw">await</span><span class="question-mark">? </span>{
+                <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, <span class="kw-2">&amp;</span>host);
+                <span class="kw">let </span>content =
+                    <span class="kw">crate</span>::git::read_preview_file(<span class="kw-2">&amp;</span>path, preview_branch, req.uri().path())<span class="question-mark">?</span>;
+                <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
+                    mime
+                } <span class="kw">else </span>{
+                    <span class="string">&quot;text/html; charset=utf-8&quot;
+                </span>};
+
+                <span class="prelude-val">Ok</span>(HttpResponse::Ok()
+                    .content_type(mime)
+                    .body(content.content.bytes()))
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)
             };
-            <span class="kw">return </span>res;
         }
     }
 
-    <span class="kw">match </span>find_page(host, <span class="kw-2">&amp;</span>ctx) {
-        <span class="prelude-val">Some</span>(page) =&gt; {
-            <span class="macro">log::debug!</span>(<span class="string">&quot;Page found&quot;</span>);
-            <span class="kw">let </span>content = <span class="kw">crate</span>::git::read_file(<span class="kw-2">&amp;</span>page.path, req.uri().path())<span class="question-mark">?</span>;
-            <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
-                mime
-            } <span class="kw">else </span>{
-                <span class="string">&quot;text/html; charset=utf-8&quot;
-            </span>};
+    <span class="kw">if </span>ctx.db.hostname_exists(host).<span class="kw">await</span><span class="question-mark">? </span>{
+        <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, <span class="kw-2">&amp;</span>host);
+        <span class="kw">let </span>content = <span class="kw">crate</span>::git::read_file(<span class="kw-2">&amp;</span>path, req.uri().path())<span class="question-mark">?</span>;
+        <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
+            mime
+        } <span class="kw">else </span>{
+            <span class="string">&quot;text/html; charset=utf-8&quot;
+        </span>};
 
-            <span class="prelude-val">Ok</span>(HttpResponse::Ok()
-                <span class="comment">//.content_type(ContentType::html())
-                </span>.content_type(mime)
-                .body(content.content.bytes()))
-        }
-        <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound),
+        <span class="prelude-val">Ok</span>(HttpResponse::Ok()
+            .content_type(mime)
+            .body(content.content.bytes()))
+    } <span class="kw">else </span>{
+        <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)
     }
 }
 

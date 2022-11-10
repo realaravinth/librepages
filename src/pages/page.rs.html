@@ -287,6 +287,21 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -314,7 +329,10 @@
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>serde::Serialize;
 
+<span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
+<span class="kw">use </span><span class="kw">crate</span>::utils::get_website_path;
 
 <span class="attribute">#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 </span><span class="kw">pub struct </span>Page {
@@ -326,6 +344,18 @@
 }
 
 <span class="kw">impl </span>Page {
+    <span class="kw">pub fn </span>from_site(settings: <span class="kw-2">&amp;</span>Settings, s: Site) -&gt; <span class="self">Self </span>{
+        <span class="self">Self </span>{
+            secret: s.site_secret,
+            repo: s.repo_url,
+            path: get_website_path(settings, <span class="kw-2">&amp;</span>s.hostname)
+                .to_str()
+                .unwrap()
+                .to_owned(),
+            domain: s.hostname,
+            branch: s.branch,
+        }
+    }
     <span class="kw">pub fn </span>open_repo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;Repository&gt; {
         <span class="prelude-val">Ok</span>(Repository::open(<span class="kw-2">&amp;</span><span class="self">self</span>.path)<span class="question-mark">?</span>)
     }

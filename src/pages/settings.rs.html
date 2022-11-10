@@ -213,13 +213,6 @@
 <span id="213">213</span>
 <span id="214">214</span>
 <span id="215">215</span>
-<span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -304,7 +297,6 @@
     <span class="kw">pub </span>debug: bool,
     <span class="kw">pub </span>server: Server,
     <span class="kw">pub </span>source_code: String,
-    <span class="kw">pub </span>pages: Vec&lt;Arc&lt;Page&gt;&gt;,
     <span class="kw">pub </span>database: Database,
     <span class="kw">pub </span>page: PageConfig,
 }
@@ -348,15 +340,12 @@
         <span class="kw">match </span>env::var(<span class="string">&quot;PORT&quot;</span>) {
             <span class="prelude-val">Ok</span>(val) =&gt; {
                 s = s.set_override(<span class="string">&quot;server.port&quot;</span>, val).unwrap();
-                <span class="comment">//settings.server.port = val.parse().unwrap();
-            </span>}
+            }
             <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">warn!</span>(<span class="string">&quot;couldn&#39;t interpret PORT: {}&quot;</span>, e),
         }
 
         <span class="kw">if let </span><span class="prelude-val">Ok</span>(val) = env::var(<span class="string">&quot;DATABASE_URL&quot;</span>) {
-            <span class="comment">//        match env::var(&quot;DATABASE_URL&quot;) {
-            //           Ok(val) =&gt; {
-            </span><span class="kw">let </span>url = Url::parse(<span class="kw-2">&amp;</span>val).expect(<span class="string">&quot;couldn&#39;t parse Database URL&quot;</span>);
+            <span class="kw">let </span>url = Url::parse(<span class="kw-2">&amp;</span>val).expect(<span class="string">&quot;couldn&#39;t parse Database URL&quot;</span>);
             s = s.set_override(<span class="string">&quot;database.url&quot;</span>, url.to_string()).unwrap();
             <span class="kw">let </span>database_type = DBType::from_url(<span class="kw-2">&amp;</span>url).unwrap();
             s = s
@@ -364,10 +353,7 @@
                 .unwrap();
         }
 
-        <span class="comment">//    Err(_e) =&gt; {
-        //    }
-
-        </span><span class="kw">let </span>intermediate_config = s.build_cloned().unwrap();
+        <span class="kw">let </span>intermediate_config = s.build_cloned().unwrap();
 
         s = s
             .set_override(
@@ -400,42 +386,42 @@
     }
 
     <span class="kw">pub fn </span>init(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">for </span>(index, page) <span class="kw">in </span><span class="self">self</span>.pages.iter().enumerate() {
-            Url::parse(<span class="kw-2">&amp;</span>page.repo).unwrap();
-
-            <span class="kw">fn </span>create_dir_util(path: <span class="kw-2">&amp;</span>Path) {
-                <span class="kw">if </span>path.exists() &amp;&amp; path.is_file() {
-                    <span class="macro">panic!</span>(<span class="string">&quot;Path is a file, should be a directory: {:?}&quot;</span>, path);
-                }
-
-                <span class="kw">if </span>!path.exists() {
-                    std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).unwrap();
-                }
+        <span class="kw">fn </span>create_dir_util(path: <span class="kw-2">&amp;</span>Path) {
+            <span class="kw">if </span>path.exists() &amp;&amp; path.is_file() {
+                <span class="macro">panic!</span>(<span class="string">&quot;Path is a file, should be a directory: {:?}&quot;</span>, path);
             }
 
-            create_dir_util(Path::new(<span class="kw-2">&amp;</span>page.path));
-            create_dir_util(Path::new(<span class="kw-2">&amp;</span><span class="self">self</span>.page.base_path));
-
-            <span class="kw">for </span>(index2, page2) <span class="kw">in </span><span class="self">self</span>.pages.iter().enumerate() {
-                <span class="kw">if </span>index2 == index {
-                    <span class="kw">continue</span>;
-                }
-                <span class="kw">if </span>page.secret == page2.secret {
-                    <span class="macro">error!</span>(<span class="string">&quot;{}&quot;</span>, ServiceError::SecretTaken(page.clone(), page2.clone()));
-                } <span class="kw">else if </span>page.repo == page2.repo {
-                    <span class="macro">error!</span>(
-                        <span class="string">&quot;{}&quot;</span>,
-                        ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
-                    );
-                } <span class="kw">else if </span>page.path == page2.path {
-                    <span class="macro">error!</span>(<span class="string">&quot;{}&quot;</span>, ServiceError::PathTaken(page.clone(), page2.clone()));
-                }
-            }
-            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = page.update(<span class="kw-2">&amp;</span>page.branch) {
-                <span class="macro">error!</span>(<span class="string">&quot;{e}&quot;</span>);
+            <span class="kw">if </span>!path.exists() {
+                std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).unwrap();
             }
         }
-    }
+
+        <span class="comment">// create_dir_util(Path::new(&amp;page.path));
+        </span>create_dir_util(Path::new(<span class="kw-2">&amp;</span><span class="self">self</span>.page.base_path));
+
+        <span class="comment">//        for (index, page) in self.pages.iter().enumerate() {
+        //            Url::parse(&amp;page.repo).unwrap();
+        //
+        //            for (index2, page2) in self.pages.iter().enumerate() {
+        //                if index2 == index {
+        //                    continue;
+        //                }
+        //                if page.secret == page2.secret {
+        //                    error!(&quot;{}&quot;, ServiceError::SecretTaken(page.clone(), page2.clone()));
+        //                } else if page.repo == page2.repo {
+        //                    error!(
+        //                        &quot;{}&quot;,
+        //                        ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
+        //                    );
+        //                } else if page.path == page2.path {
+        //                    error!(&quot;{}&quot;, ServiceError::PathTaken(page.clone(), page2.clone()));
+        //                }
+        //            }
+        //            if let Err(e) = page.update(&amp;page.branch) {
+        //                error!(&quot;{e}&quot;);
+        //            }
+        //        }
+    </span>}
 
     <span class="attribute">#[cfg(not(tarpaulin_include))]
     </span><span class="kw">fn </span>check_url(<span class="kw-2">&amp;</span><span class="self">self</span>) {
