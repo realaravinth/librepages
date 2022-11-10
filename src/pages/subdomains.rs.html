@@ -937,6 +937,39 @@
 <span id="937">937</span>
 <span id="938">938</span>
 <span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -954,7 +987,9 @@
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
 
-// source: https://www.randomlists.com/data/nouns.json
+</span><span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
+
+<span class="comment">// source: https://www.randomlists.com/data/nouns.json
 </span><span class="kw">const </span>LEN: usize = <span class="number">876</span>;
 <span class="kw">const </span>WORDLIST: [<span class="kw-2">&amp;</span>str; LEN] = [
     <span class="string">&quot;account&quot;</span>,
@@ -1835,7 +1870,22 @@
     <span class="string">&quot;zoo&quot;</span>,
 ];
 
-<span class="kw">pub fn </span>get_random_subdomain() -&gt; String {
+<span class="kw">struct </span>ID&lt;<span class="lifetime">&#39;a</span>&gt; {
+    first: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    second: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+    third: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; ID&lt;<span class="lifetime">&#39;a</span>&gt; {
+    <span class="kw">fn </span>hostname(<span class="kw-2">&amp;</span><span class="self">self</span>, base_domain: <span class="kw-2">&amp;</span>str) -&gt; String {
+        <span class="macro">format!</span>(
+            <span class="string">&quot;{}-{}-{}.{}&quot;</span>,
+            <span class="self">self</span>.first, <span class="self">self</span>.second, <span class="self">self</span>.third, base_domain
+        )
+    }
+}
+
+<span class="kw">fn </span>get_random_id() -&gt; ID&lt;<span class="lifetime">&#39;static</span>&gt; {
     <span class="kw">use </span>rand::{rngs::ThreadRng, thread_rng, Rng};
 
     <span class="kw">let </span><span class="kw-2">mut </span>rng: ThreadRng = thread_rng();
@@ -1860,7 +1910,16 @@
     <span class="kw">let </span>first = WORDLIST[first];
     <span class="kw">let </span>second = WORDLIST[second];
     <span class="kw">let </span>third = WORDLIST[third];
-    <span class="macro">format!</span>(<span class="string">&quot;{first}-{second}-{third}&quot;</span>)
+    ID {
+        first,
+        second,
+        third,
+    }
+}
+
+<span class="kw">pub fn </span>get_random_subdomain(s: <span class="kw-2">&amp;</span>Settings) -&gt; String {
+    <span class="kw">let </span>id = get_random_id();
+    id.hostname(<span class="kw-2">&amp;</span>s.page.base_domain)
 }
 
 <span class="attribute">#[cfg(test)]
@@ -1868,12 +1927,19 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="attribute">#[test]
-    </span><span class="kw">fn </span>test_get_random_subdomain() {
-        <span class="kw">let </span>sub = get_random_subdomain();
-        <span class="kw">let </span>splits: Vec&lt;<span class="kw-2">&amp;</span>str&gt; = sub.split(<span class="string">&#39;-&#39;</span>).collect();
-        <span class="macro">assert_ne!</span>(splits[<span class="number">0</span>], splits[<span class="number">1</span>]);
-        <span class="macro">assert_ne!</span>(splits[<span class="number">0</span>], splits[<span class="number">2</span>]);
-        <span class="macro">assert_ne!</span>(splits[<span class="number">1</span>], splits[<span class="number">2</span>]);
+    </span><span class="kw">fn </span>test_subdomains() {
+        <span class="comment">// test random ID
+        </span><span class="kw">let </span>id = get_random_id();
+        <span class="macro">assert_ne!</span>(id.first, id.second);
+        <span class="macro">assert_ne!</span>(id.first, id.third);
+        <span class="macro">assert_ne!</span>(id.third, id.second);
+
+        <span class="comment">// test ID::hostname
+        </span><span class="kw">let </span>delimiter = <span class="string">&quot;foobar21312&quot;</span>;
+        <span class="macro">assert_eq!</span>(
+            id.hostname(delimiter),
+            <span class="macro">format!</span>(<span class="string">&quot;{}-{}-{}.{delimiter}&quot;</span>, id.first, id.second, id.third,)
+        );
     }
 }
 </code></pre></div>

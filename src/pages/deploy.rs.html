@@ -180,11 +180,6 @@
 <span id="180">180</span>
 <span id="181">181</span>
 <span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
-<span id="186">186</span>
-<span id="187">187</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -304,14 +299,11 @@
         <span class="kw">let </span>(_dir, ctx) = tests::get_ctx().<span class="kw">await</span>;
         <span class="kw">let _ </span>= ctx.delete_user(NAME, PASSWORD).<span class="kw">await</span>;
         <span class="kw">let </span>(<span class="kw">_</span>, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).<span class="kw">await</span>;
-        <span class="kw">let </span>hostname = ctx.get_test_hostname(NAME);
-        ctx.add_test_site(NAME.into(), hostname.clone()).<span class="kw">await</span>;
+        <span class="kw">let </span>page = ctx.add_test_site(NAME.into()).<span class="kw">await</span>;
         <span class="kw">let </span>app = <span class="macro">get_app!</span>(ctx).<span class="kw">await</span>;
 
-        <span class="kw">let </span>page = ctx.db.get_site(NAME, <span class="kw-2">&amp;</span>hostname).<span class="kw">await</span>.unwrap();
-
         <span class="kw">let </span><span class="kw-2">mut </span>payload = DeployEvent {
-            secret: page.site_secret.clone(),
+            secret: page.secret.clone(),
             branch: page.branch.clone(),
         };
 
@@ -341,13 +333,11 @@
         <span class="kw">let </span>(_dir, ctx) = tests::get_ctx().<span class="kw">await</span>;
         <span class="kw">let _ </span>= ctx.delete_user(NAME, PASSWORD).<span class="kw">await</span>;
         <span class="kw">let </span>(<span class="kw">_</span>, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).<span class="kw">await</span>;
-        <span class="kw">let </span>hostname = ctx.get_test_hostname(NAME);
-        ctx.add_test_site(NAME.into(), hostname.clone()).<span class="kw">await</span>;
+        <span class="kw">let </span>page = ctx.add_test_site(NAME.into()).<span class="kw">await</span>;
         <span class="kw">let </span>app = <span class="macro">get_app!</span>(ctx).<span class="kw">await</span>;
 
-        <span class="kw">let </span>page = ctx.db.get_site(NAME, <span class="kw-2">&amp;</span>hostname).<span class="kw">await</span>.unwrap();
         <span class="kw">let </span><span class="kw-2">mut </span>payload = DeploySecret {
-            secret: page.site_secret.clone(),
+            secret: page.secret.clone(),
         };
 
         <span class="kw">let </span>resp = test::call_service(
@@ -360,7 +350,7 @@
 
         <span class="kw">let </span>response: DeployInfo = actix_web::test::read_body_json(resp).<span class="kw">await</span>;
         <span class="macro">assert_eq!</span>(response.head, page.branch);
-        <span class="macro">assert_eq!</span>(response.remote, page.repo_url);
+        <span class="macro">assert_eq!</span>(response.remote, page.repo);
 
         payload.secret = page.branch.clone();
 

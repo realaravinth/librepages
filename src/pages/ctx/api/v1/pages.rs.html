@@ -76,6 +76,8 @@
 <span id="76">76</span>
 <span id="77">77</span>
 <span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -100,6 +102,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::page::Page;
+<span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
+<span class="kw">use </span><span class="kw">crate</span>::subdomains::get_random_subdomain;
 <span class="kw">use </span><span class="kw">crate</span>::utils::get_random;
 
 <span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -107,30 +111,30 @@
 </span><span class="kw">pub struct </span>AddSite {
     <span class="kw">pub </span>repo_url: String,
     <span class="kw">pub </span>branch: String,
-    <span class="kw">pub </span>hostname: String,
     <span class="kw">pub </span>owner: String,
 }
 
 <span class="kw">impl </span>AddSite {
-    <span class="kw">fn </span>to_site(<span class="self">self</span>) -&gt; Site {
+    <span class="kw">fn </span>to_site(<span class="self">self</span>, s: <span class="kw-2">&amp;</span>Settings) -&gt; Site {
         <span class="kw">let </span>site_secret = get_random(<span class="number">32</span>);
+        <span class="kw">let </span>hostname = get_random_subdomain(s);
         Site {
             site_secret,
             repo_url: <span class="self">self</span>.repo_url,
             branch: <span class="self">self</span>.branch,
-            hostname: <span class="self">self</span>.hostname,
+            hostname,
             owner: <span class="self">self</span>.owner,
         }
     }
 }
 
 <span class="kw">impl </span>Ctx {
-    <span class="kw">pub async fn </span>add_site(<span class="kw-2">&amp;</span><span class="self">self</span>, site: AddSite) -&gt; ServiceResult&lt;()&gt; {
-        <span class="kw">let </span>db_site = site.to_site();
+    <span class="kw">pub async fn </span>add_site(<span class="kw-2">&amp;</span><span class="self">self</span>, site: AddSite) -&gt; ServiceResult&lt;Page&gt; {
+        <span class="kw">let </span>db_site = site.to_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings);
         <span class="self">self</span>.db.add_site(<span class="kw-2">&amp;</span>db_site).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
         page.update(<span class="kw-2">&amp;</span>page.branch)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(())
+        <span class="prelude-val">Ok</span>(page)
     }
 
     <span class="kw">pub async fn </span>update_site(<span class="kw-2">&amp;</span><span class="self">self</span>, secret: <span class="kw-2">&amp;</span>str, branch: <span class="prelude-ty">Option</span>&lt;String&gt;) -&gt; ServiceResult&lt;()&gt; {

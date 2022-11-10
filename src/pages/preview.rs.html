@@ -141,7 +141,7 @@
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; Preview&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">pub fn </span>new(ctx: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>AppCtx) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            base: <span class="kw-2">&amp;</span>ctx.settings.server.domain,
+            base: <span class="kw-2">&amp;</span>ctx.settings.page.base_domain,
             delimiter: <span class="string">&quot;.&quot;</span>,
             prefix: <span class="string">&quot;deploy-preview-&quot;</span>,
         }
