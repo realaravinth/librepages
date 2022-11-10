@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-use std::path::Path;
 use std::sync::Arc;
 
 use actix_web::{
@@ -27,11 +26,15 @@ use mktemp::Temp;
 use serde::Serialize;
 
 use crate::ctx::api::v1::auth::{Login, Register};
+use crate::ctx::api::v1::pages::AddSite;
 use crate::ctx::Ctx;
 use crate::errors::*;
-use crate::page::Page;
 use crate::settings::Settings;
 use crate::*;
+
+const HOSTNAME: &str = "example.org";
+pub const REPO_URL: &str = "https://github.com/mCaptcha/website/";
+pub const BRANCH: &str = "gh-pages";
 
 pub async fn get_ctx() -> (Temp, Arc<Ctx>) {
     // mktemp::Temp is returned because the temp directory created
@@ -40,23 +43,8 @@ pub async fn get_ctx() -> (Temp, Arc<Ctx>) {
 
     let tmp_dir = Temp::new_dir().unwrap();
     println!("[log] Test temp directory: {}", tmp_dir.to_str().unwrap());
-    let mut pages = Vec::with_capacity(settings.pages.len());
     let page_base_path = tmp_dir.as_path().join("base_path");
-    for page in settings.pages.iter() {
-        let name = Path::new(&page.path).file_name().unwrap().to_str().unwrap();
-        let path = tmp_dir.as_path().join(name);
-        let page = Page {
-            path: path.to_str().unwrap().to_string(),
-            secret: page.secret.clone(),
-            branch: page.branch.clone(),
-            repo: page.repo.clone(),
-            domain: "mcaptcha.org".into(),
-        };
-
-        pages.push(Arc::new(page));
-    }
-
-    settings.pages = pages;
+    settings.page.base_path = page_base_path.to_str().unwrap().into();
     settings.init();
     println!("[log] Initialzing settings again with test config");
     settings.init();
@@ -201,9 +189,10 @@ impl Ctx {
             post_request!(&msg, crate::V1_API_ROUTES.auth.register).to_request(),
         )
         .await;
-        //       let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
-        //       panic!("{}", resp_err.error);
-        assert_eq!(resp.status(), StatusCode::OK);
+        if resp.status() != StatusCode::OK {
+            let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
+            panic!("{}", resp_err.error);
+        }
     }
 
     /// signin util
@@ -277,5 +266,19 @@ impl Ctx {
         let resp_err: ErrorToResponse = actix_web::test::read_body_json(resp).await;
         //println!("{}", resp_err.error);
         assert_eq!(resp_err.error, format!("{}", err));
+    }
+
+    pub async fn add_test_site(&self, owner: String, hostname: String) {
+        let msg = AddSite {
+            repo_url: REPO_URL.into(),
+            branch: BRANCH.into(),
+            hostname,
+            owner,
+        };
+        self.add_site(msg).await.unwrap();
+    }
+
+    pub fn get_test_hostname(&self, unique: &str) -> String {
+        format!("{unique}.{HOSTNAME}")
     }
 }
