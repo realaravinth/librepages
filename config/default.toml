@@ -4,15 +4,6 @@ allow_registration = true
 source_code = "https://github.com/realaravinth/pages"
 support_email = "support@librepages.example.org"
 
-# To deploy a website from a Git repository, please provide the following details:
-# 1. branch: the branch in the Git repository which contains the website files
-# 2. repo: the public readonly/clonable URL of the website repository
-# 3. path: the directory where you'd like Pages to clone the specified repository
-# 3. secret: a unique secret which is used to authenticate webhook calls
-pages = [
-    { branch = "gh-pages", domain="local.mcaptcha.org", repo = "https://github.com/mCaptcha/website/", path ="/tmp/pages/mcaptcha/website", secret = "faee1b650ac586068a54cb160bd6353c5e16be7c64b49113fe57726e5393" },
-]
-
 [server]
 # The port at which you want Pages to listen to
 port = 7000

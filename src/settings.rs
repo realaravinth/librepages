@@ -82,7 +82,6 @@ pub struct Settings {
     pub debug: bool,
     pub server: Server,
     pub source_code: String,
-    pub pages: Vec<Arc<Page>>,
     pub database: Database,
     pub page: PageConfig,
 }
@@ -126,14 +125,11 @@ impl Settings {
         match env::var("PORT") {
             Ok(val) => {
                 s = s.set_override("server.port", val).unwrap();
-                //settings.server.port = val.parse().unwrap();
             }
             Err(e) => warn!("couldn't interpret PORT: {}", e),
         }
 
         if let Ok(val) = env::var("DATABASE_URL") {
-            //        match env::var("DATABASE_URL") {
-            //           Ok(val) => {
             let url = Url::parse(&val).expect("couldn't parse Database URL");
             s = s.set_override("database.url", url.to_string()).unwrap();
             let database_type = DBType::from_url(&url).unwrap();
@@ -141,9 +137,6 @@ impl Settings {
                 .set_override("database.database_type", database_type.to_string())
                 .unwrap();
         }
-
-        //    Err(_e) => {
-        //    }
 
         let intermediate_config = s.build_cloned().unwrap();
 
@@ -178,41 +171,41 @@ impl Settings {
     }
 
     pub fn init(&self) {
-        for (index, page) in self.pages.iter().enumerate() {
-            Url::parse(&page.repo).unwrap();
-
-            fn create_dir_util(path: &Path) {
-                if path.exists() && path.is_file() {
-                    panic!("Path is a file, should be a directory: {:?}", path);
-                }
-
-                if !path.exists() {
-                    std::fs::create_dir_all(&path).unwrap();
-                }
+        fn create_dir_util(path: &Path) {
+            if path.exists() && path.is_file() {
+                panic!("Path is a file, should be a directory: {:?}", path);
             }
 
-            create_dir_util(Path::new(&page.path));
-            create_dir_util(Path::new(&self.page.base_path));
-
-            for (index2, page2) in self.pages.iter().enumerate() {
-                if index2 == index {
-                    continue;
-                }
-                if page.secret == page2.secret {
-                    error!("{}", ServiceError::SecretTaken(page.clone(), page2.clone()));
-                } else if page.repo == page2.repo {
-                    error!(
-                        "{}",
-                        ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
-                    );
-                } else if page.path == page2.path {
-                    error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
-                }
-            }
-            if let Err(e) = page.update(&page.branch) {
-                error!("{e}");
+            if !path.exists() {
+                std::fs::create_dir_all(&path).unwrap();
             }
         }
+
+        // create_dir_util(Path::new(&page.path));
+        create_dir_util(Path::new(&self.page.base_path));
+
+        //        for (index, page) in self.pages.iter().enumerate() {
+        //            Url::parse(&page.repo).unwrap();
+        //
+        //            for (index2, page2) in self.pages.iter().enumerate() {
+        //                if index2 == index {
+        //                    continue;
+        //                }
+        //                if page.secret == page2.secret {
+        //                    error!("{}", ServiceError::SecretTaken(page.clone(), page2.clone()));
+        //                } else if page.repo == page2.repo {
+        //                    error!(
+        //                        "{}",
+        //                        ServiceError::DuplicateRepositoryURL(page.clone(), page2.clone(),)
+        //                    );
+        //                } else if page.path == page2.path {
+        //                    error!("{}", ServiceError::PathTaken(page.clone(), page2.clone()));
+        //                }
+        //            }
+        //            if let Err(e) = page.update(&page.branch) {
+        //                error!("{e}");
+        //            }
+        //        }
     }
 
     #[cfg(not(tarpaulin_include))]

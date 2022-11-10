@@ -25,7 +25,10 @@ use std::println as info;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::db::Site;
 use crate::errors::*;
+use crate::settings::Settings;
+use crate::utils::get_website_path;
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Page {
@@ -37,6 +40,18 @@ pub struct Page {
 }
 
 impl Page {
+    pub fn from_site(settings: &Settings, s: Site) -> Self {
+        Self {
+            secret: s.site_secret,
+            repo: s.repo_url,
+            path: get_website_path(settings, &s.hostname)
+                .to_str()
+                .unwrap()
+                .to_owned(),
+            domain: s.hostname,
+            branch: s.branch,
+        }
+    }
     pub fn open_repo(&self) -> ServiceResult<Repository> {
         Ok(Repository::open(&self.path)?)
     }

@@ -17,7 +17,6 @@
 use actix_web::{http::header::ContentType, web, HttpRequest, HttpResponse, Responder};
 
 use crate::errors::*;
-use crate::page::Page;
 use crate::AppCtx;
 
 pub mod routes {
@@ -32,19 +31,6 @@ pub mod routes {
             }
         }
     }
-}
-
-pub fn find_page<'a>(domain: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
-    log::info!("looking for {domain}");
-    for page in ctx.settings.pages.iter() {
-        log::debug!("configured domains: {}", page.domain);
-        log::debug!("{}", page.domain.trim() == domain.trim());
-        if page.domain.trim() == domain.trim() {
-            log::debug!("found configured domains: {}", page.domain);
-            return Some(page);
-        }
-    }
-    None
 }
 
 #[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.serve.catch_all")]
@@ -67,47 +53,40 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
             unimplemented!(
                 "map a local subdomain on settings.server.domain and use it to fetch page"
             );
-            let res = match find_page(host, &ctx) {
-                Some(page) => {
-                    log::debug!("Page found");
-                    let content = crate::git::read_preview_file(
-                        &page.path,
-                        preview_branch,
-                        req.uri().path(),
-                    )?;
-                    let mime = if let Some(mime) = content.mime.first_raw() {
-                        mime
-                    } else {
-                        "text/html; charset=utf-8"
-                    };
 
-                    Ok(HttpResponse::Ok()
-                        //.content_type(ContentType::html())
-                        .content_type(mime)
-                        .body(content.content.bytes()))
-                }
-                None => Err(ServiceError::WebsiteNotFound),
+            let res = if ctx.db.hostname_exists(&host).await? {
+                let path = crate::utils::get_website_path(&ctx.settings, &host);
+                let content =
+                    crate::git::read_preview_file(&path, preview_branch, req.uri().path())?;
+                let mime = if let Some(mime) = content.mime.first_raw() {
+                    mime
+                } else {
+                    "text/html; charset=utf-8"
+                };
+
+                Ok(HttpResponse::Ok()
+                    .content_type(mime)
+                    .body(content.content.bytes()))
+            } else {
+                Err(ServiceError::WebsiteNotFound)
             };
-            return res;
         }
     }
 
-    match find_page(host, &ctx) {
-        Some(page) => {
-            log::debug!("Page found");
-            let content = crate::git::read_file(&page.path, req.uri().path())?;
-            let mime = if let Some(mime) = content.mime.first_raw() {
-                mime
-            } else {
-                "text/html; charset=utf-8"
-            };
+    if ctx.db.hostname_exists(host).await? {
+        let path = crate::utils::get_website_path(&ctx.settings, &host);
+        let content = crate::git::read_file(&path, req.uri().path())?;
+        let mime = if let Some(mime) = content.mime.first_raw() {
+            mime
+        } else {
+            "text/html; charset=utf-8"
+        };
 
-            Ok(HttpResponse::Ok()
-                //.content_type(ContentType::html())
-                .content_type(mime)
-                .body(content.content.bytes()))
-        }
-        None => Err(ServiceError::WebsiteNotFound),
+        Ok(HttpResponse::Ok()
+            .content_type(mime)
+            .body(content.content.bytes()))
+    } else {
+        Err(ServiceError::WebsiteNotFound)
     }
 }
 

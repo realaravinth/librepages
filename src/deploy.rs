@@ -44,30 +44,12 @@ pub struct DeployEvent {
     pub branch: String,
 }
 
-pub fn find_page<'a>(secret: &str, ctx: &'a AppCtx) -> Option<&'a Page> {
-    for page in ctx.settings.pages.iter() {
-        if page.secret == secret {
-            return Some(page);
-        }
-    }
-    None
-}
-
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.update")]
 async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<impl Responder> {
-    if let Some(page) = find_page(&payload.secret, &ctx) {
-        let (tx, rx) = oneshot::channel();
-        let page = page.clone();
-        web::block(move || {
-            tx.send(page.update(&payload.branch)).unwrap();
-        })
-        .await
-        .unwrap();
-        rx.await.unwrap()?;
-        Ok(HttpResponse::Ok())
-    } else {
-        Err(ServiceError::WebsiteNotFound)
-    }
+    let payload = payload.into_inner();
+    ctx.update_site(&payload.secret, Some(payload.branch))
+        .await?;
+    Ok(HttpResponse::Ok())
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
@@ -103,8 +85,9 @@ async fn deploy_info(
     payload: web::Json<DeploySecret>,
     ctx: AppCtx,
 ) -> ServiceResult<impl Responder> {
-    if let Some(page) = find_page(&payload.secret, &ctx) {
-        let resp = DeployInfo::from_page(page)?;
+    if let Ok(page) = ctx.db.get_site_from_secret(&payload.secret).await {
+        //    if let Some(page) = find_page(&payload.secret, &ctx) {
+        let resp = DeployInfo::from_page(&Page::from_site(&ctx.settings, page))?;
         Ok(HttpResponse::Ok().json(resp))
     } else {
         Err(ServiceError::WebsiteNotFound)
@@ -127,14 +110,21 @@ mod tests {
 
     #[actix_rt::test]
     async fn deploy_update_works() {
+        const NAME: &str = "dplyupdwrkuser";
+        const PASSWORD: &str = "longpasswordasdfa2";
+        const EMAIL: &str = "dplyupdwrkuser@a.com";
+
         let (_dir, ctx) = tests::get_ctx().await;
-        println!("[log] test configuration {:#?}", ctx.settings);
+        let _ = ctx.delete_user(NAME, PASSWORD).await;
+        let (_, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
+        let hostname = ctx.get_test_hostname(NAME);
+        ctx.add_test_site(NAME.into(), hostname.clone()).await;
         let app = get_app!(ctx).await;
-        let page = ctx.settings.pages.get(0);
-        let page = page.unwrap();
+
+        let page = ctx.db.get_site(NAME, &hostname).await.unwrap();
 
         let mut payload = DeployEvent {
-            secret: page.secret.clone(),
+            secret: page.site_secret.clone(),
             branch: page.branch.clone(),
         };
 
@@ -157,14 +147,20 @@ mod tests {
 
     #[actix_rt::test]
     async fn deploy_info_works() {
+        const NAME: &str = "dplyinfwrkuser";
+        const PASSWORD: &str = "longpasswordasdfa2";
+        const EMAIL: &str = "dplyinfwrkuser@a.com";
+
         let (_dir, ctx) = tests::get_ctx().await;
-        println!("[log] test configuration {:#?}", ctx.settings);
-        let page = ctx.settings.pages.get(0);
-        let page = page.unwrap();
+        let _ = ctx.delete_user(NAME, PASSWORD).await;
+        let (_, _signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
+        let hostname = ctx.get_test_hostname(NAME);
+        ctx.add_test_site(NAME.into(), hostname.clone()).await;
         let app = get_app!(ctx).await;
 
+        let page = ctx.db.get_site(NAME, &hostname).await.unwrap();
         let mut payload = DeploySecret {
-            secret: page.secret.clone(),
+            secret: page.site_secret.clone(),
         };
 
         let resp = test::call_service(
@@ -177,7 +173,7 @@ mod tests {
 
         let response: DeployInfo = actix_web::test::read_body_json(resp).await;
         assert_eq!(response.head, page.branch);
-        assert_eq!(response.remote, page.repo);
+        assert_eq!(response.remote, page.repo_url);
 
         payload.secret = page.branch.clone();
 

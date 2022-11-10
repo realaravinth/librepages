@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 use std::path::Path;
+use std::path::PathBuf;
 
 use git2::*;
 use mime_guess::MimeGuess;
@@ -113,7 +114,7 @@ impl ContentType {
 /// For example, a read request for "foo bar.md" will fail even if that file is present
 /// in the repository. However, it will succeed if the output of [escape_spaces] is
 /// used in the request.
-pub fn read_file(repo_path: &str, path: &str) -> ServiceResult<FileInfo> {
+pub fn read_file(repo_path: &PathBuf, path: &str) -> ServiceResult<FileInfo> {
     let repo = git2::Repository::open(repo_path).unwrap();
     let head = repo.head().unwrap();
     let tree = head.peel_to_tree().unwrap();
@@ -121,7 +122,7 @@ pub fn read_file(repo_path: &str, path: &str) -> ServiceResult<FileInfo> {
 }
 
 pub fn read_preview_file(
-    repo_path: &str,
+    repo_path: &PathBuf,
     preview_name: &str,
     path: &str,
 ) -> ServiceResult<FileInfo> {
@@ -279,12 +280,12 @@ pub mod tests {
         const PATH: &str = "/tmp/librepges/test_git_write_read_works";
 
         write_file_util(PATH);
-        let resp = read_file(PATH, "README.txt").unwrap();
+        let resp = read_file(&Path::new(PATH).into(), "README.txt").unwrap();
         assert_eq!(resp.filename, "README.txt");
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
 
-        let resp = read_preview_file(PATH, "master", "README.txt").unwrap();
+        let resp = read_preview_file(&Path::new(PATH).into(), "master", "README.txt").unwrap();
         assert_eq!(resp.filename, "README.txt");
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
