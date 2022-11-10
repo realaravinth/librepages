@@ -38,6 +38,7 @@ mod preview;
 mod serve;
 mod settings;
 mod static_assets;
+mod subdomains;
 #[cfg(test)]
 mod tests;
 mod utils;
