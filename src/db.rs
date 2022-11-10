@@ -288,7 +288,7 @@ impl Database {
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+        .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
 
         struct Owner {
             name: String,
@@ -300,7 +300,7 @@ impl Database {
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+        .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
 
         let site = Site {
             site_secret: site_secret.to_owned(),
@@ -326,7 +326,7 @@ impl Database {
         )
         .fetch_one(&self.pool)
         .await
-        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+        .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
 
         let res = site.to_site(owner.into());
 
@@ -362,7 +362,7 @@ impl Database {
         )
         .execute(&self.pool)
         .await
-        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+        .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
         Ok(())
     }
 }
