@@ -41,19 +41,17 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
         host = host.split(':').next().unwrap();
     }
 
+    // serve meta page
     if host == ctx.settings.server.domain || host == "localhost" {
         return Ok(HttpResponse::Ok()
             .content_type(ContentType::html())
             .body("Welcome to Librepages!"));
     }
 
-    if host.contains(&ctx.settings.server.domain) {
+    // serve default hostname content
+    if host.contains(&ctx.settings.page.base_domain) {
         let extractor = crate::preview::Preview::new(&ctx);
         if let Some(preview_branch) = extractor.extract(host) {
-            unimplemented!(
-                "map a local subdomain on settings.server.domain and use it to fetch page"
-            );
-
             let res = if ctx.db.hostname_exists(&host).await? {
                 let path = crate::utils::get_website_path(&ctx.settings, &host);
                 let content =
@@ -70,9 +68,11 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
             } else {
                 Err(ServiceError::WebsiteNotFound)
             };
+            return res;
         }
     }
 
+    // TODO: custom domains.
     if ctx.db.hostname_exists(host).await? {
         let path = crate::utils::get_website_path(&ctx.settings, &host);
         let content = crate::git::read_file(&path, req.uri().path())?;
