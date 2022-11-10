@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use crate::settings::Settings;
+
 // source: https://www.randomlists.com/data/nouns.json
 const LEN: usize = 876;
 const WORDLIST: [&str; LEN] = [
@@ -896,7 +898,22 @@ const WORDLIST: [&str; LEN] = [
     "zoo",
 ];
 
-pub fn get_random_subdomain() -> String {
+struct ID<'a> {
+    first: &'a str,
+    second: &'a str,
+    third: &'a str,
+}
+
+impl<'a> ID<'a> {
+    fn hostname(&self, base_domain: &str) -> String {
+        format!(
+            "{}-{}-{}.{}",
+            self.first, self.second, self.third, base_domain
+        )
+    }
+}
+
+fn get_random_id() -> ID<'static> {
     use rand::{rngs::ThreadRng, thread_rng, Rng};
 
     let mut rng: ThreadRng = thread_rng();
@@ -921,7 +938,16 @@ pub fn get_random_subdomain() -> String {
     let first = WORDLIST[first];
     let second = WORDLIST[second];
     let third = WORDLIST[third];
-    format!("{first}-{second}-{third}")
+    ID {
+        first,
+        second,
+        third,
+    }
+}
+
+pub fn get_random_subdomain(s: &Settings) -> String {
+    let id = get_random_id();
+    id.hostname(&s.page.base_domain)
 }
 
 #[cfg(test)]
@@ -929,11 +955,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_random_subdomain() {
-        let sub = get_random_subdomain();
-        let splits: Vec<&str> = sub.split('-').collect();
-        assert_ne!(splits[0], splits[1]);
-        assert_ne!(splits[0], splits[2]);
-        assert_ne!(splits[1], splits[2]);
+    fn test_subdomains() {
+        // test random ID
+        let id = get_random_id();
+        assert_ne!(id.first, id.second);
+        assert_ne!(id.first, id.third);
+        assert_ne!(id.third, id.second);
+
+        // test ID::hostname
+        let delimiter = "foobar21312";
+        assert_eq!(
+            id.hostname(delimiter),
+            format!("{}-{}-{}.{delimiter}", id.first, id.second, id.third,)
+        );
     }
 }
