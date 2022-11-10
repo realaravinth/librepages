@@ -19,8 +19,7 @@ cookie_secret = "94b2b2732626fdb7736229a7c777cb451e6304c147c4549f30"
 
 [page]
 base_path = "/tmp/librepages-defualt-config/"
-
-
+base_domain = "librepages.test" # domain where customer pages will be deployed.
 
 [database]
 # This section deals with the database location and how to access it
