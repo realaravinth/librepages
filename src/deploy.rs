@@ -45,6 +45,7 @@ pub struct DeployEvent {
 }
 
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.update")]
+#[tracing::instrument(name = "Update webpages", skip(payload, ctx))]
 async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<impl Responder> {
     let payload = payload.into_inner();
     ctx.update_site(&payload.secret, Some(payload.branch))
@@ -81,12 +82,12 @@ impl DeployInfo {
 }
 
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.info")]
+#[tracing::instrument(name = "Get webpage deploy info", skip(payload, ctx))]
 async fn deploy_info(
     payload: web::Json<DeploySecret>,
     ctx: AppCtx,
 ) -> ServiceResult<impl Responder> {
     if let Ok(page) = ctx.db.get_site_from_secret(&payload.secret).await {
-        //    if let Some(page) = find_page(&payload.secret, &ctx) {
         let resp = DeployInfo::from_page(&Page::from_site(&ctx.settings, page))?;
         Ok(HttpResponse::Ok().json(resp))
     } else {

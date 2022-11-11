@@ -44,6 +44,7 @@ pub mod routes {
 
 /// emits build details of the binary
 #[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.meta.build_details")]
+#[tracing::instrument(name = "Fetch Build Details", skip(ctx))]
 async fn build_details(ctx: AppCtx) -> impl Responder {
     let build = BuildDetails {
         version: VERSION,
@@ -61,6 +62,7 @@ pub struct Health {
 
 /// checks all components of the system
 #[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.meta.health")]
+#[tracing::instrument(name = "Fetch health", skip(ctx))]
 async fn health(ctx: crate::AppCtx) -> impl Responder {
     let res = Health {
         db: ctx.db.ping().await,

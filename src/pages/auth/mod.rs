@@ -42,13 +42,13 @@ pub fn services(cfg: &mut web::ServiceConfig) {
     path = "PAGES.auth.logout",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Sign out", skip(id))]
 async fn signout(id: Identity) -> impl Responder {
     use actix_auth_middleware::GetLoginRoute;
 
     if id.identity().is_some() {
         id.forget();
     }
-    println!("received signout");
     HttpResponse::Found()
         .append_header((http::header::LOCATION, PAGES.get_login_route(None)))
         .finish()

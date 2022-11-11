@@ -58,6 +58,7 @@ impl Register {
 }
 
 #[actix_web_codegen_const_routes::get(path = "PAGES.auth.register")]
+#[tracing::instrument(name = "Serve registration page", skip(ctx))]
 pub async fn get_register(ctx: AppCtx) -> impl Responder {
     let login = Register::page(&ctx.settings);
     let html = ContentType::html();
@@ -70,6 +71,7 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 }
 
 #[actix_web_codegen_const_routes::post(path = "PAGES.auth.register")]
+#[tracing::instrument(name = "Process web UI registration", skip(ctx))]
 pub async fn register_submit(
     payload: web::Form<RegisterPayload>,
     ctx: AppCtx,

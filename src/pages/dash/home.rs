@@ -16,11 +16,9 @@
  */
 use std::cell::RefCell;
 
-use actix_identity::Identity;
 use actix_web::http::header::ContentType;
 use tera::Context;
 
-use crate::api::v1::RedirectQuery;
 use crate::ctx::api::v1::auth::Login as LoginPayload;
 use crate::pages::errors::*;
 use crate::settings::Settings;
@@ -63,6 +61,7 @@ impl Home {
 }
 
 #[actix_web_codegen_const_routes::get(path = "PAGES.dash.home")]
+#[tracing::instrument(name = "Dashboard homepage", skip(ctx))]
 pub async fn get_home(ctx: AppCtx) -> impl Responder {
     let home = Home::page(&ctx.settings);
     let html = ContentType::html();

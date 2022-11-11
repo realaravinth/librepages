@@ -61,6 +61,7 @@ impl Login {
 }
 
 #[actix_web_codegen_const_routes::get(path = "PAGES.auth.login")]
+#[tracing::instrument(name = "Serve login page", skip(ctx))]
 pub async fn get_login(ctx: AppCtx) -> impl Responder {
     let login = Login::page(&ctx.settings);
     let html = ContentType::html();
@@ -73,6 +74,7 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 }
 
 #[actix_web_codegen_const_routes::post(path = "PAGES.auth.login")]
+#[tracing::instrument(name = "Web UI Login", skip(id, payload, query, ctx))]
 pub async fn login_submit(
     id: Identity,
     payload: web::Form<LoginPayload>,

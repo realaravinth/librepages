@@ -30,12 +30,14 @@ pub fn services(cfg: &mut web::ServiceConfig) {
     cfg.service(signout);
 }
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.auth.register")]
+#[tracing::instrument(name = "Register new user", skip(ctx, payload))]
 async fn register(payload: web::Json<Register>, ctx: AppCtx) -> ServiceResult<impl Responder> {
     ctx.register(&payload).await?;
     Ok(HttpResponse::Ok())
 }
 
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.auth.login")]
+#[tracing::instrument(name = "Login", skip(ctx, payload, id, query))]
 async fn login(
     id: Identity,
     payload: web::Json<Login>,
@@ -59,6 +61,7 @@ async fn login(
     path = "crate::V1_API_ROUTES.auth.logout",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Sign out", skip(id))]
 async fn signout(id: Identity) -> impl Responder {
     use actix_auth_middleware::GetLoginRoute;
 

@@ -58,6 +58,7 @@ pub struct Username {
     path = "crate::V1_API_ROUTES.account.update_username",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Update username", skip(ctx, payload, id))]
 async fn set_username(
     id: Identity,
     payload: web::Json<Username>,
@@ -74,6 +75,7 @@ async fn set_username(
 }
 
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.account.username_exists")]
+#[tracing::instrument(name = "Check if username exists", skip(ctx, payload))]
 async fn username_exists(
     payload: web::Json<AccountCheckPayload>,
     ctx: AppCtx,
@@ -82,6 +84,7 @@ async fn username_exists(
 }
 
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.account.email_exists")]
+#[tracing::instrument(name = "Check if email exists", skip(ctx, payload))]
 pub async fn email_exists(
     payload: web::Json<AccountCheckPayload>,
     ctx: AppCtx,
@@ -94,6 +97,7 @@ pub async fn email_exists(
     path = "crate::V1_API_ROUTES.account.update_email",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Update email", skip(ctx, payload, id))]
 async fn set_email(
     id: Identity,
     payload: web::Json<Email>,
@@ -108,6 +112,7 @@ async fn set_email(
     path = "crate::V1_API_ROUTES.account.delete",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Delete account", skip(ctx, payload, id))]
 async fn delete_account(
     id: Identity,
     payload: web::Json<Password>,
@@ -124,6 +129,7 @@ async fn delete_account(
     path = "crate::V1_API_ROUTES.account.update_password",
     wrap = "super::get_auth_middleware()"
 )]
+#[tracing::instrument(name = "Update user password", skip(ctx, payload, id))]
 async fn update_user_password(
     id: Identity,
     ctx: AppCtx,

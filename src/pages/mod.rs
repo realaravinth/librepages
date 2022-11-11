@@ -165,6 +165,7 @@ impl Home {
 }
 
 #[actix_web_codegen_const_routes::get(path = "PAGES.home")]
+#[tracing::instrument(name = "Dashboard homepage", skip(id, ctx))]
 pub async fn home(ctx: AppCtx, id: Identity) -> impl Responder {
     if id.identity().is_none() {
         let home = Home::page(&ctx.settings);
