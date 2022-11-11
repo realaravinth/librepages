@@ -159,6 +159,8 @@
 <span id="159">159</span>
 <span id="160">160</span>
 <span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -183,8 +185,9 @@
     web::JsonConfig, App, HttpServer,
 };
 <span class="kw">use </span>clap::{Parser, Subcommand};
-<span class="kw">use </span>log::info;
 <span class="kw">use </span>static_assets::FileMap;
+<span class="kw">use </span>tracing::info;
+<span class="kw">use </span>tracing_actix_web::TracingLogger;
 
 <span class="kw">mod </span>api;
 <span class="kw">mod </span>ctx;
@@ -241,10 +244,11 @@
 <span class="attribute">#[actix_web::main]
 #[cfg(not(tarpaulin_include))]
 </span><span class="kw">async fn </span>main() -&gt; std::io::Result&lt;()&gt; {
-    env::set_var(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info&quot;</span>);
+    <span class="kw">if </span>env::var(<span class="string">&quot;RUST_LOG&quot;</span>).is_err() {
+        env::set_var(<span class="string">&quot;RUST_LOG&quot;</span>, <span class="string">&quot;info&quot;</span>);
+    }
 
     pretty_env_logger::init();
-
     <span class="kw">let </span>cli = Cli::parse();
 
     <span class="macro">info!</span>(
@@ -272,7 +276,7 @@
     <span class="macro">info!</span>(<span class="string">&quot;Starting server on: http://{}&quot;</span>, ip);
     HttpServer::new(<span class="kw">move </span>|| {
         App::new()
-            .wrap(actix_middleware::Logger::default())
+            .wrap(TracingLogger::default())
             .wrap(actix_middleware::Compress::default())
             .app_data(ctx.clone())
             .app_data(get_json_err())

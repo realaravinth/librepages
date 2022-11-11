@@ -302,6 +302,7 @@
 <span id="302">302</span>
 <span id="303">303</span>
 <span id="304">304</span>
+<span id="305">305</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -318,16 +319,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
-
-</span><span class="kw">use </span>git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
-<span class="attribute">#[cfg(not(test))]
-</span><span class="kw">use </span>log::info;
-
-<span class="attribute">#[cfg(test)]
+</span><span class="attribute">#[cfg(test)]
 </span><span class="kw">use </span>std::println <span class="kw">as </span>info;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">use </span>std::println <span class="kw">as </span>error;
+<span class="attribute">#[cfg(test)]
+</span><span class="kw">use </span>std::println <span class="kw">as </span>debug;
 
+<span class="kw">use </span>git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>serde::Serialize;
+<span class="attribute">#[cfg(not(test))]
+</span><span class="kw">use </span>tracing::{debug, error, info};
 
 <span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
@@ -399,7 +402,7 @@
         branch: <span class="kw-2">&amp;</span>str,
     ) -&gt; ServiceResult&lt;git2::AnnotatedCommit&lt;<span class="lifetime">&#39;a</span>&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>remote = repo.find_remote(<span class="string">&quot;origin&quot;</span>)<span class="question-mark">?</span>;
-        <span class="macro">log::info!</span>(<span class="string">&quot;Fetching {} for repo&quot;</span>, remote.name().unwrap());
+        <span class="macro">info!</span>(<span class="string">&quot;Fetching {} for repo&quot;</span>, remote.name().unwrap());
         remote.fetch(<span class="kw-2">&amp;</span>[branch], <span class="prelude-val">None</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let </span>fetch_head = repo.find_reference(<span class="string">&quot;FETCH_HEAD&quot;</span>)<span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(repo.reference_to_annotated_commit(<span class="kw-2">&amp;</span>fetch_head)<span class="question-mark">?</span>)
@@ -416,20 +419,19 @@
 
         <span class="comment">// 2. Do the appropriate merge
         </span><span class="kw">if </span>analysis.<span class="number">0</span>.is_fast_forward() {
-            <span class="comment">//log::debug!(&quot;Doing a fast forward&quot;);
-            </span><span class="macro">log::debug!</span>(<span class="string">&quot;Doing a fast forward&quot;</span>);
+            <span class="macro">debug!</span>(<span class="string">&quot;Doing a fast forward&quot;</span>);
             <span class="comment">// do a fast forward
             </span><span class="kw">let </span>refname = <span class="macro">format!</span>(<span class="string">&quot;refs/heads/{}&quot;</span>, branch);
             <span class="kw">match </span>repo.find_reference(<span class="kw-2">&amp;</span>refname) {
                 <span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>r) =&gt; {
-                    <span class="macro">log::debug!</span>(<span class="string">&quot;fast forwarding&quot;</span>);
+                    <span class="macro">debug!</span>(<span class="string">&quot;fast forwarding&quot;</span>);
                     <span class="self">Self</span>::fast_forward(repo, <span class="kw-2">&amp;mut </span>r, <span class="kw-2">&amp;</span>fetch_commit).unwrap();
                 }
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
                     <span class="comment">// The branch doesn&#39;t exist so just set the reference to the
                     // commit directly. Usually this is because you are pulling
                     // into an empty repository.
-                    </span><span class="macro">log::error!</span>(<span class="string">&quot;Error in find ref&quot;</span>);
+                    </span><span class="macro">error!</span>(<span class="string">&quot;Error in find ref&quot;</span>);
                     repo.reference(
                         <span class="kw-2">&amp;</span>refname,
                         fetch_commit.id(),
@@ -455,7 +457,7 @@
                 .unwrap();
             <span class="self">Self</span>::normal_merge(repo, <span class="kw-2">&amp;</span>head_commit, <span class="kw-2">&amp;</span>fetch_commit).unwrap();
         } <span class="kw">else </span>{
-            <span class="macro">log::info!</span>(<span class="string">&quot;Nothing to do...&quot;</span>);
+            <span class="macro">info!</span>(<span class="string">&quot;Nothing to do...&quot;</span>);
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -482,7 +484,7 @@
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(), git2::Error&gt; {
         <span class="kw">let </span>local_tree = repo.find_commit(local.id())<span class="question-mark">?</span>.tree().unwrap();
         <span class="kw">let </span>remote_tree = repo.find_commit(remote.id())<span class="question-mark">?</span>.tree().unwrap();
-        <span class="macro">println!</span>(<span class="string">&quot;{} {}&quot;</span>, local.id(), remote.id());
+        <span class="macro">debug!</span>(<span class="string">&quot;{} {}&quot;</span>, local.id(), remote.id());
         <span class="kw">let </span>ancestor = repo
             .find_commit(repo.merge_base(local.id(), remote.id()).unwrap())
             .unwrap()
@@ -493,7 +495,7 @@
             .unwrap();
 
         <span class="kw">if </span>idx.has_conflicts() {
-            <span class="macro">log::debug!</span>(<span class="string">&quot;Merge conflicts detected...&quot;</span>);
+            <span class="macro">debug!</span>(<span class="string">&quot;Merge conflicts detected...&quot;</span>);
             repo.checkout_index(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut </span>idx), <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
             <span class="kw">return </span><span class="prelude-val">Ok</span>(());
         }
@@ -527,7 +529,7 @@
             <span class="prelude-val">None </span>=&gt; String::from_utf8_lossy(lb.name_bytes()).to_string(),
         };
         <span class="kw">let </span>msg = <span class="macro">format!</span>(<span class="string">&quot;Fast-Forward: Setting {} to id: {}&quot;</span>, name, rc.id());
-        <span class="macro">log::debug!</span>(<span class="string">&quot;{}&quot;</span>, msg);
+        <span class="macro">debug!</span>(<span class="string">&quot;{}&quot;</span>, msg);
         lb.set_target(rc.id(), <span class="kw-2">&amp;</span>msg)<span class="question-mark">?</span>;
         repo.set_head(<span class="kw-2">&amp;</span>name)<span class="question-mark">?</span>;
         repo.checkout_head(<span class="prelude-val">Some</span>(git2::build::CheckoutBuilder::default().force()))<span class="question-mark">?</span>;

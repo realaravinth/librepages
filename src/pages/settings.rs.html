@@ -213,7 +213,7 @@
 <span class="kw">use </span>config::{Config, ConfigError, Environment, File};
 <span class="kw">use </span>derive_more::Display;
 <span class="attribute">#[cfg(not(test))]
-</span><span class="kw">use </span>log::{error, warn};
+</span><span class="kw">use </span>tracing::{error, warn};
 
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">use </span>std::{println <span class="kw">as </span>warn, println <span class="kw">as </span>error};
