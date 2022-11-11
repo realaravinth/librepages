@@ -105,6 +105,8 @@
 <span id="105">105</span>
 <span id="106">106</span>
 <span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -165,6 +167,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;PAGES.auth.register&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Serve registration page&quot;</span>, skip(ctx))]
 </span><span class="kw">pub async fn </span>get_register(ctx: AppCtx) -&gt; <span class="kw">impl </span>Responder {
     <span class="kw">let </span>login = Register::page(<span class="kw-2">&amp;</span>ctx.settings);
     <span class="kw">let </span>html = ContentType::html();
@@ -177,6 +180,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;PAGES.auth.register&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Process web UI registration&quot;</span>, skip(ctx))]
 </span><span class="kw">pub async fn </span>register_submit(
     payload: web::Form&lt;RegisterPayload&gt;,
     ctx: AppCtx,

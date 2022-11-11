@@ -71,7 +71,6 @@
 <span id="71">71</span>
 <span id="72">72</span>
 <span id="73">73</span>
-<span id="74">74</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -90,11 +89,9 @@
  */
 </span><span class="kw">use </span>std::cell::RefCell;
 
-<span class="kw">use </span>actix_identity::Identity;
 <span class="kw">use </span>actix_web::http::header::ContentType;
 <span class="kw">use </span>tera::Context;
 
-<span class="kw">use </span><span class="kw">crate</span>::api::v1::RedirectQuery;
 <span class="kw">use </span><span class="kw">crate</span>::ctx::api::v1::auth::Login <span class="kw">as </span>LoginPayload;
 <span class="kw">use </span><span class="kw">crate</span>::pages::errors::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
@@ -137,6 +134,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;PAGES.dash.home&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Dashboard homepage&quot;</span>, skip(ctx))]
 </span><span class="kw">pub async fn </span>get_home(ctx: AppCtx) -&gt; <span class="kw">impl </span>Responder {
     <span class="kw">let </span>home = Home::page(<span class="kw-2">&amp;</span>ctx.settings);
     <span class="kw">let </span>html = ContentType::html();

@@ -237,6 +237,7 @@
 <span id="237">237</span>
 <span id="238">238</span>
 <span id="239">239</span>
+<span id="240">240</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -404,6 +405,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;PAGES.home&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Dashboard homepage&quot;</span>, skip(id, ctx))]
 </span><span class="kw">pub async fn </span>home(ctx: AppCtx, id: Identity) -&gt; <span class="kw">impl </span>Responder {
     <span class="kw">if </span>id.identity().is_none() {
         <span class="kw">let </span>home = Home::page(<span class="kw-2">&amp;</span>ctx.settings);

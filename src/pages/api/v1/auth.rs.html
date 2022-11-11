@@ -69,6 +69,9 @@
 <span id="69">69</span>
 <span id="70">70</span>
 <span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -101,12 +104,14 @@
     cfg.service(signout);
 }
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;crate::V1_API_ROUTES.auth.register&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Register new user&quot;</span>, skip(ctx, payload))]
 </span><span class="kw">async fn </span>register(payload: web::Json&lt;Register&gt;, ctx: AppCtx) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
     ctx.register(<span class="kw-2">&amp;</span>payload).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(HttpResponse::Ok())
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;crate::V1_API_ROUTES.auth.login&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Login&quot;</span>, skip(ctx, payload, id, query))]
 </span><span class="kw">async fn </span>login(
     id: Identity,
     payload: web::Json&lt;Login&gt;,
@@ -130,6 +135,7 @@
     path = <span class="string">&quot;crate::V1_API_ROUTES.auth.logout&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Sign out&quot;</span>, skip(id))]
 </span><span class="kw">async fn </span>signout(id: Identity) -&gt; <span class="kw">impl </span>Responder {
     <span class="kw">use </span>actix_auth_middleware::GetLoginRoute;
 

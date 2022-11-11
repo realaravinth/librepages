@@ -136,6 +136,12 @@
 <span id="136">136</span>
 <span id="137">137</span>
 <span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2021  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -196,6 +202,7 @@
     path = <span class="string">&quot;crate::V1_API_ROUTES.account.update_username&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Update username&quot;</span>, skip(ctx, payload, id))]
 </span><span class="kw">async fn </span>set_username(
     id: Identity,
     payload: web::Json&lt;Username&gt;,
@@ -212,6 +219,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;crate::V1_API_ROUTES.account.username_exists&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Check if username exists&quot;</span>, skip(ctx, payload))]
 </span><span class="kw">async fn </span>username_exists(
     payload: web::Json&lt;AccountCheckPayload&gt;,
     ctx: AppCtx,
@@ -220,6 +228,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;crate::V1_API_ROUTES.account.email_exists&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Check if email exists&quot;</span>, skip(ctx, payload))]
 </span><span class="kw">pub async fn </span>email_exists(
     payload: web::Json&lt;AccountCheckPayload&gt;,
     ctx: AppCtx,
@@ -232,6 +241,7 @@
     path = <span class="string">&quot;crate::V1_API_ROUTES.account.update_email&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Update email&quot;</span>, skip(ctx, payload, id))]
 </span><span class="kw">async fn </span>set_email(
     id: Identity,
     payload: web::Json&lt;Email&gt;,
@@ -246,6 +256,7 @@
     path = <span class="string">&quot;crate::V1_API_ROUTES.account.delete&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Delete account&quot;</span>, skip(ctx, payload, id))]
 </span><span class="kw">async fn </span>delete_account(
     id: Identity,
     payload: web::Json&lt;Password&gt;,
@@ -262,6 +273,7 @@
     path = <span class="string">&quot;crate::V1_API_ROUTES.account.update_password&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Update user password&quot;</span>, skip(ctx, payload, id))]
 </span><span class="kw">async fn </span>update_user_password(
     id: Identity,
     ctx: AppCtx,

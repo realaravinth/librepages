@@ -93,6 +93,7 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
+<span id="96">96</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -129,6 +130,7 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;crate::V1_API_ROUTES.serve.catch_all&quot;</span>)]
+#[tracing::instrument(name = <span class="string">&quot;Serve webpages&quot;</span>, skip(req, ctx))]
 </span><span class="kw">async fn </span>index(req: HttpRequest, ctx: AppCtx) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
     <span class="kw">let </span>c = req.connection_info();
     <span class="kw">let </span><span class="kw-2">mut </span>host = c.host();

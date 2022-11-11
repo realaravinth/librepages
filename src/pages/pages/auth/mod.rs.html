@@ -204,13 +204,13 @@
     path = <span class="string">&quot;PAGES.auth.logout&quot;</span>,
     wrap = <span class="string">&quot;super::get_auth_middleware()&quot;
 </span>)]
+#[tracing::instrument(name = <span class="string">&quot;Sign out&quot;</span>, skip(id))]
 </span><span class="kw">async fn </span>signout(id: Identity) -&gt; <span class="kw">impl </span>Responder {
     <span class="kw">use </span>actix_auth_middleware::GetLoginRoute;
 
     <span class="kw">if </span>id.identity().is_some() {
         id.forget();
     }
-    <span class="macro">println!</span>(<span class="string">&quot;received signout&quot;</span>);
     HttpResponse::Found()
         .append_header((http::header::LOCATION, PAGES.get_login_route(<span class="prelude-val">None</span>)))
         .finish()
