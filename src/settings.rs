@@ -21,7 +21,7 @@ use std::sync::Arc;
 use config::{Config, ConfigError, Environment, File};
 use derive_more::Display;
 #[cfg(not(test))]
-use log::{error, warn};
+use tracing::{error, warn};
 
 #[cfg(test)]
 use std::{println as warn, println as error};

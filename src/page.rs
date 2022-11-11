@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-use git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
-#[cfg(not(test))]
-use log::info;
-
 #[cfg(test)]
 use std::println as info;
+#[cfg(test)]
+use std::println as error;
+#[cfg(test)]
+use std::println as debug;
 
+use git2::{build::CheckoutBuilder, BranchType, Direction, Oid, Remote, Repository};
 use serde::Deserialize;
 use serde::Serialize;
+#[cfg(not(test))]
+use tracing::{debug, error, info};
 
 use crate::db::Site;
 use crate::errors::*;
@@ -95,7 +97,7 @@ impl Page {
         branch: &str,
     ) -> ServiceResult<git2::AnnotatedCommit<'a>> {
         let mut remote = repo.find_remote("origin")?;
-        log::info!("Fetching {} for repo", remote.name().unwrap());
+        info!("Fetching {} for repo", remote.name().unwrap());
         remote.fetch(&[branch], None, None)?;
         let fetch_head = repo.find_reference("FETCH_HEAD")?;
         Ok(repo.reference_to_annotated_commit(&fetch_head)?)
@@ -112,20 +114,19 @@ impl Page {
 
         // 2. Do the appropriate merge
         if analysis.0.is_fast_forward() {
-            //log::debug!("Doing a fast forward");
-            log::debug!("Doing a fast forward");
+            debug!("Doing a fast forward");
             // do a fast forward
             let refname = format!("refs/heads/{}", branch);
             match repo.find_reference(&refname) {
                 Ok(mut r) => {
-                    log::debug!("fast forwarding");
+                    debug!("fast forwarding");
                     Self::fast_forward(repo, &mut r, &fetch_commit).unwrap();
                 }
                 Err(_) => {
                     // The branch doesn't exist so just set the reference to the
                     // commit directly. Usually this is because you are pulling
                     // into an empty repository.
-                    log::error!("Error in find ref");
+                    error!("Error in find ref");
                     repo.reference(
                         &refname,
                         fetch_commit.id(),
@@ -151,7 +152,7 @@ impl Page {
                 .unwrap();
             Self::normal_merge(repo, &head_commit, &fetch_commit).unwrap();
         } else {
-            log::info!("Nothing to do...");
+            info!("Nothing to do...");
         }
         Ok(())
     }
@@ -178,7 +179,7 @@ impl Page {
     ) -> Result<(), git2::Error> {
         let local_tree = repo.find_commit(local.id())?.tree().unwrap();
         let remote_tree = repo.find_commit(remote.id())?.tree().unwrap();
-        println!("{} {}", local.id(), remote.id());
+        debug!("{} {}", local.id(), remote.id());
         let ancestor = repo
             .find_commit(repo.merge_base(local.id(), remote.id()).unwrap())
             .unwrap()
@@ -189,7 +190,7 @@ impl Page {
             .unwrap();
 
         if idx.has_conflicts() {
-            log::debug!("Merge conflicts detected...");
+            debug!("Merge conflicts detected...");
             repo.checkout_index(Some(&mut idx), None)?;
             return Ok(());
         }
@@ -223,7 +224,7 @@ impl Page {
             None => String::from_utf8_lossy(lb.name_bytes()).to_string(),
         };
         let msg = format!("Fast-Forward: Setting {} to id: {}", name, rc.id());
-        log::debug!("{}", msg);
+        debug!("{}", msg);
         lb.set_target(rc.id(), &msg)?;
         repo.set_head(&name)?;
         repo.checkout_head(Some(git2::build::CheckoutBuilder::default().force()))?;

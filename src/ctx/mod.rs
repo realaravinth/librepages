@@ -20,6 +20,7 @@ use std::thread;
 use crate::db::*;
 use crate::settings::Settings;
 use argon2_creds::{Config as ArgonConfig, ConfigBuilder as ArgonConfigBuilder, PasswordPolicy};
+use tracing::info;
 
 pub mod api;
 
@@ -51,9 +52,9 @@ impl Ctx {
 
         #[allow(unused_variables)]
         let init = thread::spawn(move || {
-            log::info!("Initializing credential manager");
+            info!("Initializing credential manager");
             c.init();
-            log::info!("Initialized credential manager");
+            info!("Initialized credential manager");
         });
         let db = get_db(&settings).await;
 

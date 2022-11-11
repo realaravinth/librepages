@@ -22,6 +22,7 @@ use sqlx::types::time::OffsetDateTime;
 //use sqlx::types::Json;
 use sqlx::ConnectOptions;
 use sqlx::PgPool;
+use tracing::error;
 use url::quirks::hostname;
 
 use crate::errors::*;
@@ -490,7 +491,7 @@ fn map_register_err(e: sqlx::Error) -> ServiceError {
             } else if msg.contains("librepages_users_email_key") {
                 ServiceError::EmailTaken
             } else {
-                log::error!("{}", msg);
+                error!("{}", msg);
                 ServiceError::InternalServerError
             }
         } else {

@@ -22,8 +22,9 @@ use actix_web::{
     web::JsonConfig, App, HttpServer,
 };
 use clap::{Parser, Subcommand};
-use log::info;
 use static_assets::FileMap;
+use tracing::info;
+use tracing_actix_web::TracingLogger;
 
 mod api;
 mod ctx;
@@ -80,10 +81,11 @@ enum Commands {
 #[actix_web::main]
 #[cfg(not(tarpaulin_include))]
 async fn main() -> std::io::Result<()> {
-    env::set_var("RUST_LOG", "info");
+    if env::var("RUST_LOG").is_err() {
+        env::set_var("RUST_LOG", "info");
+    }
 
     pretty_env_logger::init();
-
     let cli = Cli::parse();
 
     info!(
@@ -111,7 +113,7 @@ async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
     info!("Starting server on: http://{}", ip);
     HttpServer::new(move || {
         App::new()
-            .wrap(actix_middleware::Logger::default())
+            .wrap(TracingLogger::default())
             .wrap(actix_middleware::Compress::default())
             .app_data(ctx.clone())
             .app_data(get_json_err())
