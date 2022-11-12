@@ -78,6 +78,15 @@
 <span id="78">78</span>
 <span id="79">79</span>
 <span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -102,6 +111,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::page::Page;
+<span class="kw">use </span><span class="kw">crate</span>::page_config;
 <span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
 <span class="kw">use </span><span class="kw">crate</span>::subdomains::get_random_subdomain;
 <span class="kw">use </span><span class="kw">crate</span>::utils::get_random;
@@ -134,6 +144,9 @@
         <span class="self">self</span>.db.add_site(<span class="kw-2">&amp;</span>db_site).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
         page.update(<span class="kw-2">&amp;</span>page.branch)<span class="question-mark">?</span>;
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+            <span class="macro">unimplemented!</span>();
+        }
         <span class="prelude-val">Ok</span>(page)
     }
 
@@ -141,17 +154,22 @@
         <span class="kw">if let </span><span class="prelude-val">Ok</span>(db_site) = <span class="self">self</span>.db.get_site_from_secret(secret).<span class="kw">await </span>{
             <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
             <span class="kw">let </span>(tx, rx) = oneshot::channel();
-            <span class="kw">let </span>page = page.clone();
-            web::block(<span class="kw">move </span>|| {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(branch) = branch {
-                    tx.send(page.update(<span class="kw-2">&amp;</span>branch)).unwrap();
-                } <span class="kw">else </span>{
-                    tx.send(page.update(<span class="kw-2">&amp;</span>page.branch)).unwrap();
-                }
-            })
-            .<span class="kw">await
-            </span>.unwrap();
+            {
+                <span class="kw">let </span>page = page.clone();
+                web::block(<span class="kw">move </span>|| {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(branch) = branch {
+                        tx.send(page.update(<span class="kw-2">&amp;</span>branch)).unwrap();
+                    } <span class="kw">else </span>{
+                        tx.send(page.update(<span class="kw-2">&amp;</span>page.branch)).unwrap();
+                    }
+                })
+                .<span class="kw">await
+                </span>.unwrap();
+            }
             rx.<span class="kw">await</span>.unwrap()<span class="question-mark">?</span>;
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+                <span class="macro">unimplemented!</span>();
+            }
             <span class="prelude-val">Ok</span>(())
         } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)

@@ -301,6 +301,14 @@
 <span id="301">301</span>
 <span id="302">302</span>
 <span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -527,10 +535,11 @@
 <span class="attribute">#[cfg(test)]
 </span><span class="kw">pub mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
+    <span class="kw">use </span>mktemp::Temp;
 
     <span class="kw">const </span>FILE_CONTENT: <span class="kw-2">&amp;</span>str = <span class="string">&quot;foobar&quot;</span>;
 
-    <span class="kw">fn </span>write_file_util(path: <span class="kw-2">&amp;</span>str) {
+    <span class="kw">pub fn </span>write_file_util(repo_path: <span class="kw-2">&amp;</span>str, file_name: <span class="kw-2">&amp;</span>str, content: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;) {
         <span class="comment">// TODO change updated in DB
         </span><span class="kw">let </span>inner = |repo: <span class="kw-2">&amp;mut </span>Repository| -&gt; ServiceResult&lt;()&gt; {
             <span class="kw">let </span><span class="kw-2">mut </span>tree_builder = <span class="kw">match </span>repo.head() {
@@ -541,10 +550,14 @@
 
             <span class="kw">let </span>odb = repo.odb().unwrap();
 
-            <span class="kw">let </span>obj = odb
-                .write(ObjectType::Blob, FILE_CONTENT.as_bytes())
-                .unwrap();
-            tree_builder.insert(<span class="string">&quot;README.txt&quot;</span>, obj, <span class="number">0o100644</span>).unwrap();
+            <span class="kw">let </span>content = <span class="kw">if </span>content.is_some() {
+                content.as_ref().unwrap()
+            } <span class="kw">else </span>{
+                FILE_CONTENT
+            };
+
+            <span class="kw">let </span>obj = odb.write(ObjectType::Blob, content.as_bytes()).unwrap();
+            tree_builder.insert(file_name, obj, <span class="number">0o100644</span>).unwrap();
             <span class="kw">let </span>tree_hash = tree_builder.write().unwrap();
             <span class="kw">let </span>author = Signature::now(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).unwrap();
             <span class="kw">let </span>committer = Signature::now(<span class="string">&quot;librepages&quot;</span>, <span class="string">&quot;admin@librepages.org&quot;</span>).unwrap();
@@ -576,30 +589,33 @@
             <span class="prelude-val">Ok</span>(())
         };
 
-        <span class="kw">if </span>Repository::open(path).is_err() {
-            <span class="kw">let _ </span>= Repository::init(path);
+        <span class="kw">if </span>Repository::open(repo_path).is_err() {
+            <span class="kw">let _ </span>= Repository::init(repo_path);
         }
-        <span class="kw">let </span><span class="kw-2">mut </span>repo = Repository::open(path).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>repo = Repository::open(repo_path).unwrap();
         <span class="kw">let _ </span>= inner(<span class="kw-2">&amp;mut </span>repo);
     }
 
     <span class="attribute">#[test]
     </span><span class="kw">fn </span>test_git_write_read_works() {
-        <span class="kw">const </span>PATH: <span class="kw-2">&amp;</span>str = <span class="string">&quot;/tmp/librepges/test_git_write_read_works&quot;</span>;
+        <span class="kw">const </span>FILENAME: <span class="kw-2">&amp;</span>str = <span class="string">&quot;README.txt&quot;</span>;
 
-        write_file_util(PATH);
-        <span class="kw">let </span>resp = read_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;README.txt&quot;</span>).unwrap();
-        <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
+        <span class="kw">let </span>tmp_dir = Temp::new_dir().unwrap();
+        <span class="kw">let </span>path = tmp_dir.to_str().unwrap();
+
+        write_file_util(path, FILENAME, <span class="prelude-val">None</span>);
+        <span class="kw">let </span>resp = read_file(<span class="kw-2">&amp;</span>Path::new(path).into(), FILENAME).unwrap();
+        <span class="macro">assert_eq!</span>(resp.filename, FILENAME);
         <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
         <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
 
-        <span class="kw">let </span>resp = read_preview_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;master&quot;</span>, <span class="string">&quot;README.txt&quot;</span>).unwrap();
-        <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
+        <span class="kw">let </span>resp = read_preview_file(<span class="kw-2">&amp;</span>Path::new(path).into(), <span class="string">&quot;master&quot;</span>, FILENAME).unwrap();
+        <span class="macro">assert_eq!</span>(resp.filename, FILENAME);
         <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
         <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
 
         <span class="macro">assert_eq!</span>(
-            read_preview_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;master&quot;</span>, <span class="string">&quot;file-does-not-exist.txt&quot;</span>),
+            read_preview_file(<span class="kw-2">&amp;</span>Path::new(path).into(), <span class="string">&quot;master&quot;</span>, <span class="string">&quot;file-does-not-exist.txt&quot;</span>),
             <span class="prelude-val">Err</span>(ServiceError::FileNotFound)
         );
     }
