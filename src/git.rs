@@ -224,10 +224,11 @@ fn read_file_inner(
 #[cfg(test)]
 pub mod tests {
     use super::*;
+    use mktemp::Temp;
 
     const FILE_CONTENT: &str = "foobar";
 
-    fn write_file_util(path: &str) {
+    pub fn write_file_util(repo_path: &str, file_name: &str, content: Option<&str>) {
         // TODO change updated in DB
         let inner = |repo: &mut Repository| -> ServiceResult<()> {
             let mut tree_builder = match repo.head() {
@@ -238,10 +239,14 @@ pub mod tests {
 
             let odb = repo.odb().unwrap();
 
-            let obj = odb
-                .write(ObjectType::Blob, FILE_CONTENT.as_bytes())
-                .unwrap();
-            tree_builder.insert("README.txt", obj, 0o100644).unwrap();
+            let content = if content.is_some() {
+                content.as_ref().unwrap()
+            } else {
+                FILE_CONTENT
+            };
+
+            let obj = odb.write(ObjectType::Blob, content.as_bytes()).unwrap();
+            tree_builder.insert(file_name, obj, 0o100644).unwrap();
             let tree_hash = tree_builder.write().unwrap();
             let author = Signature::now("librepages", "admin@librepages.org").unwrap();
             let committer = Signature::now("librepages", "admin@librepages.org").unwrap();
@@ -273,30 +278,33 @@ pub mod tests {
             Ok(())
         };
 
-        if Repository::open(path).is_err() {
-            let _ = Repository::init(path);
+        if Repository::open(repo_path).is_err() {
+            let _ = Repository::init(repo_path);
         }
-        let mut repo = Repository::open(path).unwrap();
+        let mut repo = Repository::open(repo_path).unwrap();
         let _ = inner(&mut repo);
     }
 
     #[test]
     fn test_git_write_read_works() {
-        const PATH: &str = "/tmp/librepges/test_git_write_read_works";
+        const FILENAME: &str = "README.txt";
 
-        write_file_util(PATH);
-        let resp = read_file(&Path::new(PATH).into(), "README.txt").unwrap();
-        assert_eq!(resp.filename, "README.txt");
+        let tmp_dir = Temp::new_dir().unwrap();
+        let path = tmp_dir.to_str().unwrap();
+
+        write_file_util(path, FILENAME, None);
+        let resp = read_file(&Path::new(path).into(), FILENAME).unwrap();
+        assert_eq!(resp.filename, FILENAME);
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
 
-        let resp = read_preview_file(&Path::new(PATH).into(), "master", "README.txt").unwrap();
-        assert_eq!(resp.filename, "README.txt");
+        let resp = read_preview_file(&Path::new(path).into(), "master", FILENAME).unwrap();
+        assert_eq!(resp.filename, FILENAME);
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
 
         assert_eq!(
-            read_preview_file(&Path::new(PATH).into(), "master", "file-does-not-exist.txt"),
+            read_preview_file(&Path::new(path).into(), "master", "file-does-not-exist.txt"),
             Err(ServiceError::FileNotFound)
         );
     }
