@@ -291,6 +291,16 @@
 <span id="291">291</span>
 <span id="292">292</span>
 <span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -466,9 +476,7 @@
     }
 
     <span class="kw">let </span>inner = |repo: <span class="kw-2">&amp;</span>git2::Repository, tree: <span class="kw-2">&amp;</span>git2::Tree| -&gt; ServiceResult&lt;FileInfo&gt; {
-        <span class="comment">//        let head = repo.head().unwrap();
-        //        let tree = head.peel_to_tree().unwrap();
-        </span><span class="kw">let </span><span class="kw-2">mut </span>path = path;
+        <span class="kw">let </span><span class="kw-2">mut </span>path = path;
         <span class="kw">if </span>path == <span class="string">&quot;/&quot; </span>{
             <span class="kw">let </span>content = get_index_file(tree.id(), repo);
             <span class="kw">return </span><span class="prelude-val">Ok</span>(FileInfo {
@@ -480,10 +488,18 @@
         <span class="kw">if </span>path.starts_with(<span class="string">&#39;/&#39;</span>) {
             path = path.trim_start_matches(<span class="string">&#39;/&#39;</span>);
         }
-        <span class="kw">let </span>entry = tree.get_path(Path::new(path)).unwrap();
-        <span class="comment">//FileType::Dir(items)
 
-        </span><span class="kw">let </span>mode: GitFileMode = entry.clone().into();
+        <span class="kw">fn </span>file_not_found(e: git2::Error) -&gt; ServiceError {
+            <span class="kw">if </span>e.code() == ErrorCode::NotFound {
+                <span class="kw">if </span>e.class() == ErrorClass::Tree {
+                    <span class="kw">return </span>ServiceError::FileNotFound;
+                }
+            }
+            <span class="kw">return </span>e.into();
+        }
+        <span class="kw">let </span>entry = tree.get_path(Path::new(path)).map_err(file_not_found)<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>mode: GitFileMode = entry.clone().into();
         <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = entry.name() {
             <span class="kw">let </span>file = <span class="kw">match </span>mode {
                 GitFileMode::Dir =&gt; get_index_file(entry.id(), repo),
@@ -505,8 +521,7 @@
         }
     };
 
-    <span class="comment">//let repo = git2::Repository::open(repo_path).unwrap();
-    </span>inner(repo, tree)
+    inner(repo, tree)
 }
 
 <span class="attribute">#[cfg(test)]
@@ -582,6 +597,11 @@
         <span class="macro">assert_eq!</span>(resp.filename, <span class="string">&quot;README.txt&quot;</span>);
         <span class="macro">assert_eq!</span>(resp.content.bytes(), FILE_CONTENT.as_bytes());
         <span class="macro">assert_eq!</span>(resp.mime.first().unwrap(), <span class="string">&quot;text/plain&quot;</span>);
+
+        <span class="macro">assert_eq!</span>(
+            read_preview_file(<span class="kw-2">&amp;</span>Path::new(PATH).into(), <span class="string">&quot;master&quot;</span>, <span class="string">&quot;file-does-not-exist.txt&quot;</span>),
+            <span class="prelude-val">Err</span>(ServiceError::FileNotFound)
+        );
     }
 }
 </code></pre></div>

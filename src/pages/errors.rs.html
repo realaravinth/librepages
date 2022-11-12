@@ -265,6 +265,11 @@
 <span id="265">265</span>
 <span id="266">266</span>
 <span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -352,6 +357,10 @@
     <span class="attribute">#[display(fmt = <span class="string">&quot;Website not found&quot;</span>)]
     </span><span class="doccomment">/// website not found
     </span>WebsiteNotFound,
+
+    <span class="attribute">#[display(fmt = <span class="string">&quot;File not found&quot;</span>)]
+    </span><span class="doccomment">/// File not found
+    </span>FileNotFound,
 
     <span class="doccomment">/// when the a path configured for a page is already taken
     </span><span class="attribute">#[display(
@@ -503,6 +512,7 @@
             ServiceError::EmailTaken =&gt; StatusCode::BAD_REQUEST,
             ServiceError::UsernameTaken =&gt; StatusCode::BAD_REQUEST,
             ServiceError::AccountNotFound =&gt; StatusCode::NOT_FOUND,
+            ServiceError::FileNotFound =&gt; StatusCode::NOT_FOUND,
 
             ServiceError::ProfanityError =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
             </span>ServiceError::BlacklistError =&gt; StatusCode::BAD_REQUEST, <span class="comment">//BADREQUEST,
