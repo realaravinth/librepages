@@ -86,6 +86,10 @@ pub enum ServiceError {
     /// website not found
     WebsiteNotFound,
 
+    #[display(fmt = "File not found")]
+    /// File not found
+    FileNotFound,
+
     /// when the a path configured for a page is already taken
     #[display(
         fmt = "Path already used for another website. lhs: {:?} rhs: {:?}",
@@ -236,6 +240,7 @@ impl ResponseError for ServiceError {
             ServiceError::EmailTaken => StatusCode::BAD_REQUEST,
             ServiceError::UsernameTaken => StatusCode::BAD_REQUEST,
             ServiceError::AccountNotFound => StatusCode::NOT_FOUND,
+            ServiceError::FileNotFound => StatusCode::NOT_FOUND,
 
             ServiceError::ProfanityError => StatusCode::BAD_REQUEST, //BADREQUEST,
             ServiceError::BlacklistError => StatusCode::BAD_REQUEST, //BADREQUEST,

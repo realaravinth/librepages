@@ -173,8 +173,6 @@ fn read_file_inner(
     }
 
     let inner = |repo: &git2::Repository, tree: &git2::Tree| -> ServiceResult<FileInfo> {
-        //        let head = repo.head().unwrap();
-        //        let tree = head.peel_to_tree().unwrap();
         let mut path = path;
         if path == "/" {
             let content = get_index_file(tree.id(), repo);
@@ -187,8 +185,16 @@ fn read_file_inner(
         if path.starts_with('/') {
             path = path.trim_start_matches('/');
         }
-        let entry = tree.get_path(Path::new(path)).unwrap();
-        //FileType::Dir(items)
+
+        fn file_not_found(e: git2::Error) -> ServiceError {
+            if e.code() == ErrorCode::NotFound {
+                if e.class() == ErrorClass::Tree {
+                    return ServiceError::FileNotFound;
+                }
+            }
+            return e.into();
+        }
+        let entry = tree.get_path(Path::new(path)).map_err(file_not_found)?;
 
         let mode: GitFileMode = entry.clone().into();
         if let Some(name) = entry.name() {
@@ -212,7 +218,6 @@ fn read_file_inner(
         }
     };
 
-    //let repo = git2::Repository::open(repo_path).unwrap();
     inner(repo, tree)
 }
 
@@ -289,5 +294,10 @@ pub mod tests {
         assert_eq!(resp.filename, "README.txt");
         assert_eq!(resp.content.bytes(), FILE_CONTENT.as_bytes());
         assert_eq!(resp.mime.first().unwrap(), "text/plain");
+
+        assert_eq!(
+            read_preview_file(&Path::new(PATH).into(), "master", "file-does-not-exist.txt"),
+            Err(ServiceError::FileNotFound)
+        );
     }
 }
