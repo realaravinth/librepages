@@ -22,6 +22,7 @@ use crate::ctx::Ctx;
 use crate::db::Site;
 use crate::errors::*;
 use crate::page::Page;
+use crate::page_config;
 use crate::settings::Settings;
 use crate::subdomains::get_random_subdomain;
 use crate::utils::get_random;
@@ -54,6 +55,9 @@ impl Ctx {
         self.db.add_site(&db_site).await?;
         let page = Page::from_site(&self.settings, db_site);
         page.update(&page.branch)?;
+        if let Some(config) = page_config::Config::load(&page.path, &page.branch) {
+            unimplemented!();
+        }
         Ok(page)
     }
 
@@ -61,17 +65,22 @@ impl Ctx {
         if let Ok(db_site) = self.db.get_site_from_secret(secret).await {
             let page = Page::from_site(&self.settings, db_site);
             let (tx, rx) = oneshot::channel();
-            let page = page.clone();
-            web::block(move || {
-                if let Some(branch) = branch {
-                    tx.send(page.update(&branch)).unwrap();
-                } else {
-                    tx.send(page.update(&page.branch)).unwrap();
-                }
-            })
-            .await
-            .unwrap();
+            {
+                let page = page.clone();
+                web::block(move || {
+                    if let Some(branch) = branch {
+                        tx.send(page.update(&branch)).unwrap();
+                    } else {
+                        tx.send(page.update(&page.branch)).unwrap();
+                    }
+                })
+                .await
+                .unwrap();
+            }
             rx.await.unwrap()?;
+            if let Some(config) = page_config::Config::load(&page.path, &page.branch) {
+                unimplemented!();
+            }
             Ok(())
         } else {
             Err(ServiceError::WebsiteNotFound)
