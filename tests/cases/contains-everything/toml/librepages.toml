@@ -1,0 +1,18 @@
+domains = [
+    "example.org",
+    "example.com",
+]
+redirects = [
+{from = "/from1", to = "/to1"},
+{from = "/from2", to = "/to2"},
+]
+
+[source]
+production_branch = "librepages"
+staging = "beta"
+
+[forms]
+enable = true
+
+[image_compression]
+enable = true

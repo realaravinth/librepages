@@ -34,6 +34,7 @@ mod errors;
 mod git;
 mod meta;
 mod page;
+mod page_config;
 mod pages;
 mod preview;
 mod serve;
