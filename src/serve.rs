@@ -53,8 +53,8 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
     if host.contains(&ctx.settings.page.base_domain) {
         let extractor = crate::preview::Preview::new(&ctx);
         if let Some(preview_branch) = extractor.extract(host) {
-            let res = if ctx.db.hostname_exists(&host).await? {
-                let path = crate::utils::get_website_path(&ctx.settings, &host);
+            let res = if ctx.db.hostname_exists(host).await? {
+                let path = crate::utils::get_website_path(&ctx.settings, host);
                 let content =
                     crate::git::read_preview_file(&path, preview_branch, req.uri().path())?;
                 let mime = if let Some(mime) = content.mime.first_raw() {
@@ -75,7 +75,7 @@ async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
 
     // TODO: custom domains.
     if ctx.db.hostname_exists(host).await? {
-        let path = crate::utils::get_website_path(&ctx.settings, &host);
+        let path = crate::utils::get_website_path(&ctx.settings, host);
         let content = crate::git::read_file(&path, req.uri().path())?;
         let mime = if let Some(mime) = content.mime.first_raw() {
             mime

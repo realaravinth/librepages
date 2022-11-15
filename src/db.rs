@@ -23,7 +23,6 @@ use sqlx::types::time::OffsetDateTime;
 use sqlx::ConnectOptions;
 use sqlx::PgPool;
 use tracing::error;
-use url::quirks::hostname;
 
 use crate::errors::*;
 

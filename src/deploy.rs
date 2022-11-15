@@ -16,7 +16,6 @@
  */
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
-use tokio::sync::oneshot;
 
 use crate::errors::*;
 use crate::page::Page;

@@ -38,9 +38,9 @@ impl<'a> Preview<'a> {
     }
 
     pub fn extract(&self, hostname: &'a str) -> Option<&'a str> {
-        if !hostname.contains(&self.delimiter)
-            || !hostname.contains(&self.prefix)
-            || !hostname.contains(&self.base)
+        if !hostname.contains(self.delimiter)
+            || !hostname.contains(self.prefix)
+            || !hostname.contains(self.base)
         {
             return None;
         }

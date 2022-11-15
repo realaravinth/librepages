@@ -187,12 +187,10 @@ fn read_file_inner(
         }
 
         fn file_not_found(e: git2::Error) -> ServiceError {
-            if e.code() == ErrorCode::NotFound {
-                if e.class() == ErrorClass::Tree {
-                    return ServiceError::FileNotFound;
-                }
+            if e.code() == ErrorCode::NotFound && e.class() == ErrorClass::Tree {
+                return ServiceError::FileNotFound;
             }
-            return e.into();
+            e.into()
         }
         let entry = tree.get_path(Path::new(path)).map_err(file_not_found)?;
 

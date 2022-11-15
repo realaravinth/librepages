@@ -104,7 +104,7 @@ pub fn context(s: &Settings) -> Context {
     ctx
 }
 
-pub fn auth_ctx(username: Option<&str>, s: &Settings) -> Context {
+pub fn auth_ctx(_username: Option<&str>, s: &Settings) -> Context {
     let mut ctx = Context::new();
     let footer = Footer::new(s);
     ctx.insert("footer", &footer);

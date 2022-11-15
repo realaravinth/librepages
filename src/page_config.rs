@@ -102,9 +102,9 @@ impl Config {
         branch: &str,
         policies: &'a [Policy<'a>],
     ) -> Option<&'a Policy<'a>> {
-        let repo = git2::Repository::open(&repo_path).unwrap();
+        let repo = git2::Repository::open(repo_path).unwrap();
 
-        let branch = repo.find_branch(&branch, git2::BranchType::Local).unwrap();
+        let branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
         //    let tree = head.peel_to_tree().unwrap();
         let branch = branch.into_reference();
         let tree = branch.peel_to_tree().unwrap();
@@ -114,10 +114,7 @@ impl Config {
                 if let Some(name) = x.name() {
                     if policies.iter().any(|p| p.rel_path == name) {
                         let mode: GitFileMode = x.into();
-                        match mode {
-                            GitFileMode::Executable | GitFileMode::Regular => true,
-                            _ => false,
-                        }
+                        matches!(mode, GitFileMode::Executable | GitFileMode::Regular)
                     } else {
                         false
                     }
@@ -142,7 +139,7 @@ impl Config {
     }
 
     fn load_json(c: &str) -> Config {
-        serde_json::from_str(&c).unwrap()
+        serde_json::from_str(c).unwrap()
     }
 }
 

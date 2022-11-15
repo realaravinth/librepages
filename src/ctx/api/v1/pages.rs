@@ -55,7 +55,7 @@ impl Ctx {
         self.db.add_site(&db_site).await?;
         let page = Page::from_site(&self.settings, db_site);
         page.update(&page.branch)?;
-        if let Some(config) = page_config::Config::load(&page.path, &page.branch) {
+        if let Some(_config) = page_config::Config::load(&page.path, &page.branch) {
             unimplemented!();
         }
         Ok(page)
@@ -78,7 +78,7 @@ impl Ctx {
                 .unwrap();
             }
             rx.await.unwrap()?;
-            if let Some(config) = page_config::Config::load(&page.path, &page.branch) {
+            if let Some(_config) = page_config::Config::load(&page.path, &page.branch) {
                 unimplemented!();
             }
             Ok(())

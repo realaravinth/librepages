@@ -16,22 +16,20 @@
  */
 use std::env;
 use std::path::Path;
-use std::sync::Arc;
 
 use config::{Config, ConfigError, Environment, File};
 use derive_more::Display;
 #[cfg(not(test))]
-use tracing::{error, warn};
+use tracing::warn;
 
 #[cfg(test)]
-use std::{println as warn, println as error};
+use std::println as warn;
 
 use serde::Deserialize;
 use serde::Serialize;
 use url::Url;
 
 use crate::errors::*;
-use crate::page::Page;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Server {
@@ -178,7 +176,7 @@ impl Settings {
             }
 
             if !path.exists() {
-                std::fs::create_dir_all(&path).unwrap();
+                std::fs::create_dir_all(path).unwrap();
             }
         }
 
