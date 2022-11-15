@@ -347,6 +347,38 @@
     },
     "query": "SELECT email FROM librepages_users WHERE name = $1"
   },
+  "e4adf1bc9175eeb9d61b495653bb452039cc38818c8792acdc6a1c732b6f4554": {
+    "describe": {
+      "columns": [
+        {
+          "name": "exists",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT EXISTS (SELECT 1 from librepages_deploy_event_type WHERE name = $1)"
+  },
+  "ed935cd75e805ddd7223ea8ba298ff94018cf305c519120279a5d1f7bb99e23e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar"
+        ]
+      }
+    },
+    "query": "INSERT INTO librepages_deploy_event_type\n                    (name) VALUES ($1);"
+  },
   "faa4170a309f19a4abf1ca3f8dd3c0526945aa00f028ebf8bd7063825d448f5b": {
     "describe": {
       "columns": [],

@@ -19,7 +19,7 @@ actix-identity = "0.4.0"
 actix-rt = "2"
 actix-web-codegen-const-routes = { version = "0.1.0", tag = "0.1.0", git = "https://github.com/realaravinth/actix-web-codegen-const-routes" }
 argon2-creds = { branch = "master", git = "https://github.com/realaravinth/argon2-creds"}
-sqlx = { version = "0.6.1", features = [ "runtime-actix-rustls", "postgres", "time", "offline", "json"] }
+sqlx = { version = "0.6.1", features = ["runtime-actix-rustls", "postgres", "time", "offline", "json", "uuid"] }
 clap = { version = "3.2.20", features = ["derive"]}
 
 config = "0.13"
@@ -50,6 +50,7 @@ tracing = { version = "0.1.37", features = ["log"]}
 tracing-actix-web = "0.6.2"
 toml = "0.5.9"
 serde_yaml = "0.9.14"
+uuid = { version = "1.2.2", features = ["serde"] }
 
 [dependencies.cache-buster]
 git = "https://github.com/realaravinth/cache-buster"

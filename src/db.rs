@@ -19,10 +19,10 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::types::time::OffsetDateTime;
-//use sqlx::types::Json;
 use sqlx::ConnectOptions;
 use sqlx::PgPool;
 use tracing::error;
+use uuid::Uuid;
 
 use crate::errors::*;
 
@@ -81,6 +81,7 @@ impl Database {
             .await
             .unwrap();
         //.map_err(|e| ServiceError::ServiceError(Box::new(e)))?;
+        self.create_event_type().await?;
         Ok(())
     }
 
@@ -383,6 +384,139 @@ impl Database {
 
         Ok(resp)
     }
+
+    /// check if event type exists
+    async fn event_type_exists(&self, event: &Event) -> ServiceResult<bool> {
+        let res = sqlx::query!(
+            "SELECT EXISTS (SELECT 1 from librepages_deploy_event_type WHERE name = $1)",
+            event.name,
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+
+        let mut resp = false;
+        if let Some(x) = res.exists {
+            resp = x;
+        }
+
+        Ok(resp)
+    }
+
+    async fn create_event_type(&self) -> ServiceResult<()> {
+        for e in EVENTS {
+            if !self.event_type_exists(&e).await? {
+                sqlx::query!(
+                    "INSERT INTO librepages_deploy_event_type
+                    (name) VALUES ($1);",
+                    e.name
+                )
+                .execute(&self.pool)
+                .await
+                .map_err(map_register_err)?;
+            }
+        }
+        Ok(())
+    }
+
+    pub async fn log_event(&self, hostname: &str, event: &Event) -> ServiceResult<Uuid> {
+        let now = now_unix_time_stamp();
+        let uuid = Uuid::new_v4();
+
+        sqlx::query!(
+            "INSERT INTO librepages_site_deploy_events
+            (event_type, time, site, pub_id) VALUES (
+                (SELECT iD from librepages_deploy_event_type WHERE name = $1),
+                $2,
+                (SELECT ID from librepages_sites WHERE hostname = $3),
+                $4
+            );
+            ",
+            event.name,
+            &now,
+            hostname,
+            uuid,
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+        Ok(uuid)
+    }
+
+    pub async fn get_event(
+        &self,
+        hostname: &str,
+        event_id: &Uuid,
+    ) -> ServiceResult<LibrePagesEvent> {
+        let event = sqlx::query_as!(
+            InnerLibrepagesEvent,
+            "SELECT
+                    librepages_deploy_event_type.name,
+                    librepages_site_deploy_events.time,
+                    librepages_site_deploy_events.pub_id
+                FROM
+                    librepages_site_deploy_events
+                INNER JOIN librepages_deploy_event_type ON
+                    librepages_deploy_event_type.ID = librepages_site_deploy_events.event_type
+                WHERE
+                    librepages_site_deploy_events.site = (
+                        SELECT ID FROM librepages_sites WHERE hostname = $1
+                    )
+                AND
+                    librepages_site_deploy_events.pub_id = $2
+                ",
+            hostname,
+            event_id,
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        Ok(LibrePagesEvent {
+            id: event.pub_id,
+            time: event.time,
+            event_type: Event::from_str(&event.name).unwrap(),
+            site: hostname.to_owned(),
+        })
+    }
+
+    pub async fn list_all_site_events(
+        &self,
+        hostname: &str,
+    ) -> ServiceResult<Vec<LibrePagesEvent>> {
+        let mut inner_events = sqlx::query_as!(
+            InnerLibrepagesEvent,
+            "SELECT
+                    librepages_deploy_event_type.name,
+                    librepages_site_deploy_events.time,
+                    librepages_site_deploy_events.pub_id
+                FROM
+                    librepages_site_deploy_events
+                INNER JOIN librepages_deploy_event_type ON
+                    librepages_deploy_event_type.ID = librepages_site_deploy_events.event_type
+                WHERE
+                    librepages_site_deploy_events.site = (
+                        SELECT ID FROM librepages_sites WHERE hostname = $1
+                    );
+                ",
+            hostname,
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+
+        let mut events = Vec::with_capacity(inner_events.len());
+
+        for e in inner_events.drain(0..) {
+            events.push(LibrePagesEvent {
+                id: e.pub_id,
+                time: e.time,
+                event_type: Event::from_str(&e.name).unwrap(),
+                site: hostname.to_owned(),
+            })
+        }
+        Ok(events)
+    }
 }
 struct InnerSite {
     site_secret: String,
@@ -449,6 +583,40 @@ pub struct NameHash {
     pub username: String,
     /// hashed password
     pub hash: String,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug, Eq, PartialEq)]
+pub struct Event {
+    pub name: &'static str,
+}
+
+impl Event {
+    const fn new(name: &'static str) -> Self {
+        Self { name }
+    }
+
+    pub fn from_str(name: &str) -> Option<Event> {
+        EVENTS.into_iter().find(|e| e.name == name)
+    }
+}
+pub const EVENT_TYPE_CREATE: Event = Event::new("site.event.create");
+pub const EVENT_TYPE_UPDATE: Event = Event::new("site.event.update");
+pub const EVENT_TYPE_DELETE: Event = Event::new("site.event.delete");
+
+pub const EVENTS: [Event; 3] = [EVENT_TYPE_DELETE, EVENT_TYPE_DELETE, EVENT_TYPE_CREATE];
+
+struct InnerLibrepagesEvent {
+    name: String,
+    time: OffsetDateTime,
+    pub_id: Uuid,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct LibrePagesEvent {
+    pub event_type: Event,
+    pub time: OffsetDateTime,
+    pub site: String,
+    pub id: Uuid,
 }
 
 fn now_unix_time_stamp() -> OffsetDateTime {
@@ -637,6 +805,13 @@ mod tests {
         const PASSWORD: &str = "pasdfasdfasdfadf";
 
         db.migrate().await.unwrap();
+
+        // check if events are created
+        for e in EVENTS {
+            println!("Testing event type exists {}", e.name);
+            assert!(db.event_type_exists(&e).await.unwrap());
+        }
+
         let p = super::Register {
             username: NAME,
             email: EMAIL,
@@ -684,6 +859,21 @@ mod tests {
         let db_sites = db.list_all_sites(p.username).await.unwrap();
         assert_eq!(db_sites.len(), 1);
         assert_eq!(db_sites, vec![site.clone()]);
+
+        // add event to site
+        let event_id = db
+            .log_event(&site.hostname, &EVENT_TYPE_CREATE)
+            .await
+            .unwrap();
+        let event = db.get_event(&site.hostname, &event_id).await.unwrap();
+        assert_eq!(event.id, event_id);
+        assert_eq!(event.event_type, EVENT_TYPE_CREATE);
+        assert_eq!(event.site, site.hostname);
+
+        assert_eq!(
+            db.list_all_site_events(&site.hostname).await.unwrap(),
+            vec![event]
+        );
 
         // delete site
         db.delete_site(p.username, &site.hostname).await.unwrap();
