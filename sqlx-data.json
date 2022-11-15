@@ -1,5 +1,20 @@
 {
   "db": "PostgreSQL",
+  "14cdc724af64942e93994f97e9eafc8272d15605eff7aab9e5177d01f2bf6118": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Timestamptz",
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "INSERT INTO librepages_site_deploy_events\n            (event_type, time, site, pub_id) VALUES (\n                (SELECT iD from librepages_deploy_event_type WHERE name = $1),\n                $2,\n                (SELECT ID from librepages_sites WHERE hostname = $3),\n                $4\n            );\n            "
+  },
   "1ac91b492001493430c686d9cd7d6be03ada4b4c431d7bc112ef2105eba0e82d": {
     "describe": {
       "columns": [
@@ -96,6 +111,39 @@
       }
     },
     "query": "SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1)"
+  },
+  "39854fcbfb0247377c6c5ca70c2c0fa7804548848bf56f881eea2f8242e7a09d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "time",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 2,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "SELECT\n                    librepages_deploy_event_type.name,\n                    librepages_site_deploy_events.time,\n                    librepages_site_deploy_events.pub_id\n                FROM\n                    librepages_site_deploy_events\n                INNER JOIN librepages_deploy_event_type ON\n                    librepages_deploy_event_type.ID = librepages_site_deploy_events.event_type\n                WHERE\n                    librepages_site_deploy_events.site = (\n                        SELECT ID FROM librepages_sites WHERE hostname = $1\n                    )\n                AND\n                    librepages_site_deploy_events.pub_id = $2\n                "
   },
   "416b9f0412f0d7ee05d4a350839c5a6d1e06c1d7f8942744f6d806ddc47084c2": {
     "describe": {
@@ -347,6 +395,38 @@
     },
     "query": "SELECT email FROM librepages_users WHERE name = $1"
   },
+  "d2327c1bcb40e18518c2112413a19a9b26eb0f54f83c53e968c9752d70c8dd4e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "name",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "time",
+          "ordinal": 1,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 2,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT\n                    librepages_deploy_event_type.name,\n                    librepages_site_deploy_events.time,\n                    librepages_site_deploy_events.pub_id\n                FROM\n                    librepages_site_deploy_events\n                INNER JOIN librepages_deploy_event_type ON\n                    librepages_deploy_event_type.ID = librepages_site_deploy_events.event_type\n                WHERE\n                    librepages_site_deploy_events.site = (\n                        SELECT ID FROM librepages_sites WHERE hostname = $1\n                    );\n                "
+  },
   "e4adf1bc9175eeb9d61b495653bb452039cc38818c8792acdc6a1c732b6f4554": {
     "describe": {
       "columns": [
@@ -367,7 +447,7 @@
     },
     "query": "SELECT EXISTS (SELECT 1 from librepages_deploy_event_type WHERE name = $1)"
   },
-  "ed935cd75e805ddd7223ea8ba298ff94018cf305c519120279a5d1f7bb99e23e": {
+  "f651da8f411b7977cb87dd8d4bd5d167661d7ef1d865747e76219453d386d593": {
     "describe": {
       "columns": [],
       "nullable": [],
@@ -377,7 +457,7 @@
         ]
       }
     },
-    "query": "INSERT INTO librepages_deploy_event_type\n                    (name) VALUES ($1);"
+    "query": "INSERT INTO librepages_deploy_event_type\n                    (name) VALUES ($1) ON CONFLICT (name) DO NOTHING;"
   },
   "faa4170a309f19a4abf1ca3f8dd3c0526945aa00f028ebf8bd7063825d448f5b": {
     "describe": {

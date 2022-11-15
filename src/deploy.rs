@@ -16,6 +16,7 @@
  */
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::errors::*;
 use crate::page::Page;
@@ -43,13 +44,19 @@ pub struct DeployEvent {
     pub branch: String,
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DeployEventResp {
+    pub id: Uuid,
+}
+
 #[actix_web_codegen_const_routes::post(path = "crate::V1_API_ROUTES.deploy.update")]
 #[tracing::instrument(name = "Update webpages", skip(payload, ctx))]
 async fn update(payload: web::Json<DeployEvent>, ctx: AppCtx) -> ServiceResult<impl Responder> {
     let payload = payload.into_inner();
-    ctx.update_site(&payload.secret, Some(payload.branch))
+    let id = ctx
+        .update_site(&payload.secret, Some(payload.branch))
         .await?;
-    Ok(HttpResponse::Ok())
+    Ok(HttpResponse::Ok().json(DeployEventResp { id }))
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
@@ -131,6 +138,10 @@ mod tests {
         )
         .await;
         check_status!(resp, StatusCode::OK);
+        let event_id: DeployEventResp = actix_web::test::read_body_json(resp).await;
+        let update_event = ctx.db.get_event(&page.domain, &event_id.id).await.unwrap();
+        assert_eq!(&update_event.site, &page.domain);
+        assert_eq!(update_event.id, event_id.id);
 
         payload.secret = page.branch.clone();
 

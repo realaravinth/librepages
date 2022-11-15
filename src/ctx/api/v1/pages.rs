@@ -17,8 +17,10 @@
 use actix_web::web;
 use serde::{Deserialize, Serialize};
 use tokio::sync::oneshot;
+use uuid::Uuid;
 
 use crate::ctx::Ctx;
+use crate::db;
 use crate::db::Site;
 use crate::errors::*;
 use crate::page::Page;
@@ -58,10 +60,13 @@ impl Ctx {
         if let Some(_config) = page_config::Config::load(&page.path, &page.branch) {
             unimplemented!();
         }
+        self.db
+            .log_event(&page.domain, &db::EVENT_TYPE_CREATE)
+            .await?;
         Ok(page)
     }
 
-    pub async fn update_site(&self, secret: &str, branch: Option<String>) -> ServiceResult<()> {
+    pub async fn update_site(&self, secret: &str, branch: Option<String>) -> ServiceResult<Uuid> {
         if let Ok(db_site) = self.db.get_site_from_secret(secret).await {
             let page = Page::from_site(&self.settings, db_site);
             let (tx, rx) = oneshot::channel();
@@ -81,7 +86,10 @@ impl Ctx {
             if let Some(_config) = page_config::Config::load(&page.path, &page.branch) {
                 unimplemented!();
             }
-            Ok(())
+            println!("{}", page.domain);
+            self.db
+                .log_event(&page.domain, &db::EVENT_TYPE_UPDATE)
+                .await
         } else {
             Err(ServiceError::WebsiteNotFound)
         }

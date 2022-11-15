@@ -408,7 +408,7 @@ impl Database {
             if !self.event_type_exists(&e).await? {
                 sqlx::query!(
                     "INSERT INTO librepages_deploy_event_type
-                    (name) VALUES ($1);",
+                    (name) VALUES ($1) ON CONFLICT (name) DO NOTHING;",
                     e.name
                 )
                 .execute(&self.pool)
@@ -603,7 +603,7 @@ pub const EVENT_TYPE_CREATE: Event = Event::new("site.event.create");
 pub const EVENT_TYPE_UPDATE: Event = Event::new("site.event.update");
 pub const EVENT_TYPE_DELETE: Event = Event::new("site.event.delete");
 
-pub const EVENTS: [Event; 3] = [EVENT_TYPE_DELETE, EVENT_TYPE_DELETE, EVENT_TYPE_CREATE];
+pub const EVENTS: [Event; 3] = [EVENT_TYPE_CREATE, EVENT_TYPE_DELETE, EVENT_TYPE_UPDATE];
 
 struct InnerLibrepagesEvent {
     name: String,
@@ -671,8 +671,16 @@ fn map_register_err(e: sqlx::Error) -> ServiceError {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashSet;
+
     use super::*;
     use crate::settings::Settings;
+
+    #[test]
+    fn event_names_are_unique() {
+        let mut uniq = HashSet::new();
+        assert!(EVENTS.into_iter().all(move |x| uniq.insert(x.name)));
+    }
 
     #[actix_rt::test]
     async fn db_works() {
