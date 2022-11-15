@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["services",""]],"mod":[["routes",""]],"struct":[["DeployEvent",""],["DeployInfo",""],["DeploySecret",""],["deploy_info",""],["update",""]]};
+window.SIDEBAR_ITEMS = {"fn":[["services",""]],"mod":[["routes",""]],"struct":[["DeployEvent",""],["DeployEventResp",""],["DeployInfo",""],["DeploySecret",""],["deploy_info",""],["update",""]]};

@@ -87,6 +87,14 @@
 <span id="87">87</span>
 <span id="88">88</span>
 <span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -106,8 +114,10 @@
 </span><span class="kw">use </span>actix_web::web;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>tokio::sync::oneshot;
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="kw">use </span><span class="kw">crate</span>::ctx::Ctx;
+<span class="kw">use </span><span class="kw">crate</span>::db;
 <span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::page::Page;
@@ -147,10 +157,13 @@
         <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
             <span class="macro">unimplemented!</span>();
         }
+        <span class="self">self</span>.db
+            .log_event(<span class="kw-2">&amp;</span>page.domain, <span class="kw-2">&amp;</span>db::EVENT_TYPE_CREATE)
+            .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(page)
     }
 
-    <span class="kw">pub async fn </span>update_site(<span class="kw-2">&amp;</span><span class="self">self</span>, secret: <span class="kw-2">&amp;</span>str, branch: <span class="prelude-ty">Option</span>&lt;String&gt;) -&gt; ServiceResult&lt;()&gt; {
+    <span class="kw">pub async fn </span>update_site(<span class="kw-2">&amp;</span><span class="self">self</span>, secret: <span class="kw-2">&amp;</span>str, branch: <span class="prelude-ty">Option</span>&lt;String&gt;) -&gt; ServiceResult&lt;Uuid&gt; {
         <span class="kw">if let </span><span class="prelude-val">Ok</span>(db_site) = <span class="self">self</span>.db.get_site_from_secret(secret).<span class="kw">await </span>{
             <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
             <span class="kw">let </span>(tx, rx) = oneshot::channel();
@@ -170,8 +183,11 @@
             <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
                 <span class="macro">unimplemented!</span>();
             }
-            <span class="prelude-val">Ok</span>(())
-        } <span class="kw">else </span>{
+            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, page.domain);
+            <span class="self">self</span>.db
+                .log_event(<span class="kw-2">&amp;</span>page.domain, <span class="kw-2">&amp;</span>db::EVENT_TYPE_UPDATE)
+                .<span class="kw">await
+        </span>} <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)
         }
     }

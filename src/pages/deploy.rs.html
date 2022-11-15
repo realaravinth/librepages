@@ -180,6 +180,17 @@
 <span id="180">180</span>
 <span id="181">181</span>
 <span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -198,6 +209,7 @@
  */
 </span><span class="kw">use </span>actix_web::{web, HttpResponse, Responder};
 <span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::page::Page;
@@ -225,13 +237,19 @@
     <span class="kw">pub </span>branch: String,
 }
 
+<span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize)]
+</span><span class="kw">pub struct </span>DeployEventResp {
+    <span class="kw">pub </span>id: Uuid,
+}
+
 <span class="attribute">#[actix_web_codegen_const_routes::post(path = <span class="string">&quot;crate::V1_API_ROUTES.deploy.update&quot;</span>)]
 #[tracing::instrument(name = <span class="string">&quot;Update webpages&quot;</span>, skip(payload, ctx))]
 </span><span class="kw">async fn </span>update(payload: web::Json&lt;DeployEvent&gt;, ctx: AppCtx) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
     <span class="kw">let </span>payload = payload.into_inner();
-    ctx.update_site(<span class="kw-2">&amp;</span>payload.secret, <span class="prelude-val">Some</span>(payload.branch))
+    <span class="kw">let </span>id = ctx
+        .update_site(<span class="kw-2">&amp;</span>payload.secret, <span class="prelude-val">Some</span>(payload.branch))
         .<span class="kw">await</span><span class="question-mark">?</span>;
-    <span class="prelude-val">Ok</span>(HttpResponse::Ok())
+    <span class="prelude-val">Ok</span>(HttpResponse::Ok().json(DeployEventResp { id }))
 }
 
 <span class="attribute">#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
@@ -313,6 +331,10 @@
         )
         .<span class="kw">await</span>;
         <span class="macro">check_status!</span>(resp, StatusCode::OK);
+        <span class="kw">let </span>event_id: DeployEventResp = actix_web::test::read_body_json(resp).<span class="kw">await</span>;
+        <span class="kw">let </span>update_event = ctx.db.get_event(<span class="kw-2">&amp;</span>page.domain, <span class="kw-2">&amp;</span>event_id.id).<span class="kw">await</span>.unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>update_event.site, <span class="kw-2">&amp;</span>page.domain);
+        <span class="macro">assert_eq!</span>(update_event.id, event_id.id);
 
         payload.secret = page.branch.clone();
 
