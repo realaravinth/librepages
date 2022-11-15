@@ -193,9 +193,6 @@
 <span id="193">193</span>
 <span id="194">194</span>
 <span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
-<span id="198">198</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -300,9 +297,9 @@
         branch: <span class="kw-2">&amp;</span>str,
         policies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Policy&lt;<span class="lifetime">&#39;a</span>&gt;],
     ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Policy&lt;<span class="lifetime">&#39;a</span>&gt;&gt; {
-        <span class="kw">let </span>repo = git2::Repository::open(<span class="kw-2">&amp;</span>repo_path).unwrap();
+        <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
 
-        <span class="kw">let </span>branch = repo.find_branch(<span class="kw-2">&amp;</span>branch, git2::BranchType::Local).unwrap();
+        <span class="kw">let </span>branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
         <span class="comment">//    let tree = head.peel_to_tree().unwrap();
         </span><span class="kw">let </span>branch = branch.into_reference();
         <span class="kw">let </span>tree = branch.peel_to_tree().unwrap();
@@ -312,10 +309,7 @@
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = x.name() {
                     <span class="kw">if </span>policies.iter().any(|p| p.rel_path == name) {
                         <span class="kw">let </span>mode: GitFileMode = x.into();
-                        <span class="kw">match </span>mode {
-                            GitFileMode::Executable | GitFileMode::Regular =&gt; <span class="bool-val">true</span>,
-                            <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
-                        }
+                        <span class="macro">matches!</span>(mode, GitFileMode::Executable | GitFileMode::Regular)
                     } <span class="kw">else </span>{
                         <span class="bool-val">false
                     </span>}
@@ -340,7 +334,7 @@
     }
 
     <span class="kw">fn </span>load_json(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
-        serde_json::from_str(<span class="kw-2">&amp;</span>c).unwrap()
+        serde_json::from_str(c).unwrap()
     }
 }
 

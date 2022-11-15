@@ -188,8 +188,6 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -208,22 +206,20 @@
  */
 </span><span class="kw">use </span>std::env;
 <span class="kw">use </span>std::path::Path;
-<span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span>config::{Config, ConfigError, Environment, File};
 <span class="kw">use </span>derive_more::Display;
 <span class="attribute">#[cfg(not(test))]
-</span><span class="kw">use </span>tracing::{error, warn};
+</span><span class="kw">use </span>tracing::warn;
 
 <span class="attribute">#[cfg(test)]
-</span><span class="kw">use </span>std::{println <span class="kw">as </span>warn, println <span class="kw">as </span>error};
+</span><span class="kw">use </span>std::println <span class="kw">as </span>warn;
 
 <span class="kw">use </span>serde::Deserialize;
 <span class="kw">use </span>serde::Serialize;
 <span class="kw">use </span>url::Url;
 
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::page::Page;
 
 <span class="attribute">#[derive(Debug, Clone, Serialize, Deserialize)]
 </span><span class="kw">pub struct </span>Server {
@@ -370,7 +366,7 @@
             }
 
             <span class="kw">if </span>!path.exists() {
-                std::fs::create_dir_all(<span class="kw-2">&amp;</span>path).unwrap();
+                std::fs::create_dir_all(path).unwrap();
             }
         }
 

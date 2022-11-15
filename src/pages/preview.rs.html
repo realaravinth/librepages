@@ -154,9 +154,9 @@
     }
 
     <span class="kw">pub fn </span>extract(<span class="kw-2">&amp;</span><span class="self">self</span>, hostname: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>str&gt; {
-        <span class="kw">if </span>!hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.delimiter)
-            || !hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.prefix)
-            || !hostname.contains(<span class="kw-2">&amp;</span><span class="self">self</span>.base)
+        <span class="kw">if </span>!hostname.contains(<span class="self">self</span>.delimiter)
+            || !hostname.contains(<span class="self">self</span>.prefix)
+            || !hostname.contains(<span class="self">self</span>.base)
         {
             <span class="kw">return </span><span class="prelude-val">None</span>;
         }

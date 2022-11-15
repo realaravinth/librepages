@@ -307,8 +307,6 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -498,12 +496,10 @@
         }
 
         <span class="kw">fn </span>file_not_found(e: git2::Error) -&gt; ServiceError {
-            <span class="kw">if </span>e.code() == ErrorCode::NotFound {
-                <span class="kw">if </span>e.class() == ErrorClass::Tree {
-                    <span class="kw">return </span>ServiceError::FileNotFound;
-                }
+            <span class="kw">if </span>e.code() == ErrorCode::NotFound &amp;&amp; e.class() == ErrorClass::Tree {
+                <span class="kw">return </span>ServiceError::FileNotFound;
             }
-            <span class="kw">return </span>e.into();
+            e.into()
         }
         <span class="kw">let </span>entry = tree.get_path(Path::new(path)).map_err(file_not_found)<span class="question-mark">?</span>;
 

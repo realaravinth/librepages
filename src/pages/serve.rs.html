@@ -149,8 +149,8 @@
     </span><span class="kw">if </span>host.contains(<span class="kw-2">&amp;</span>ctx.settings.page.base_domain) {
         <span class="kw">let </span>extractor = <span class="kw">crate</span>::preview::Preview::new(<span class="kw-2">&amp;</span>ctx);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(preview_branch) = extractor.extract(host) {
-            <span class="kw">let </span>res = <span class="kw">if </span>ctx.db.hostname_exists(<span class="kw-2">&amp;</span>host).<span class="kw">await</span><span class="question-mark">? </span>{
-                <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, <span class="kw-2">&amp;</span>host);
+            <span class="kw">let </span>res = <span class="kw">if </span>ctx.db.hostname_exists(host).<span class="kw">await</span><span class="question-mark">? </span>{
+                <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, host);
                 <span class="kw">let </span>content =
                     <span class="kw">crate</span>::git::read_preview_file(<span class="kw-2">&amp;</span>path, preview_branch, req.uri().path())<span class="question-mark">?</span>;
                 <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
@@ -171,7 +171,7 @@
 
     <span class="comment">// TODO: custom domains.
     </span><span class="kw">if </span>ctx.db.hostname_exists(host).<span class="kw">await</span><span class="question-mark">? </span>{
-        <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, <span class="kw-2">&amp;</span>host);
+        <span class="kw">let </span>path = <span class="kw">crate</span>::utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, host);
         <span class="kw">let </span>content = <span class="kw">crate</span>::git::read_file(<span class="kw-2">&amp;</span>path, req.uri().path())<span class="question-mark">?</span>;
         <span class="kw">let </span>mime = <span class="kw">if let </span><span class="prelude-val">Some</span>(mime) = content.mime.first_raw() {
             mime

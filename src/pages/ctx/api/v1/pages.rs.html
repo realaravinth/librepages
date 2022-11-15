@@ -144,7 +144,7 @@
         <span class="self">self</span>.db.add_site(<span class="kw-2">&amp;</span>db_site).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
         page.update(<span class="kw-2">&amp;</span>page.branch)<span class="question-mark">?</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
             <span class="macro">unimplemented!</span>();
         }
         <span class="prelude-val">Ok</span>(page)
@@ -167,7 +167,7 @@
                 </span>.unwrap();
             }
             rx.<span class="kw">await</span>.unwrap()<span class="question-mark">?</span>;
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
                 <span class="macro">unimplemented!</span>();
             }
             <span class="prelude-val">Ok</span>(())
