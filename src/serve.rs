@@ -1,3 +1,4 @@
+use actix_identity::Identity;
 /*
  * Copyright (C) 2022  Aravinth Manivannan <realaravinth@batsense.net>
  *
@@ -17,6 +18,7 @@
 use actix_web::{http::header::ContentType, web, HttpRequest, HttpResponse, Responder};
 
 use crate::errors::*;
+use crate::pages;
 use crate::AppCtx;
 
 pub mod routes {
@@ -34,19 +36,19 @@ pub mod routes {
 }
 
 #[actix_web_codegen_const_routes::get(path = "crate::V1_API_ROUTES.serve.catch_all")]
-#[tracing::instrument(name = "Serve webpages", skip(req, ctx))]
-async fn index(req: HttpRequest, ctx: AppCtx) -> ServiceResult<impl Responder> {
+#[tracing::instrument(name = "Serve webpages", skip(req, ctx, id))]
+async fn index(req: HttpRequest, ctx: AppCtx, id: Identity) -> ServiceResult<impl Responder> {
     let c = req.connection_info();
     let mut host = c.host();
     if host.contains(':') {
         host = host.split(':').next().unwrap();
     }
+    tracing::debug!("Current host {host}");
 
     // serve meta page
     if host == ctx.settings.server.domain || host == "localhost" {
-        return Ok(HttpResponse::Ok()
-            .content_type(ContentType::html())
-            .body("Welcome to Librepages!"));
+        tracing::debug!("Into home");
+        return Ok(pages::home(ctx.clone(), &id).await);
     }
 
     // serve default hostname content

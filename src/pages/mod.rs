@@ -77,7 +77,6 @@ lazy_static! {
         tera.autoescape_on(vec![".html", ".sql"]);
         auth::register_templates(&mut tera);
         dash::register_templates(&mut tera);
-        HOME.register(&mut tera).expect(HOME.name);
         tera
     };
 }
@@ -135,53 +134,20 @@ impl<'a> Footer<'a> {
     }
 }
 
-pub const HOME: TemplateFile = TemplateFile::new("home", "pages/index.html");
-
-pub struct Home {
-    ctx: RefCell<Context>,
-}
-
-impl CtxError for Home {
-    fn with_error(&self, e: &ReadableError) -> String {
-        self.ctx.borrow_mut().insert(ERROR_KEY, e);
-        self.render()
-    }
-}
-
-impl Home {
-    pub fn new(settings: &Settings) -> Self {
-        let ctx = RefCell::new(context(settings));
-        Self { ctx }
-    }
-
-    pub fn render(&self) -> String {
-        TEMPLATES.render(HOME.name, &self.ctx.borrow()).unwrap()
-    }
-
-    pub fn page(s: &Settings) -> String {
-        let p = Self::new(s);
-        p.render()
-    }
-}
-
-#[actix_web_codegen_const_routes::get(path = "PAGES.home")]
-#[tracing::instrument(name = "Dashboard homepage", skip(id, ctx))]
-pub async fn home(ctx: AppCtx, id: Identity) -> impl Responder {
-    if id.identity().is_none() {
-        let home = Home::page(&ctx.settings);
-        let html = header::ContentType::html();
-        HttpResponse::Ok().content_type(html).body(home)
+pub async fn home(ctx: AppCtx, id: &Identity) -> HttpResponse {
+    let location = if id.identity().is_some() {
+        PAGES.home
     } else {
-        HttpResponse::Found()
-            .append_header((header::LOCATION, PAGES.dash.home))
-            .finish()
-    }
+        PAGES.dash.home
+    };
+    HttpResponse::Found()
+        .append_header((header::LOCATION, location))
+        .finish()
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
     auth::services(cfg);
     dash::services(cfg);
-    cfg.service(home);
 }
 
 #[cfg(test)]
@@ -203,7 +169,6 @@ mod tests {
             auth::login::LOGIN,
             auth::register::REGISTER,
             errors::ERROR_TEMPLATE,
-            HOME,
         ]
         .iter()
         {

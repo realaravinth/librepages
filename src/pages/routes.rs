@@ -35,7 +35,7 @@ impl Pages {
     const fn new() -> Pages {
         let auth = Auth::new();
         let dash = Dash::new();
-        let home = "/";
+        let home = auth.login;
         Pages { auth, home, dash }
     }
 }
