@@ -33,7 +33,7 @@ use crate::page::Page;
 use crate::settings::Settings;
 use crate::*;
 
-pub const REPO_URL: &str = "https://github.com/mCaptcha/website/";
+pub const REPO_URL: &str = "http://github.com:8080/mCaptcha/website/";
 pub const BRANCH: &str = "gh-pages";
 
 pub async fn get_ctx() -> (Temp, Arc<Ctx>) {

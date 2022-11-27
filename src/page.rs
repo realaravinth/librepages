@@ -265,15 +265,17 @@ mod tests {
     use git2::Repository;
     use mktemp::Temp;
 
+    use crate::tests;
+
     #[actix_rt::test]
     async fn pages_works() {
         let tmp_dir = Temp::new_dir().unwrap();
         assert!(tmp_dir.exists(), "tmp directory successully created");
         let mut page = Page {
             secret: String::default(),
-            repo: "https://github.com/mcaptcha/website".to_owned(),
+            repo: tests::REPO_URL.into(),
             path: tmp_dir.to_str().unwrap().to_string(),
-            branch: "gh-pages".to_string(),
+            branch: tests::BRANCH.to_string(),
             domain: "mcaptcha.org".into(),
         };
 
