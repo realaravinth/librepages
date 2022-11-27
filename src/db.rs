@@ -16,6 +16,7 @@
  */
 use std::str::FromStr;
 
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::types::time::OffsetDateTime;
@@ -404,7 +405,7 @@ impl Database {
     }
 
     async fn create_event_type(&self) -> ServiceResult<()> {
-        for e in EVENTS {
+        for e in &*EVENTS {
             if !self.event_type_exists(&e).await? {
                 sqlx::query!(
                     "INSERT INTO librepages_deploy_event_type
@@ -587,23 +588,28 @@ pub struct NameHash {
 
 #[derive(Deserialize, Serialize, Clone, Debug, Eq, PartialEq)]
 pub struct Event {
-    pub name: &'static str,
+    pub name: String,
 }
 
 impl Event {
-    const fn new(name: &'static str) -> Self {
+    fn new(name: String) -> Self {
         Self { name }
     }
 
     pub fn from_str(name: &str) -> Option<Event> {
-        EVENTS.into_iter().find(|e| e.name == name)
+        (*EVENTS).into_iter().find(|e| e.name == name).cloned()
     }
 }
-pub const EVENT_TYPE_CREATE: Event = Event::new("site.event.create");
-pub const EVENT_TYPE_UPDATE: Event = Event::new("site.event.update");
-pub const EVENT_TYPE_DELETE: Event = Event::new("site.event.delete");
-
-pub const EVENTS: [Event; 3] = [EVENT_TYPE_CREATE, EVENT_TYPE_DELETE, EVENT_TYPE_UPDATE];
+lazy_static! {
+    pub static ref EVENT_TYPE_CREATE: Event = Event::new("site.event.create".into());
+    pub static ref EVENT_TYPE_UPDATE: Event = Event::new("site.event.update".into());
+    pub static ref EVENT_TYPE_DELETE: Event = Event::new("site.event.delete".into());
+    pub static ref EVENTS: [&'static Event; 3] = [
+        &*EVENT_TYPE_CREATE,
+        &*EVENT_TYPE_DELETE,
+        &*EVENT_TYPE_UPDATE
+    ];
+}
 
 struct InnerLibrepagesEvent {
     name: String,
@@ -679,7 +685,7 @@ mod tests {
     #[test]
     fn event_names_are_unique() {
         let mut uniq = HashSet::new();
-        assert!(EVENTS.into_iter().all(move |x| uniq.insert(x.name)));
+        assert!(EVENTS.into_iter().all(move |x| uniq.insert(x.name.clone())));
     }
 
     #[actix_rt::test]
@@ -815,7 +821,7 @@ mod tests {
         db.migrate().await.unwrap();
 
         // check if events are created
-        for e in EVENTS {
+        for e in &*EVENTS {
             println!("Testing event type exists {}", e.name);
             assert!(db.event_type_exists(&e).await.unwrap());
         }
@@ -875,7 +881,7 @@ mod tests {
             .unwrap();
         let event = db.get_event(&site.hostname, &event_id).await.unwrap();
         assert_eq!(event.id, event_id);
-        assert_eq!(event.event_type, EVENT_TYPE_CREATE);
+        assert_eq!(event.event_type, *EVENT_TYPE_CREATE);
         assert_eq!(event.site, site.hostname);
 
         assert_eq!(
