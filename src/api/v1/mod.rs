@@ -20,6 +20,8 @@ use serde::Deserialize;
 
 pub mod account;
 pub mod auth;
+pub mod meta;
+pub mod pages;
 pub mod routes;
 
 pub use routes::ROUTES;
@@ -27,8 +29,8 @@ pub use routes::ROUTES;
 pub fn services(cfg: &mut ServiceConfig) {
     auth::services(cfg);
     account::services(cfg);
-    crate::meta::services(cfg);
-    crate::deploy::services(cfg);
+    meta::services(cfg);
+    pages::services(cfg);
 }
 
 #[derive(Deserialize)]

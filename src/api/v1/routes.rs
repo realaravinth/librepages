@@ -17,9 +17,10 @@
 //! V1 API Routes
 use actix_auth_middleware::GetLoginRoute;
 
-use crate::deploy::routes::Deploy;
-use crate::meta::routes::Meta;
 use crate::serve::routes::Serve;
+
+use super::meta::routes::Meta;
+use super::pages::routes::Deploy;
 
 /// constant [Routes](Routes) instance
 pub const ROUTES: Routes = Routes::new();
