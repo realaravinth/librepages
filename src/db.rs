@@ -484,6 +484,65 @@ impl Database {
         })
     }
 
+    pub async fn get_latest_update_event(
+        &self,
+        hostname: &str,
+    ) -> ServiceResult<Option<LibrePagesEvent>> {
+        self.get_latest_event_of_type(hostname, &EVENT_TYPE_UPDATE)
+            .await
+    }
+
+    async fn get_latest_event_of_type(
+        &self,
+        hostname: &str,
+        event_type: &Event,
+    ) -> ServiceResult<Option<LibrePagesEvent>> {
+        struct InnerLibrepagesEventNameless {
+            time: OffsetDateTime,
+            pub_id: Uuid,
+        }
+
+        let event = sqlx::query_as!(
+            InnerLibrepagesEventNameless,
+            "SELECT
+                time,
+                pub_id
+              FROM
+                  librepages_site_deploy_events
+              WHERE
+                  site = (SELECT ID FROM librepages_sites WHERE hostname = $1)
+              AND
+                  event_type = (SELECT ID FROM librepages_deploy_event_type WHERE  name = $2)
+              AND
+                  time = (
+                      SELECT MAX(time) 
+                      FROM
+                          librepages_site_deploy_events
+                      WHERE
+                          site = (SELECT ID FROM librepages_sites WHERE hostname = $1)
+                      )
+                ",
+            hostname,
+            event_type.name
+        )
+        .fetch_one(&self.pool)
+        .await;
+
+        match event {
+            Ok(event) => Ok(Some(LibrePagesEvent {
+                id: event.pub_id,
+                time: event.time,
+                event_type: event_type.clone(),
+                site: hostname.to_owned(),
+            })),
+
+            Err(sqlx::Error::RowNotFound) => Ok(None),
+            Err(e) => Err(map_register_err(e)),
+        }
+
+        // map_row_not_found_err(e, ServiceError::AccountNotFound))?;
+    }
+
     pub async fn list_all_site_events(
         &self,
         hostname: &str,
@@ -895,6 +954,32 @@ mod tests {
             db.list_all_site_events(&site.hostname).await.unwrap(),
             vec![event]
         );
+
+        // when no update event exist, None is returned
+        assert!(db
+            .get_latest_update_event(&site.hostname)
+            .await
+            .unwrap()
+            .is_none());
+
+        // add multiple update events, see if latest is returned
+        db.log_event(&site.hostname, &EVENT_TYPE_UPDATE)
+            .await
+            .unwrap();
+        let latest_update_event_id = db
+            .log_event(&site.hostname, &EVENT_TYPE_UPDATE)
+            .await
+            .unwrap();
+        let latest_update_event_id_from_db = db
+            .get_latest_update_event(&site.hostname)
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            latest_update_event_id_from_db.event_type,
+            *EVENT_TYPE_UPDATE
+        );
+        assert_eq!(latest_update_event_id_from_db.id, latest_update_event_id);
 
         // delete site
         db.delete_site(p.username, &site.hostname).await.unwrap();
