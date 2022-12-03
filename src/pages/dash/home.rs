@@ -22,14 +22,11 @@ use serde::{Deserialize, Serialize};
 use tera::Context;
 
 use super::get_auth_middleware;
-use crate::ctx::api::v1::auth::Login as LoginPayload;
 use crate::db::Site;
 use crate::errors::ServiceResult;
 use crate::pages::errors::*;
 use crate::settings::Settings;
 use crate::AppCtx;
-
-use crate::pages::errors::*;
 
 use super::TemplateSiteEvent;
 
@@ -77,12 +74,7 @@ async fn get_site_data(ctx: &AppCtx, id: &Identity) -> ServiceResult<Vec<Templat
     for site in db_sites {
         // TODO: impl method on DB to get latest "update" event
         let mut events = ctx.db.list_all_site_events(&site.hostname).await?;
-        let last_update = if let Some(event) = events.pop() {
-            Some(event.into())
-        } else {
-            None
-        };
-
+        let last_update = events.pop().map(|event| event.into());
         sites.push(TemplateSite { site, last_update });
     }
     Ok(sites)
@@ -105,8 +97,6 @@ pub fn services(cfg: &mut web::ServiceConfig) {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     use actix_web::http::StatusCode;
     use actix_web::test;
 

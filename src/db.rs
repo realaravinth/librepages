@@ -406,7 +406,7 @@ impl Database {
 
     async fn create_event_type(&self) -> ServiceResult<()> {
         for e in &*EVENTS {
-            if !self.event_type_exists(&e).await? {
+            if !self.event_type_exists(e).await? {
                 sqlx::query!(
                     "INSERT INTO librepages_deploy_event_type
                     (name) VALUES ($1) ON CONFLICT (name) DO NOTHING;",
@@ -823,7 +823,7 @@ mod tests {
         // check if events are created
         for e in &*EVENTS {
             println!("Testing event type exists {}", e.name);
-            assert!(db.event_type_exists(&e).await.unwrap());
+            assert!(db.event_type_exists(e).await.unwrap());
         }
 
         let p = super::Register {

@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-use std::cell::RefCell;
-
 use actix_identity::Identity;
 use actix_web::http::header;
 use actix_web::*;
@@ -24,10 +22,8 @@ use rust_embed::RustEmbed;
 use serde::*;
 use tera::*;
 
-use crate::pages::errors::*;
 use crate::settings::Settings;
 use crate::static_assets::ASSETS;
-use crate::AppCtx;
 use crate::{GIT_COMMIT_HASH, VERSION};
 
 pub mod auth;
@@ -134,7 +130,7 @@ impl<'a> Footer<'a> {
     }
 }
 
-pub async fn home(ctx: AppCtx, id: &Identity) -> HttpResponse {
+pub async fn home(id: &Identity) -> HttpResponse {
     let location = if id.identity().is_some() {
         PAGES.home
     } else {

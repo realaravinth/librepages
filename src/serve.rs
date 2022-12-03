@@ -15,7 +15,7 @@ use actix_identity::Identity;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-use actix_web::{http::header::ContentType, web, HttpRequest, HttpResponse, Responder};
+use actix_web::{web, HttpRequest, HttpResponse, Responder};
 
 use crate::errors::*;
 use crate::pages;
@@ -48,7 +48,7 @@ async fn index(req: HttpRequest, ctx: AppCtx, id: Identity) -> ServiceResult<imp
     // serve meta page
     if host == ctx.settings.server.domain || host == "localhost" {
         tracing::debug!("Into home");
-        return Ok(pages::home(ctx.clone(), &id).await);
+        return Ok(pages::home(&id).await);
     }
 
     // serve default hostname content
