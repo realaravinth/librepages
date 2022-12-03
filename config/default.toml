@@ -13,7 +13,7 @@ ip= "0.0.0.0"
 # Minimum of two threads are advisable for top async performance but can work
 # with one also.
 workers = 2
-domain = "demo.librepages.org"
+domain = "localhost"
 cookie_secret = "94b2b2732626fdb7736229a7c777cb451e6304c147c4549f30"
 
 
