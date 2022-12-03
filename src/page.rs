@@ -26,6 +26,7 @@ use serde::Deserialize;
 use serde::Serialize;
 #[cfg(not(test))]
 use tracing::{debug, error, info};
+use uuid::Uuid;
 
 use crate::db::Site;
 use crate::errors::*;
@@ -39,6 +40,7 @@ pub struct Page {
     pub path: String,
     pub branch: String,
     pub domain: String,
+    pub pub_id: Uuid,
 }
 
 impl Page {
@@ -52,6 +54,7 @@ impl Page {
                 .to_owned(),
             domain: s.hostname,
             branch: s.branch,
+            pub_id: s.pub_id,
         }
     }
     pub fn open_repo(&self) -> ServiceResult<Repository> {
@@ -277,6 +280,7 @@ mod tests {
             path: tmp_dir.to_str().unwrap().to_string(),
             branch: tests::BRANCH.to_string(),
             domain: "mcaptcha.org".into(),
+            pub_id: Uuid::new_v4(),
         };
 
         assert!(

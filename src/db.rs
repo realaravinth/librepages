@@ -256,13 +256,14 @@ impl Database {
         sqlx::query!(
             "
             INSERT INTO librepages_sites
-                (site_secret, repo_url, branch, hostname, owned_by)
-            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));
+                (site_secret, repo_url, branch, hostname, pub_id, owned_by)
+            VALUES ($1, $2, $3, $4, $5, ( SELECT ID FROM librepages_users WHERE name = $6 ));
             ",
             msg.site_secret,
             msg.repo_url,
             msg.branch,
             msg.hostname,
+            msg.pub_id,
             msg.owner,
         )
         .execute(&self.pool)
@@ -278,11 +279,12 @@ impl Database {
             branch: String,
             hostname: String,
             owned_by: i32,
+            pub_id: Uuid,
         }
 
         let site = sqlx::query_as!(
             S,
-            "SELECT repo_url, branch, hostname, owned_by
+            "SELECT repo_url, branch, hostname, owned_by, pub_id
             FROM librepages_sites
             WHERE site_secret = $1
             ",
@@ -310,6 +312,7 @@ impl Database {
             hostname: site.hostname,
             owner: owner.name,
             repo_url: site.repo_url,
+            pub_id: site.pub_id,
         };
 
         Ok(site)
@@ -318,7 +321,7 @@ impl Database {
     pub async fn get_site(&self, owner: &str, hostname: &str) -> ServiceResult<Site> {
         let site = sqlx::query_as!(
             InnerSite,
-            "SELECT site_secret, repo_url, branch, hostname
+            "SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
             WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
             AND hostname = $2;
@@ -338,7 +341,7 @@ impl Database {
     pub async fn list_all_sites(&self, owner: &str) -> ServiceResult<Vec<Site>> {
         let mut sites = sqlx::query_as!(
             InnerSite,
-            "SELECT site_secret, repo_url, branch, hostname
+            "SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
             WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
             ",
@@ -524,6 +527,7 @@ struct InnerSite {
     repo_url: String,
     branch: String,
     hostname: String,
+    pub_id: Uuid,
 }
 
 impl InnerSite {
@@ -533,6 +537,7 @@ impl InnerSite {
             repo_url: self.repo_url,
             branch: self.branch,
             hostname: self.hostname,
+            pub_id: self.pub_id,
             owner,
         }
     }
@@ -543,6 +548,7 @@ impl InnerSite {
 pub struct Site {
     pub site_secret: String,
     pub repo_url: String,
+    pub pub_id: Uuid,
     pub branch: String,
     pub hostname: String,
     pub owner: String,
@@ -847,6 +853,7 @@ mod tests {
             repo_url: "https://git.batsense.net/LibrePages/librepages.git".into(),
             branch: "librepages".into(),
             hostname: "db_works.tests.librepages.librepages.org".into(),
+            pub_id: Uuid::new_v4(),
             owner: p.username.into(),
         };
 

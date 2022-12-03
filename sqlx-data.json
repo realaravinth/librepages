@@ -1,5 +1,49 @@
 {
   "db": "PostgreSQL",
+  "142525c6d4a5a32ca2419ff19d452722375927f2c1b734092a03106eafd9ef5c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "site_secret",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "repo_url",
+          "ordinal": 1,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 3,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 4,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT site_secret, repo_url, branch, hostname, pub_id\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );\n            "
+  },
   "14cdc724af64942e93994f97e9eafc8272d15605eff7aab9e5177d01f2bf6118": {
     "describe": {
       "columns": [],
@@ -14,44 +58,6 @@
       }
     },
     "query": "INSERT INTO librepages_site_deploy_events\n            (event_type, time, site, pub_id) VALUES (\n                (SELECT iD from librepages_deploy_event_type WHERE name = $1),\n                $2,\n                (SELECT ID from librepages_sites WHERE hostname = $3),\n                $4\n            );\n            "
-  },
-  "1ac91b492001493430c686d9cd7d6be03ada4b4c431d7bc112ef2105eba0e82d": {
-    "describe": {
-      "columns": [
-        {
-          "name": "repo_url",
-          "ordinal": 0,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "branch",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "hostname",
-          "ordinal": 2,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "owned_by",
-          "ordinal": 3,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "SELECT repo_url, branch, hostname, owned_by\n            FROM librepages_sites\n            WHERE site_secret = $1\n            "
   },
   "1be33ea4fe0e6079c88768ff912b824f4b0250193f2d086046c1fd0da125ae0c": {
     "describe": {
@@ -190,22 +196,6 @@
     },
     "query": "DELETE FROM librepages_users WHERE name = ($1)"
   },
-  "67311c6196639edd153b7b7dd56a37703b67abe750b88f5afdcf0d3d779432e7": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Varchar",
-          "Varchar",
-          "Text",
-          "Varchar",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            INSERT INTO librepages_sites\n                (site_secret, repo_url, branch, hostname, owned_by)\n            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));\n            "
-  },
   "6a557f851d4f47383b864085093beb0954e79779f21b655978f07e285281e0ac": {
     "describe": {
       "columns": [],
@@ -252,7 +242,7 @@
     },
     "query": "UPDATE librepages_users set password = $1\n            WHERE name = $2"
   },
-  "9fd163d10860ad4519f9398582aaa0615d6d7b784e844ee71038f77dcd069eed": {
+  "aed3f57305201a19739dfb11cf8780036b992925100de98f0697d76dbea4df65": {
     "describe": {
       "columns": [
         {
@@ -274,47 +264,15 @@
           "name": "hostname",
           "ordinal": 3,
           "type_info": "Varchar"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 4,
+          "type_info": "Uuid"
         }
       ],
       "nullable": [
         false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "SELECT site_secret, repo_url, branch, hostname\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );\n            "
-  },
-  "aad26d1f932001cbe49b147348aa528eca5101ec6ef83cb034e1ccd0dbd17878": {
-    "describe": {
-      "columns": [
-        {
-          "name": "site_secret",
-          "ordinal": 0,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "repo_url",
-          "ordinal": 1,
-          "type_info": "Varchar"
-        },
-        {
-          "name": "branch",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "hostname",
-          "ordinal": 3,
-          "type_info": "Varchar"
-        }
-      ],
-      "nullable": [
         false,
         false,
         false,
@@ -327,7 +285,7 @@
         ]
       }
     },
-    "query": "SELECT site_secret, repo_url, branch, hostname\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )\n            AND hostname = $2;\n            "
+    "query": "SELECT site_secret, repo_url, branch, hostname, pub_id\n            FROM librepages_sites\n            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )\n            AND hostname = $2;\n            "
   },
   "b48c77db6e663d97df44bf9ec2ee92fd3e02f2dcbcdbd1d491e09fab2da68494": {
     "describe": {
@@ -354,6 +312,23 @@
       }
     },
     "query": "SELECT name, password  FROM librepages_users WHERE email = ($1)"
+  },
+  "b8b1b3c5fa205b071f577b2ce9993ddfc7c99ada26aea48aa1c201c8c3c7fcf6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Text",
+          "Varchar",
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO librepages_sites\n                (site_secret, repo_url, branch, hostname, pub_id, owned_by)\n            VALUES ($1, $2, $3, $4, $5, ( SELECT ID FROM librepages_users WHERE name = $6 ));\n            "
   },
   "bdd4d2a1b0b97ebf8ed61cfd120b40146fbf3ea9afb5cd0e03c9d29860b6a26b": {
     "describe": {
@@ -394,6 +369,50 @@
       }
     },
     "query": "SELECT email FROM librepages_users WHERE name = $1"
+  },
+  "d132d22a214356474d450afc148ae913080119a99e37e089f5df281da151426e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "repo_url",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "owned_by",
+          "ordinal": 3,
+          "type_info": "Int4"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 4,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT repo_url, branch, hostname, owned_by, pub_id\n            FROM librepages_sites\n            WHERE site_secret = $1\n            "
   },
   "d2327c1bcb40e18518c2112413a19a9b26eb0f54f83c53e968c9752d70c8dd4e": {
     "describe": {

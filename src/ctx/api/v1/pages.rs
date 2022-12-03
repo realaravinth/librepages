@@ -41,12 +41,14 @@ impl AddSite {
     fn to_site(self, s: &Settings) -> Site {
         let site_secret = get_random(32);
         let hostname = get_random_subdomain(s);
+        let pub_id = Uuid::new_v4();
         Site {
             site_secret,
             repo_url: self.repo_url,
             branch: self.branch,
             hostname,
             owner: self.owner,
+            pub_id,
         }
     }
 }
