@@ -1,0 +1,29 @@
+{% extends 'base' %}{% block title %} Add Site{% endblock title %} {% block nav
+%} {% include "auth_nav" %} {% endblock nav %} {% block main %}
+
+<main class="sites__main">
+  <div class="add-site__container">
+    <form class="auth-form" action="{{ page.dash.site.add }}" method="POST">
+      <label class="auth-form__label" for="repo_url">
+        Repository URL
+        <input
+          type="url"
+          name="repo_url"
+          id="repo_url"
+          class="auth-form__input"
+        />
+      </label>
+
+      <label class="auth-form__label" for="branch">
+        Deployment branch
+        <input type="text" name="branch" id="branch" class="auth-form__input" />
+      </label>
+
+      <div class="auth-form__action-container">
+        <button class="auth-form__submit" type="submit">Add Site</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+{% endblock main %}

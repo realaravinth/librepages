@@ -70,13 +70,30 @@ impl Auth {
 pub struct Dash {
     /// home route
     pub home: &'static str,
+    pub site: DashSite,
 }
 
 impl Dash {
     /// create new instance of Dash route
     pub const fn new() -> Dash {
         let home = "/dash";
-        Dash { home }
+        let site = DashSite::new();
+        Dash { home, site }
+    }
+}
+
+#[derive(Serialize)]
+/// Dashboard Site routes
+pub struct DashSite {
+    /// home route
+    pub add: &'static str,
+}
+
+impl DashSite {
+    /// create new instance of DashSite route
+    pub const fn new() -> DashSite {
+        let add = "/dash/site/add";
+        DashSite { add }
     }
 }
 

@@ -166,6 +166,7 @@ mod tests {
             auth::register::REGISTER,
             errors::ERROR_TEMPLATE,
             super::dash::home::DASH_HOME,
+            super::dash::sites::add::DASH_SITE_ADD,
         ]
         .iter()
         {
