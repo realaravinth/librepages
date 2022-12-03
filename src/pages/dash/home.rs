@@ -72,8 +72,11 @@ async fn get_site_data(ctx: &AppCtx, id: &Identity) -> ServiceResult<Vec<Templat
     let mut sites = Vec::with_capacity(db_sites.len());
     for site in db_sites {
         // TODO: impl method on DB to get latest "update" event
-        let mut events = ctx.db.list_all_site_events(&site.hostname).await?;
-        let last_update = events.pop().map(|event| event.into());
+        let last_update = ctx
+            .db
+            .get_latest_update_event(&site.hostname)
+            .await?
+            .map(|e| e.into());
         sites.push(TemplateSite { site, last_update });
     }
     Ok(sites)
