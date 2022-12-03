@@ -108,6 +108,7 @@ async fn main() -> std::io::Result<()> {
 
 async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
     let ip = settings.server.get_ip();
+    let workers = settings.server.workers.unwrap_or_else(num_cpus::get);
 
     info!("Starting server on: http://{}", ip);
     HttpServer::new(move || {
@@ -116,6 +117,7 @@ async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
             .wrap(actix_middleware::Compress::default())
             .app_data(ctx.clone())
             .app_data(get_json_err())
+            .wrap(get_identity_service(&(settings.clone())))
             .wrap(
                 actix_middleware::DefaultHeaders::new()
                     .add(("Permissions-Policy", "interest-cohort=()")),
@@ -125,7 +127,7 @@ async fn serve(settings: Settings, ctx: AppCtx) -> std::io::Result<()> {
             ))
             .configure(services)
     })
-    .workers(settings.server.workers.unwrap_or_else(num_cpus::get))
+    .workers(workers)
     .bind(ip)
     .unwrap()
     .run()
