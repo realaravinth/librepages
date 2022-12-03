@@ -146,8 +146,8 @@ pub async fn home(ctx: AppCtx, id: &Identity) -> HttpResponse {
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
-    auth::services(cfg);
     dash::services(cfg);
+    auth::services(cfg);
 }
 
 #[cfg(test)]
@@ -169,6 +169,7 @@ mod tests {
             auth::login::LOGIN,
             auth::register::REGISTER,
             errors::ERROR_TEMPLATE,
+            super::dash::home::DASH_HOME,
         ]
         .iter()
         {

@@ -16,13 +16,22 @@
  */
 use std::cell::RefCell;
 
+use actix_identity::Identity;
 use actix_web::http::header::ContentType;
+use serde::{Deserialize, Serialize};
 use tera::Context;
 
+use super::get_auth_middleware;
 use crate::ctx::api::v1::auth::Login as LoginPayload;
+use crate::db::Site;
+use crate::errors::ServiceResult;
 use crate::pages::errors::*;
 use crate::settings::Settings;
 use crate::AppCtx;
+
+use crate::pages::errors::*;
+
+use super::TemplateSiteEvent;
 
 pub use super::*;
 
@@ -30,6 +39,12 @@ pub const DASH_HOME: TemplateFile = TemplateFile::new("dash_home", "pages/dash/i
 
 pub struct Home {
     ctx: RefCell<Context>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+pub struct TemplateSite {
+    site: Site,
+    last_update: Option<TemplateSiteEvent>,
 }
 
 impl CtxError for Home {
@@ -40,10 +55,10 @@ impl CtxError for Home {
 }
 
 impl Home {
-    pub fn new(settings: &Settings, payload: Option<&LoginPayload>) -> Self {
+    pub fn new(settings: &Settings, sites: Option<&[TemplateSite]>) -> Self {
         let ctx = RefCell::new(context(settings));
-        if let Some(payload) = payload {
-            ctx.borrow_mut().insert(PAYLOAD_KEY, payload);
+        if let Some(sites) = sites {
+            ctx.borrow_mut().insert(PAYLOAD_KEY, sites);
         }
         Self { ctx }
     }
@@ -53,19 +68,34 @@ impl Home {
             .render(DASH_HOME.name, &self.ctx.borrow())
             .unwrap()
     }
-
-    pub fn page(s: &Settings) -> String {
-        let p = Self::new(s, None);
-        p.render()
-    }
 }
 
-#[actix_web_codegen_const_routes::get(path = "PAGES.dash.home")]
-#[tracing::instrument(name = "Dashboard homepage", skip(ctx))]
-pub async fn get_home(ctx: AppCtx) -> impl Responder {
-    let home = Home::page(&ctx.settings);
+async fn get_site_data(ctx: &AppCtx, id: &Identity) -> ServiceResult<Vec<TemplateSite>> {
+    let db_sites = ctx.db.list_all_sites(&id.identity().unwrap()).await?;
+    let mut sites = Vec::with_capacity(db_sites.len());
+    for site in db_sites {
+        // TODO: impl method on DB to get latest "update" event
+        let mut events = ctx.db.list_all_site_events(&site.hostname).await?;
+        let last_update = if let Some(event) = events.pop() {
+            Some(event.into())
+        } else {
+            None
+        };
+
+        sites.push(TemplateSite { site, last_update });
+    }
+    Ok(sites)
+}
+
+#[actix_web_codegen_const_routes::get(path = "PAGES.dash.home", wrap = "get_auth_middleware()")]
+#[tracing::instrument(name = "Dashboard homepage", skip(ctx, id))]
+pub async fn get_home(ctx: AppCtx, id: Identity) -> PageResult<impl Responder, Home> {
+    let sites = get_site_data(&ctx, &id)
+        .await
+        .map_err(|e| PageError::new(Home::new(&ctx.settings, None), e))?;
+    let home = Home::new(&ctx.settings, Some(&sites)).render();
     let html = ContentType::html();
-    HttpResponse::Ok().content_type(html).body(home)
+    Ok(HttpResponse::Ok().content_type(html).body(home))
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {

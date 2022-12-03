@@ -1,5 +1,13 @@
 @import "defaults.scss";
 @import "pages/auth/sass/main.scss";
 @import "pages/auth/sass/form/main.scss";
+@import "pages/dash/main.scss";
 @import "components/sass/footer/main.scss";
 @import "components/nav/sass/main.scss";
+
+.default-body {
+	display: flex;
+	@include fullscreen;
+	flex-direction: column;
+	justify-content: space-between;
+}
