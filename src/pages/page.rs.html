@@ -303,6 +303,12 @@
 <span id="303">303</span>
 <span id="304">304</span>
 <span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -331,6 +337,7 @@
 <span class="kw">use </span>serde::Serialize;
 <span class="attribute">#[cfg(not(test))]
 </span><span class="kw">use </span>tracing::{debug, error, info};
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="kw">use </span><span class="kw">crate</span>::db::Site;
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
@@ -344,6 +351,7 @@
     <span class="kw">pub </span>path: String,
     <span class="kw">pub </span>branch: String,
     <span class="kw">pub </span>domain: String,
+    <span class="kw">pub </span>pub_id: Uuid,
 }
 
 <span class="kw">impl </span>Page {
@@ -357,6 +365,7 @@
                 .to_owned(),
             domain: s.hostname,
             branch: s.branch,
+            pub_id: s.pub_id,
         }
     }
     <span class="kw">pub fn </span>open_repo(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;Repository&gt; {
@@ -570,16 +579,19 @@
     <span class="kw">use </span>git2::Repository;
     <span class="kw">use </span>mktemp::Temp;
 
+    <span class="kw">use </span><span class="kw">crate</span>::tests;
+
     <span class="attribute">#[actix_rt::test]
     </span><span class="kw">async fn </span>pages_works() {
         <span class="kw">let </span>tmp_dir = Temp::new_dir().unwrap();
         <span class="macro">assert!</span>(tmp_dir.exists(), <span class="string">&quot;tmp directory successully created&quot;</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>page = Page {
             secret: String::default(),
-            repo: <span class="string">&quot;https://github.com/mcaptcha/website&quot;</span>.to_owned(),
+            repo: tests::REPO_URL.into(),
             path: tmp_dir.to_str().unwrap().to_string(),
-            branch: <span class="string">&quot;gh-pages&quot;</span>.to_string(),
+            branch: tests::BRANCH.to_string(),
             domain: <span class="string">&quot;mcaptcha.org&quot;</span>.into(),
+            pub_id: Uuid::new_v4(),
         };
 
         <span class="macro">assert!</span>(

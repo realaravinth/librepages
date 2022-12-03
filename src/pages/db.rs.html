@@ -890,6 +890,19 @@
 <span id="890">890</span>
 <span id="891">891</span>
 <span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -908,6 +921,7 @@
  */
 </span><span class="kw">use </span>std::str::FromStr;
 
+<span class="kw">use </span>lazy_static::lazy_static;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>sqlx::postgres::PgPoolOptions;
 <span class="kw">use </span>sqlx::types::time::OffsetDateTime;
@@ -1147,13 +1161,14 @@
         <span class="macro">sqlx::query!</span>(
             <span class="string">&quot;
             INSERT INTO librepages_sites
-                (site_secret, repo_url, branch, hostname, owned_by)
-            VALUES ($1, $2, $3, $4, ( SELECT ID FROM librepages_users WHERE name = $5 ));
+                (site_secret, repo_url, branch, hostname, pub_id, owned_by)
+            VALUES ($1, $2, $3, $4, $5, ( SELECT ID FROM librepages_users WHERE name = $6 ));
             &quot;</span>,
             msg.site_secret,
             msg.repo_url,
             msg.branch,
             msg.hostname,
+            msg.pub_id,
             msg.owner,
         )
         .execute(<span class="kw-2">&amp;</span><span class="self">self</span>.pool)
@@ -1169,11 +1184,12 @@
             branch: String,
             hostname: String,
             owned_by: i32,
+            pub_id: Uuid,
         }
 
         <span class="kw">let </span>site = <span class="macro">sqlx::query_as!</span>(
             S,
-            <span class="string">&quot;SELECT repo_url, branch, hostname, owned_by
+            <span class="string">&quot;SELECT repo_url, branch, hostname, owned_by, pub_id
             FROM librepages_sites
             WHERE site_secret = $1
             &quot;</span>,
@@ -1201,6 +1217,7 @@
             hostname: site.hostname,
             owner: owner.name,
             repo_url: site.repo_url,
+            pub_id: site.pub_id,
         };
 
         <span class="prelude-val">Ok</span>(site)
@@ -1209,7 +1226,7 @@
     <span class="kw">pub async fn </span>get_site(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str, hostname: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Site&gt; {
         <span class="kw">let </span>site = <span class="macro">sqlx::query_as!</span>(
             InnerSite,
-            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname
+            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
             WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
             AND hostname = $2;
@@ -1229,7 +1246,7 @@
     <span class="kw">pub async fn </span>list_all_sites(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: <span class="kw-2">&amp;</span>str) -&gt; ServiceResult&lt;Vec&lt;Site&gt;&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>sites = <span class="macro">sqlx::query_as!</span>(
             InnerSite,
-            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname
+            <span class="string">&quot;SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
             WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
             &quot;</span>,
@@ -1296,8 +1313,8 @@
     }
 
     <span class="kw">async fn </span>create_event_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ServiceResult&lt;()&gt; {
-        <span class="kw">for </span>e <span class="kw">in </span>EVENTS {
-            <span class="kw">if </span>!<span class="self">self</span>.event_type_exists(<span class="kw-2">&amp;</span>e).<span class="kw">await</span><span class="question-mark">? </span>{
+        <span class="kw">for </span>e <span class="kw">in </span><span class="kw-2">&amp;*</span>EVENTS {
+            <span class="kw">if </span>!<span class="self">self</span>.event_type_exists(e).<span class="kw">await</span><span class="question-mark">? </span>{
                 <span class="macro">sqlx::query!</span>(
                     <span class="string">&quot;INSERT INTO librepages_deploy_event_type
                     (name) VALUES ($1) ON CONFLICT (name) DO NOTHING;&quot;</span>,
@@ -1415,6 +1432,7 @@
     repo_url: String,
     branch: String,
     hostname: String,
+    pub_id: Uuid,
 }
 
 <span class="kw">impl </span>InnerSite {
@@ -1424,6 +1442,7 @@
             repo_url: <span class="self">self</span>.repo_url,
             branch: <span class="self">self</span>.branch,
             hostname: <span class="self">self</span>.hostname,
+            pub_id: <span class="self">self</span>.pub_id,
             owner,
         }
     }
@@ -1434,6 +1453,7 @@
 </span><span class="kw">pub struct </span>Site {
     <span class="kw">pub </span>site_secret: String,
     <span class="kw">pub </span>repo_url: String,
+    <span class="kw">pub </span>pub_id: Uuid,
     <span class="kw">pub </span>branch: String,
     <span class="kw">pub </span>hostname: String,
     <span class="kw">pub </span>owner: String,
@@ -1479,23 +1499,28 @@
 
 <span class="attribute">#[derive(Deserialize, Serialize, Clone, Debug, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Event {
-    <span class="kw">pub </span>name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>name: String,
 }
 
 <span class="kw">impl </span>Event {
-    <span class="kw">const fn </span>new(name: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str) -&gt; <span class="self">Self </span>{
+    <span class="kw">fn </span>new(name: String) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{ name }
     }
 
     <span class="kw">pub fn </span>from_str(name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;Event&gt; {
-        EVENTS.into_iter().find(|e| e.name == name)
+        (<span class="kw-2">*</span>EVENTS).into_iter().find(|e| e.name == name).cloned()
     }
 }
-<span class="kw">pub const </span>EVENT_TYPE_CREATE: Event = Event::new(<span class="string">&quot;site.event.create&quot;</span>);
-<span class="kw">pub const </span>EVENT_TYPE_UPDATE: Event = Event::new(<span class="string">&quot;site.event.update&quot;</span>);
-<span class="kw">pub const </span>EVENT_TYPE_DELETE: Event = Event::new(<span class="string">&quot;site.event.delete&quot;</span>);
-
-<span class="kw">pub const </span>EVENTS: [Event; <span class="number">3</span>] = [EVENT_TYPE_CREATE, EVENT_TYPE_DELETE, EVENT_TYPE_UPDATE];
+<span class="macro">lazy_static! </span>{
+    <span class="kw">pub static </span><span class="kw-2">ref </span>EVENT_TYPE_CREATE: Event = Event::new(<span class="string">&quot;site.event.create&quot;</span>.into());
+    <span class="kw">pub static </span><span class="kw-2">ref </span>EVENT_TYPE_UPDATE: Event = Event::new(<span class="string">&quot;site.event.update&quot;</span>.into());
+    <span class="kw">pub static </span><span class="kw-2">ref </span>EVENT_TYPE_DELETE: Event = Event::new(<span class="string">&quot;site.event.delete&quot;</span>.into());
+    <span class="kw">pub static </span><span class="kw-2">ref </span>EVENTS: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>Event; <span class="number">3</span>] = [
+        <span class="kw-2">&amp;*</span>EVENT_TYPE_CREATE,
+        <span class="kw-2">&amp;*</span>EVENT_TYPE_DELETE,
+        <span class="kw-2">&amp;*</span>EVENT_TYPE_UPDATE
+    ];
+}
 
 <span class="kw">struct </span>InnerLibrepagesEvent {
     name: String,
@@ -1571,7 +1596,7 @@
     <span class="attribute">#[test]
     </span><span class="kw">fn </span>event_names_are_unique() {
         <span class="kw">let </span><span class="kw-2">mut </span>uniq = HashSet::new();
-        <span class="macro">assert!</span>(EVENTS.into_iter().all(<span class="kw">move </span>|x| uniq.insert(x.name)));
+        <span class="macro">assert!</span>(EVENTS.into_iter().all(<span class="kw">move </span>|x| uniq.insert(x.name.clone())));
     }
 
     <span class="attribute">#[actix_rt::test]
@@ -1707,9 +1732,9 @@
         db.migrate().<span class="kw">await</span>.unwrap();
 
         <span class="comment">// check if events are created
-        </span><span class="kw">for </span>e <span class="kw">in </span>EVENTS {
+        </span><span class="kw">for </span>e <span class="kw">in </span><span class="kw-2">&amp;*</span>EVENTS {
             <span class="macro">println!</span>(<span class="string">&quot;Testing event type exists {}&quot;</span>, e.name);
-            <span class="macro">assert!</span>(db.event_type_exists(<span class="kw-2">&amp;</span>e).<span class="kw">await</span>.unwrap());
+            <span class="macro">assert!</span>(db.event_type_exists(e).<span class="kw">await</span>.unwrap());
         }
 
         <span class="kw">let </span>p = <span class="kw">super</span>::Register {
@@ -1733,6 +1758,7 @@
             repo_url: <span class="string">&quot;https://git.batsense.net/LibrePages/librepages.git&quot;</span>.into(),
             branch: <span class="string">&quot;librepages&quot;</span>.into(),
             hostname: <span class="string">&quot;db_works.tests.librepages.librepages.org&quot;</span>.into(),
+            pub_id: Uuid::new_v4(),
             owner: p.username.into(),
         };
 
@@ -1767,7 +1793,7 @@
             </span>.unwrap();
         <span class="kw">let </span>event = db.get_event(<span class="kw-2">&amp;</span>site.hostname, <span class="kw-2">&amp;</span>event_id).<span class="kw">await</span>.unwrap();
         <span class="macro">assert_eq!</span>(event.id, event_id);
-        <span class="macro">assert_eq!</span>(event.event_type, EVENT_TYPE_CREATE);
+        <span class="macro">assert_eq!</span>(event.event_type, <span class="kw-2">*</span>EVENT_TYPE_CREATE);
         <span class="macro">assert_eq!</span>(event.site, site.hostname);
 
         <span class="macro">assert_eq!</span>(

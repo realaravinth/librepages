@@ -97,6 +97,23 @@
 <span id="97">97</span>
 <span id="98">98</span>
 <span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -134,7 +151,7 @@
     </span><span class="kw">const fn </span>new() -&gt; Pages {
         <span class="kw">let </span>auth = Auth::new();
         <span class="kw">let </span>dash = Dash::new();
-        <span class="kw">let </span>home = <span class="string">&quot;/&quot;</span>;
+        <span class="kw">let </span>home = auth.login;
         Pages { auth, home, dash }
     }
 }
@@ -169,13 +186,30 @@
 </span><span class="kw">pub struct </span>Dash {
     <span class="doccomment">/// home route
     </span><span class="kw">pub </span>home: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="kw">pub </span>site: DashSite,
 }
 
 <span class="kw">impl </span>Dash {
     <span class="doccomment">/// create new instance of Dash route
     </span><span class="kw">pub const fn </span>new() -&gt; Dash {
         <span class="kw">let </span>home = <span class="string">&quot;/dash&quot;</span>;
-        Dash { home }
+        <span class="kw">let </span>site = DashSite::new();
+        Dash { home, site }
+    }
+}
+
+<span class="attribute">#[derive(Serialize)]
+</span><span class="doccomment">/// Dashboard Site routes
+</span><span class="kw">pub struct </span>DashSite {
+    <span class="doccomment">/// home route
+    </span><span class="kw">pub </span>add: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+}
+
+<span class="kw">impl </span>DashSite {
+    <span class="doccomment">/// create new instance of DashSite route
+    </span><span class="kw">pub const fn </span>new() -&gt; DashSite {
+        <span class="kw">let </span>add = <span class="string">&quot;/dash/site/add&quot;</span>;
+        DashSite { add }
     }
 }
 

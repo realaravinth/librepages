@@ -214,7 +214,7 @@
             .finish())
     } <span class="kw">else </span>{
         <span class="prelude-val">Ok</span>(HttpResponse::Found()
-            .insert_header((http::header::LOCATION, PAGES.home))
+            .insert_header((http::header::LOCATION, PAGES.dash.home))
             .finish())
     }
 }

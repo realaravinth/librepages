@@ -95,6 +95,8 @@
 <span id="95">95</span>
 <span id="96">96</span>
 <span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -138,12 +140,14 @@
     <span class="kw">fn </span>to_site(<span class="self">self</span>, s: <span class="kw-2">&amp;</span>Settings) -&gt; Site {
         <span class="kw">let </span>site_secret = get_random(<span class="number">32</span>);
         <span class="kw">let </span>hostname = get_random_subdomain(s);
+        <span class="kw">let </span>pub_id = Uuid::new_v4();
         Site {
             site_secret,
             repo_url: <span class="self">self</span>.repo_url,
             branch: <span class="self">self</span>.branch,
             hostname,
             owner: <span class="self">self</span>.owner,
+            pub_id,
         }
     }
 }

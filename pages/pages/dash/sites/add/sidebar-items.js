@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["DASH_SITE_ADD",""]],"fn":[["services",""]],"struct":[["Add",""],["TemplateAddSite","Data required to add site"],["get_add_site",""],["post_add_site",""]]};

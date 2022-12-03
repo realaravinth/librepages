@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["register_templates",""],["services",""]],"mod":[["home",""]]};
+window.SIDEBAR_ITEMS = {"fn":[["register_templates",""],["services",""]],"mod":[["home",""],["sites",""]],"struct":[["TemplateSiteEvent",""]]};

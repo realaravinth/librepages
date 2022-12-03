@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["get_auth_middleware",""],["services",""]],"mod":[["account",""],["auth",""],["routes","V1 API Routes"]],"struct":[["RedirectQuery",""]]};
+window.SIDEBAR_ITEMS = {"fn":[["get_auth_middleware",""],["services",""]],"mod":[["account",""],["auth",""],["meta",""],["pages",""],["routes","V1 API Routes"]],"struct":[["RedirectQuery",""]]};

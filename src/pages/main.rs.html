@@ -193,10 +193,8 @@
 <span class="kw">mod </span>api;
 <span class="kw">mod </span>ctx;
 <span class="kw">mod </span>db;
-<span class="kw">mod </span>deploy;
 <span class="kw">mod </span>errors;
 <span class="kw">mod </span>git;
-<span class="kw">mod </span>meta;
 <span class="kw">mod </span>page;
 <span class="kw">mod </span>page_config;
 <span class="kw">mod </span>pages;
@@ -274,6 +272,7 @@
 
 <span class="kw">async fn </span>serve(settings: Settings, ctx: AppCtx) -&gt; std::io::Result&lt;()&gt; {
     <span class="kw">let </span>ip = settings.server.get_ip();
+    <span class="kw">let </span>workers = settings.server.workers.unwrap_or_else(num_cpus::get);
 
     <span class="macro">info!</span>(<span class="string">&quot;Starting server on: http://{}&quot;</span>, ip);
     HttpServer::new(<span class="kw">move </span>|| {
@@ -282,6 +281,7 @@
             .wrap(actix_middleware::Compress::default())
             .app_data(ctx.clone())
             .app_data(get_json_err())
+            .wrap(get_identity_service(<span class="kw-2">&amp;</span>(settings.clone())))
             .wrap(
                 actix_middleware::DefaultHeaders::new()
                     .add((<span class="string">&quot;Permissions-Policy&quot;</span>, <span class="string">&quot;interest-cohort=()&quot;</span>)),
@@ -291,7 +291,7 @@
             ))
             .configure(services)
     })
-    .workers(settings.server.workers.unwrap_or_else(num_cpus::get))
+    .workers(workers)
     .bind(ip)
     .unwrap()
     .run()

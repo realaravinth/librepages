@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":[["PAGES","constant Pages instance"]],"fn":[["get_auth_middleware",""]],"struct":[["Auth","Authentication routes"],["Dash","Dashboard routes"],["Pages","Top-level routes data structure for V1 AP1"]]};
+window.SIDEBAR_ITEMS = {"constant":[["PAGES","constant Pages instance"]],"fn":[["get_auth_middleware",""]],"struct":[["Auth","Authentication routes"],["Dash","Dashboard routes"],["DashSite","Dashboard Site routes"],["Pages","Top-level routes data structure for V1 AP1"]]};

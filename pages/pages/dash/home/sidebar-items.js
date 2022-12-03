@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":[["DASH_HOME",""]],"fn":[["services",""]],"struct":[["Home",""],["get_home",""]]};
+window.SIDEBAR_ITEMS = {"constant":[["DASH_HOME",""]],"fn":[["get_site_data",""],["services",""]],"struct":[["Home",""],["TemplateSite",""],["get_home",""]]};

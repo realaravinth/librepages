@@ -94,7 +94,10 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
-</pre><pre class="rust"><code><span class="comment">/*
+<span id="97">97</span>
+<span id="98">98</span>
+</pre><pre class="rust"><code><span class="kw">use </span>actix_identity::Identity;
+<span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
  * This program is free software: you can redistribute it and/or modify
@@ -110,9 +113,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
  */
-</span><span class="kw">use </span>actix_web::{http::header::ContentType, web, HttpRequest, HttpResponse, Responder};
+</span><span class="kw">use </span>actix_web::{web, HttpRequest, HttpResponse, Responder};
 
 <span class="kw">use </span><span class="kw">crate</span>::errors::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::pages;
 <span class="kw">use </span><span class="kw">crate</span>::AppCtx;
 
 <span class="kw">pub mod </span>routes {
@@ -130,19 +134,19 @@
 }
 
 <span class="attribute">#[actix_web_codegen_const_routes::get(path = <span class="string">&quot;crate::V1_API_ROUTES.serve.catch_all&quot;</span>)]
-#[tracing::instrument(name = <span class="string">&quot;Serve webpages&quot;</span>, skip(req, ctx))]
-</span><span class="kw">async fn </span>index(req: HttpRequest, ctx: AppCtx) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
+#[tracing::instrument(name = <span class="string">&quot;Serve webpages&quot;</span>, skip(req, ctx, id))]
+</span><span class="kw">async fn </span>index(req: HttpRequest, ctx: AppCtx, id: Identity) -&gt; ServiceResult&lt;<span class="kw">impl </span>Responder&gt; {
     <span class="kw">let </span>c = req.connection_info();
     <span class="kw">let </span><span class="kw-2">mut </span>host = c.host();
     <span class="kw">if </span>host.contains(<span class="string">&#39;:&#39;</span>) {
         host = host.split(<span class="string">&#39;:&#39;</span>).next().unwrap();
     }
+    <span class="macro">tracing::debug!</span>(<span class="string">&quot;Current host {host}&quot;</span>);
 
     <span class="comment">// serve meta page
     </span><span class="kw">if </span>host == ctx.settings.server.domain || host == <span class="string">&quot;localhost&quot; </span>{
-        <span class="kw">return </span><span class="prelude-val">Ok</span>(HttpResponse::Ok()
-            .content_type(ContentType::html())
-            .body(<span class="string">&quot;Welcome to Librepages!&quot;</span>));
+        <span class="macro">tracing::debug!</span>(<span class="string">&quot;Into home&quot;</span>);
+        <span class="kw">return </span><span class="prelude-val">Ok</span>(pages::home(<span class="kw-2">&amp;</span>id).<span class="kw">await</span>);
     }
 
     <span class="comment">// serve default hostname content
