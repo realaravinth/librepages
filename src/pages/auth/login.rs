@@ -93,7 +93,7 @@ pub async fn login_submit(
             .finish())
     } else {
         Ok(HttpResponse::Found()
-            .insert_header((http::header::LOCATION, PAGES.home))
+            .insert_header((http::header::LOCATION, PAGES.dash.home))
             .finish())
     }
 }

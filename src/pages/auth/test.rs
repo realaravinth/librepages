@@ -71,7 +71,7 @@ async fn auth_works(ctx: ArcCtx) {
     .await;
     assert_eq!(resp.status(), StatusCode::FOUND);
     let headers = resp.headers();
-    assert_eq!(headers.get(header::LOCATION).unwrap(), PAGES.home);
+    assert_eq!(headers.get(header::LOCATION).unwrap(), PAGES.dash.home);
     let cookies = get_cookie!(resp);
 
     // redirect after signin
