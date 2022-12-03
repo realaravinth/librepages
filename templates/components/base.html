@@ -4,10 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ assets.css }}" />
-    <title>LibrePages</title>
-    <title>{% block title %} {% endblock %}</title>
+    <title>{% block title %} {% endblock %} | LibrePages</title>
   </head>
-  <body>
+  <body class="default-body">
     <header>{% block nav %} {% endblock %}</header>
     {% block main %} {% endblock %}
     {% include "footer" %}
