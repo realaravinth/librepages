@@ -1,87 +1,38 @@
-{% extends 'base' %}
-{% block title %} Add Site{% endblock title %} 
-{% block nav %} {% include "auth_nav" %} {% endblock nav %} 
-{% block main %}
+{% extends 'base' %}{% block title %} Add Site{% endblock title %} {% block nav
+%} {% include "auth_nav" %} {% endblock nav %} {% block main %}
 
 <main class="sites__main">
-	<div class="sites__collection">
-		<div class="sites__actions">
-			<a class="sites__actions__new-site" href="{{ page.dash.site.add }}">
-				<button>Add new site</button>
-			</a>
-		</div>
-		{% for site in payload %}
-		<a href="/sites/mcaptcha.org" class="site__container">
-			<div class="site__info--head">
-				<img
-					class="site__container--preview"
-					src="https://mcaptcha.org/favicon.ico"
-				/>
-				<div class="site__info--column">
-					<p href="https://mcaptcha.org">
-						<b>{{ site.info.hostname }}</b>
-					</p>
-					<p>Deploys from {{ site.info.source_url }}</p>
-				</div>
-			</div>
-			{% if site.last_update %}
-			<div class="site__info--tail">
-				<p>Last update {{ site.last_update.time }}</p>
-			</div>
-			{% endif %}
-		</a>
-		{% endfor %}
-	</div>
+  <div class="sites__collection">
+    <div class="sites__actions">
+      <a class="sites__actions__new-site" href="{{ page.dash.site.add }}">
+        <button>Add New Site</button>
+      </a>
+    </div>
+    {% if payload|length > 0 %}
+      {% for deployment in payload %}
+        <a href="/sites/view/{{ deployment.site.hostname }}" class="site__container">
+          <div class="site__info--head">
+            <img
+              class="site__container--preview"
+              src="{{ deployment.site.hostname }}/favicon.ico"
+              alt="{{ deployment.site.hostname }}'s favicon"
+            />
+            <div class="site__info--column">
+              <p><b>{{ deployment.site.hostname }}</b></p>
+              <p>Deploys from {{ deployment.site.repo_url }}</p>
+            </div>
+          </div>
+          {% if deployment.last_update %}
+            <div class="site__info--tail">
+              <p>Last update {{ deployment.last_update.time }}</p>
+            </div>
+          {% endif %}
+        </a>
+      {% endfor %}
+    {% else %}
+    <p class="sites__banner">Nothing to show, click <a href="{{page.dash.site.add}}">here</a> to get started!</p>
+    {% endif %}
+  </div>
 </main>
 
 {% endblock main %}
-
-<!--
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ assets.css }}" />
-    <title>LibrePages</title>
-  </head>
-  <body class="auth__body">
-    <header>
-    {% include "auth_nav" %}
-
-    </header>
-    <main>
-      <div class="sites__collection">
-        <div class="sites__actions">
-          <a class="sites__actions__new-site" href="{{ page.dash.site.add }}">
-            <button>Add new site</button>
-          </a>
-        </div>
-        {% for site in payload %}
-          <a href="/sites/mcaptcha.org" class="site__container">
-            <div class="site__info--head">
-              <img
-                class="site__container--preview"
-                src="https://mcaptcha.org/favicon.ico"
-              />
-              <div class="site__info--column">
-                <p href="https://mcaptcha.org"><b>{{ site.info.hostname }}</b></p>
-                <p>Deploys from {{ site.info.source_url }}</p>
-              </div>
-            </div>
-            {% if site.last_update  %}
-            <div class="site__info--tail">
-              <p>Last update {{ site.last_update.time }}</p>
-            </div>
-            {% endif %}
-          </a>
-        {% endfor %}
-      </div>
-    </main>
-    {% include "footer" %}
-  </body>
-
-
-</html>
--->

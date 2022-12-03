@@ -59,6 +59,7 @@ impl Home {
         let ctx = RefCell::new(context(settings));
         if let Some(sites) = sites {
             ctx.borrow_mut().insert(PAYLOAD_KEY, sites);
+            println!("{:#?}", sites)
         }
         Self { ctx }
     }
@@ -100,4 +101,53 @@ pub async fn get_home(ctx: AppCtx, id: Identity) -> PageResult<impl Responder, H
 
 pub fn services(cfg: &mut web::ServiceConfig) {
     cfg.service(get_home);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use actix_web::http::StatusCode;
+    use actix_web::test;
+
+    use crate::ctx::ArcCtx;
+    use crate::tests;
+    use crate::*;
+
+    use super::PAGES;
+
+    #[actix_rt::test]
+    async fn postgres_dash_home_works() {
+        let (_, ctx) = tests::get_ctx().await;
+        dashboard_home_works(ctx.clone()).await;
+    }
+
+    async fn dashboard_home_works(ctx: ArcCtx) {
+        const NAME: &str = "testdashuser";
+        const EMAIL: &str = "testdashuser@foo.com";
+        const PASSWORD: &str = "longpassword";
+
+        let _ = ctx.delete_user(NAME, PASSWORD).await;
+        let (_, signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
+        let cookies = get_cookie!(signin_resp);
+        let app = get_app!(ctx).await;
+
+        let resp = get_request!(&app, PAGES.dash.home, cookies.clone());
+        assert_eq!(resp.status(), StatusCode::OK);
+        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
+        println!("before adding site: {res}");
+        assert!(res.contains("Nothing to show"));
+
+        let page = ctx.add_test_site(NAME.into()).await;
+
+        let resp = get_request!(&app, PAGES.dash.home, cookies.clone());
+        assert_eq!(resp.status(), StatusCode::OK);
+        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
+        println!("after adding site: {res}");
+        assert!(!res.contains("Nothing here"));
+        assert!(res.contains(&page.domain));
+        assert!(res.contains(&page.repo));
+
+        let _ = ctx.delete_user(NAME, PASSWORD).await;
+    }
 }
