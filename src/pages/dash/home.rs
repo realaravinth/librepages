@@ -56,7 +56,6 @@ impl Home {
         let ctx = RefCell::new(context(settings));
         if let Some(sites) = sites {
             ctx.borrow_mut().insert(PAYLOAD_KEY, sites);
-            println!("{:#?}", sites)
         }
         Self { ctx }
     }
