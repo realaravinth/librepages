@@ -1,0 +1,71 @@
+{% extends 'base' %}{% block title %} Add Site{% endblock title %} {% block nav
+%} {% include "auth_nav" %} {% endblock nav %} {% block main %}
+
+<main class="sites__main">
+  <div class="add-site__container">
+    <section>
+      <table>
+        <tr>
+          <th>Hostname</th>
+          <td>{{ payload.site.hostname }}</td>
+        </tr>
+
+        <tr>
+          <th>Repository</th>
+          <td>{{ payload.site.repo_url }}</td>
+        </tr>
+        <tr>
+          <th>Secret</th>
+          <td>
+            {% if show_deploy_secret %} 
+              {{ payload.site.site_secret }} <a href="{{ payload.view }}">Hide</a>
+            {% else %}
+            ****
+              <a href="{{ payload.view }}?show_deploy_secret=true">
+                Show
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <th>Branch</th>
+          <td>{{ payload.site.branch }}</td>
+        </tr>
+
+        <tr>
+          <th>Last Updated</th>
+          {% if payload.last_updated %}
+          <td>{{ payload.last_updated.time }}</td>
+          {% else %}
+          <td>N/A</td>
+          {% endif %}
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Events</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Event Type</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in payload.events %}
+          <tr>
+            <td>{{ event.id }}</td>
+            <td>{{ event.event_type.name }}</td>
+            <td>{{ event.time }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+</main>
+
+{% endblock main %}

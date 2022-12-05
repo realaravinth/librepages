@@ -10,7 +10,7 @@
     </div>
     {% if payload|length > 0 %}
       {% for deployment in payload %}
-        <a href="/sites/view/{{ deployment.site.hostname }}" class="site__container">
+        <a href="{{ deployment.view }}" class="site__container">
           <div class="site__info--head">
             <img
               class="site__container--preview"

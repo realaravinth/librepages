@@ -88,15 +88,16 @@ pub async fn post_add_site(
         repo_url: payload.repo_url,
         owner,
     };
-    let _page = ctx
+    let page = ctx
         .add_site(msg)
         .await
         .map_err(|e| PageError::new(Add::new(&ctx.settings), e))?;
 
-    // TODO: redirect to deployment view
-
     Ok(HttpResponse::Found()
-        .append_header((http::header::LOCATION, PAGES.dash.home))
+        .append_header((
+            http::header::LOCATION,
+            PAGES.dash.site.get_view(page.pub_id),
+        ))
         .finish())
 }
 
@@ -131,7 +132,7 @@ mod tests {
         let _ = ctx.delete_user(NAME, PASSWORD).await;
         let (_, signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).await;
         let cookies = get_cookie!(signin_resp);
-        let app = get_app!(ctx).await;
+        let app = get_app!(ctx.clone()).await;
 
         let resp = get_request!(&app, PAGES.dash.site.add, cookies.clone());
         assert_eq!(resp.status(), StatusCode::OK);
@@ -151,22 +152,32 @@ mod tests {
         )
         .await;
         assert_eq!(add_site.status(), StatusCode::FOUND);
+
+        let mut site = ctx.db.list_all_sites(NAME).await.unwrap();
+        let site = site.pop().unwrap();
+
+        let mut event = ctx.db.list_all_site_events(&site.hostname).await.unwrap();
+        let event = event.pop().unwrap();
+
         let headers = add_site.headers();
+        let view_site = &PAGES.dash.site.get_view(site.pub_id.clone());
         assert_eq!(
             headers.get(actix_web::http::header::LOCATION).unwrap(),
-            &PAGES.dash.home
+            view_site
         );
 
-        //        let page = ctx.add_test_site(NAME.into()).await;
-        //
-        //        let resp = get_request!(&app, PAGES.dash.home, cookies.clone());
-        //        assert_eq!(resp.status(), StatusCode::OK);
-        //        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
-        //        println!("after adding site: {res}");
-        //        assert!(!res.contains("Nothing here"));
-        //        assert!(res.contains(&page.domain));
-        //        assert!(res.contains(&page.repo));
-        //
+        // view site
+        let resp = get_request!(&app, view_site, cookies.clone());
+        assert_eq!(resp.status(), StatusCode::OK);
+        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
+        assert!(res.contains(&site.site_secret));
+        assert!(res.contains(&site.hostname));
+        assert!(res.contains(&site.repo_url));
+        assert!(res.contains(&site.branch));
+
+        assert!(res.contains(&event.event_type.name));
+        assert!(res.contains(&event.id.to_string()));
+
         let _ = ctx.delete_user(NAME, PASSWORD).await;
     }
 }

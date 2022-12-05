@@ -17,16 +17,22 @@
 use actix_web::*;
 
 use super::get_auth_middleware;
+pub use super::home::TemplateSite;
 pub use super::{context, Footer, TemplateFile, PAGES, PAYLOAD_KEY, TEMPLATES};
 
 pub mod add;
+pub mod view;
 
 pub fn register_templates(t: &mut tera::Tera) {
     add::DASH_SITE_ADD
         .register(t)
         .expect(add::DASH_SITE_ADD.name);
+    view::DASH_SITE_VIEW
+        .register(t)
+        .expect(view::DASH_SITE_VIEW.name);
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
     add::services(cfg);
+    view::services(cfg);
 }

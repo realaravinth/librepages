@@ -40,8 +40,20 @@ pub struct Home {
 
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 pub struct TemplateSite {
-    site: Site,
-    last_update: Option<TemplateSiteEvent>,
+    pub site: Site,
+    pub view: String,
+    pub last_update: Option<TemplateSiteEvent>,
+}
+
+impl TemplateSite {
+    pub fn new(site: Site, last_update: Option<TemplateSiteEvent>) -> Self {
+        let view = PAGES.dash.site.get_view(site.pub_id.clone());
+        Self {
+            site,
+            last_update,
+            view,
+        }
+    }
 }
 
 impl CtxError for Home {
@@ -77,7 +89,7 @@ async fn get_site_data(ctx: &AppCtx, id: &Identity) -> ServiceResult<Vec<Templat
             .get_latest_update_event(&site.hostname)
             .await?
             .map(|e| e.into());
-        sites.push(TemplateSite { site, last_update });
+        sites.push(TemplateSite::new(site, last_update));
     }
     Ok(sites)
 }

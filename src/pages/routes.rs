@@ -16,6 +16,7 @@
  */
 use actix_auth_middleware::{Authentication, GetLoginRoute};
 use serde::*;
+use uuid::Uuid;
 
 /// constant [Pages](Pages) instance
 pub const PAGES: Pages = Pages::new();
@@ -85,15 +86,25 @@ impl Dash {
 #[derive(Serialize)]
 /// Dashboard Site routes
 pub struct DashSite {
-    /// home route
+    /// add site route
     pub add: &'static str,
+    /// view site route
+    pub view: &'static str,
 }
 
 impl DashSite {
     /// create new instance of DashSite route
     pub const fn new() -> DashSite {
         let add = "/dash/site/add";
-        DashSite { add }
+        let view = "/dash/site/view/{deployment_pub_id}";
+        DashSite { add, view }
+    }
+
+    pub fn get_view(&self, deployment_pub_id: Uuid) -> String {
+        self.view.replace(
+            "{deployment_pub_id}",
+            deployment_pub_id.to_string().as_ref(),
+        )
     }
 }
 
