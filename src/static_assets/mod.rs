@@ -35,6 +35,22 @@ pub mod routes {
     lazy_static! {
         pub static ref ASSETS: Assets = Assets::new();
     }
+    #[derive(Serialize)]
+    pub struct Svg {
+        pub eye_off: &'static str,
+        pub eye: &'static str,
+    }
+
+    impl Svg {
+        /// create new instance of Routes
+        pub fn new() -> Svg {
+            Svg {
+                eye: &static_files::assets::CSS,
+                eye_off: &static_files::assets::CSS,
+            }
+        }
+    }
+
 
     #[derive(Serialize)]
     /// Top-level routes data structure for V1 AP1
@@ -42,6 +58,7 @@ pub mod routes {
         /// Authentication routes
         pub css: &'static str,
         pub mobile_css: &'static str,
+        pub svg: Svg,
     }
 
     impl Assets {
@@ -50,6 +67,7 @@ pub mod routes {
             Assets {
                 css: &static_files::assets::CSS,
                 mobile_css: &static_files::assets::CSS,
+                svg: Svg::new(),
             }
         }
     }

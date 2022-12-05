@@ -29,6 +29,9 @@ pub mod assets {
 
     lazy_static! {
         pub static ref CSS: &'static str = FILES.get("./static/cache/css/main.css").unwrap();
+        pub static ref EYE: &'static str = FILES.get("./static/cache/img/svg/eye.svg").unwrap();
+        pub static ref EYE_OFF: &'static str =
+            FILES.get("./static/cache/img/svg/eye-off.svg").unwrap();
         pub static ref MOBILE_CSS: &'static str =
             FILES.get("./static/cache/css/mobile.css").unwrap();
     }
