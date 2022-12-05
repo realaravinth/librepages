@@ -209,6 +209,33 @@
     },
     "query": "UPDATE librepages_users set email = $1\n            WHERE name = $2"
   },
+  "77612c85be99e6de2e4a6e3105ebaeb470d6cc57b2999b673a085da41c035f9e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "time",
+          "ordinal": 0,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "pub_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT\n                time,\n                pub_id\n              FROM\n                  librepages_site_deploy_events\n              WHERE\n                  site = (SELECT ID FROM librepages_sites WHERE hostname = $1)\n              AND\n                  event_type = (SELECT ID FROM librepages_deploy_event_type WHERE  name = $2)\n              AND\n                  time = (\n                      SELECT MAX(time) \n                      FROM\n                          librepages_site_deploy_events\n                      WHERE\n                          site = (SELECT ID FROM librepages_sites WHERE hostname = $1)\n                      )\n                "
+  },
   "8735b654bc261571e6a5908d55a8217474c76bdff7f3cbcc71500a0fe13249db": {
     "describe": {
       "columns": [
@@ -465,6 +492,51 @@
       }
     },
     "query": "SELECT EXISTS (SELECT 1 from librepages_deploy_event_type WHERE name = $1)"
+  },
+  "f4957eeddb139c82ef68cfc3ed2ddf52ff292fdf66cf0fddf0aa302723c26c53": {
+    "describe": {
+      "columns": [
+        {
+          "name": "repo_url",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "branch",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "hostname",
+          "ordinal": 2,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "owned_by",
+          "ordinal": 3,
+          "type_info": "Int4"
+        },
+        {
+          "name": "site_secret",
+          "ordinal": 4,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT repo_url, branch, hostname, owned_by, site_secret\n            FROM librepages_sites\n            WHERE pub_id = $1\n            AND\n                owned_by = (SELECT ID from librepages_users WHERE name = $2)\n            "
   },
   "f651da8f411b7977cb87dd8d4bd5d167661d7ef1d865747e76219453d386d593": {
     "describe": {

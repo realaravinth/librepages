@@ -273,6 +273,42 @@ impl Database {
         Ok(())
     }
 
+    pub async fn get_site_from_pub_id(&self, pub_id: Uuid, owner: String) -> ServiceResult<Site> {
+        struct S {
+            repo_url: String,
+            branch: String,
+            hostname: String,
+            owned_by: i32,
+            site_secret: String,
+        }
+
+        let site = sqlx::query_as!(
+            S,
+            "SELECT repo_url, branch, hostname, owned_by, site_secret
+            FROM librepages_sites
+            WHERE pub_id = $1
+            AND
+                owned_by = (SELECT ID from librepages_users WHERE name = $2)
+            ",
+            &pub_id,
+            &owner,
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::WebsiteNotFound))?;
+
+        let site = Site {
+            site_secret: site.site_secret,
+            branch: site.branch,
+            hostname: site.hostname,
+            owner: owner,
+            repo_url: site.repo_url,
+            pub_id,
+        };
+
+        Ok(site)
+    }
+
     pub async fn get_site_from_secret(&self, site_secret: &str) -> ServiceResult<Site> {
         struct S {
             repo_url: String,
