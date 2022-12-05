@@ -21,6 +21,7 @@ pub use super::home::TemplateSite;
 pub use super::{context, Footer, TemplateFile, PAGES, PAYLOAD_KEY, TEMPLATES};
 
 pub mod add;
+pub mod delete;
 pub mod view;
 
 pub fn register_templates(t: &mut tera::Tera) {
@@ -30,9 +31,13 @@ pub fn register_templates(t: &mut tera::Tera) {
     view::DASH_SITE_VIEW
         .register(t)
         .expect(view::DASH_SITE_VIEW.name);
+    delete::DASH_SITE_DELETE
+        .register(t)
+        .expect(delete::DASH_SITE_DELETE.name);
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
     add::services(cfg);
     view::services(cfg);
+    delete::services(cfg);
 }

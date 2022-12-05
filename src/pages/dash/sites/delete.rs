@@ -24,6 +24,7 @@ use uuid::Uuid;
 
 use super::get_auth_middleware;
 
+use crate::ctx::api::v1::auth::{Login, Password};
 use crate::db::Site;
 use crate::pages::dash::TemplateSiteEvent;
 use crate::pages::errors::*;
@@ -32,23 +33,23 @@ use crate::AppCtx;
 
 pub use super::*;
 
-pub const DASH_SITE_VIEW: TemplateFile =
-    TemplateFile::new("dash_site_view", "pages/dash/sites/view.html");
+pub const DASH_SITE_DELETE: TemplateFile =
+    TemplateFile::new("dash_site_delete", "pages/dash/sites/delete.html");
 
 const SHOW_DEPLOY_SECRET_KEY: &str = "show_deploy_secret";
 
-pub struct View {
+pub struct Delete {
     ctx: RefCell<Context>,
 }
 
-impl CtxError for View {
+impl CtxError for Delete {
     fn with_error(&self, e: &ReadableError) -> String {
         self.ctx.borrow_mut().insert(ERROR_KEY, e);
         self.render()
     }
 }
 
-impl View {
+impl Delete {
     pub fn new(settings: &Settings, payload: Option<TemplateSiteWithEvents>) -> Self {
         let ctx = RefCell::new(context(settings));
         if let Some(payload) = payload {
@@ -64,7 +65,7 @@ impl View {
 
     pub fn render(&self) -> String {
         TEMPLATES
-            .render(DASH_SITE_VIEW.name, &self.ctx.borrow())
+            .render(DASH_SITE_DELETE.name, &self.ctx.borrow())
             .unwrap()
     }
 }
@@ -72,7 +73,6 @@ impl View {
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 pub struct TemplateSiteWithEvents {
     pub site: Site,
-    pub view: String,
     pub delete: String,
     pub last_update: Option<TemplateSiteEvent>,
     pub events: Vec<TemplateSiteEvent>,
@@ -84,12 +84,10 @@ impl TemplateSiteWithEvents {
         last_update: Option<TemplateSiteEvent>,
         events: Vec<TemplateSiteEvent>,
     ) -> Self {
-        let view = PAGES.dash.site.get_view(site.pub_id);
         let delete = PAGES.dash.site.get_delete(site.pub_id);
         Self {
             site,
             last_update,
-            view,
             delete,
             events,
         }
@@ -97,21 +95,21 @@ impl TemplateSiteWithEvents {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Eq, PartialEq)]
-pub struct ViewOptions {
+pub struct DeleteOptions {
     show_deploy_secret: Option<bool>,
 }
 
 #[actix_web_codegen_const_routes::get(
-    path = "PAGES.dash.site.view",
+    path = "PAGES.dash.site.delete",
     wrap = "get_auth_middleware()"
 )]
-#[tracing::instrument(name = "Dashboard add site webpage", skip(ctx, id))]
-pub async fn get_view_site(
+#[tracing::instrument(name = "Dashboard delete site webpage", skip(ctx, id))]
+pub async fn get_delete_site(
     ctx: AppCtx,
     id: Identity,
     path: web::Path<Uuid>,
-    query: web::Query<ViewOptions>,
-) -> PageResult<impl Responder, View> {
+    query: web::Query<DeleteOptions>,
+) -> PageResult<impl Responder, Delete> {
     let site_id = path.into_inner();
     let owner = id.identity().unwrap();
 
@@ -119,12 +117,12 @@ pub async fn get_view_site(
         .db
         .get_site_from_pub_id(site_id, owner)
         .await
-        .map_err(|e| PageError::new(View::new(&ctx.settings, None), e))?;
+        .map_err(|e| PageError::new(Delete::new(&ctx.settings, None), e))?;
     let last_update = ctx
         .db
         .get_latest_update_event(&site.hostname)
         .await
-        .map_err(|e| PageError::new(View::new(&ctx.settings, None), e))?;
+        .map_err(|e| PageError::new(Delete::new(&ctx.settings, None), e))?;
 
     let last_update = last_update.map(|e| e.into());
 
@@ -132,7 +130,7 @@ pub async fn get_view_site(
         .db
         .list_all_site_events(&site.hostname)
         .await
-        .map_err(|e| PageError::new(View::new(&ctx.settings, None), e))?;
+        .map_err(|e| PageError::new(Delete::new(&ctx.settings, None), e))?;
 
     let mut events = Vec::with_capacity(db_events.len());
     for e in db_events.drain(0..) {
@@ -140,7 +138,7 @@ pub async fn get_view_site(
     }
 
     let payload = TemplateSiteWithEvents::new(site, last_update, events);
-    let mut page = View::new(&ctx.settings, Some(payload));
+    let mut page = Delete::new(&ctx.settings, Some(payload));
     if let Some(true) = query.show_deploy_secret {
         page.show_deploy_secret();
     }
@@ -149,6 +147,39 @@ pub async fn get_view_site(
     Ok(HttpResponse::Ok().content_type(html).body(add))
 }
 
+#[actix_web_codegen_const_routes::post(
+    path = "PAGES.dash.site.delete",
+    wrap = "get_auth_middleware()"
+)]
+#[tracing::instrument(name = "Delete site from webpage", skip(ctx, id))]
+pub async fn post_delete_site(
+    ctx: AppCtx,
+    id: Identity,
+    path: web::Path<Uuid>,
+    payload: web::Form<Password>,
+) -> PageResult<impl Responder, Delete> {
+    let site_id = path.into_inner();
+    let owner = id.identity().unwrap();
+
+    let payload = payload.into_inner();
+    let msg = Login {
+        login: owner,
+        password: payload.password,
+    };
+    ctx.login(&msg)
+        .await
+        .map_err(|e| PageError::new(Delete::new(&ctx.settings, None), e))?;
+
+    ctx.delete_site(msg.login, site_id)
+        .await
+        .map_err(|e| PageError::new(Delete::new(&ctx.settings, None), e))?;
+
+    Ok(HttpResponse::Found()
+        .append_header((http::header::LOCATION, PAGES.dash.home))
+        .finish())
+}
+
 pub fn services(cfg: &mut web::ServiceConfig) {
-    cfg.service(get_view_site);
+    cfg.service(get_delete_site);
+    cfg.service(post_delete_site);
 }

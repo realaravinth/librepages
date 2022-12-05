@@ -47,7 +47,7 @@ pub struct TemplateSite {
 
 impl TemplateSite {
     pub fn new(site: Site, last_update: Option<TemplateSiteEvent>) -> Self {
-        let view = PAGES.dash.site.get_view(site.pub_id.clone());
+        let view = PAGES.dash.site.get_view(site.pub_id);
         Self {
             site,
             last_update,

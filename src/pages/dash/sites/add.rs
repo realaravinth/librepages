@@ -111,7 +111,9 @@ mod tests {
     use actix_web::http::StatusCode;
     use actix_web::test;
 
+    use crate::ctx::api::v1::auth::Password;
     use crate::ctx::ArcCtx;
+    use crate::errors::ServiceError;
     use crate::pages::dash::sites::add::TemplateAddSite;
     use crate::tests;
     use crate::*;
@@ -160,7 +162,7 @@ mod tests {
         let event = event.pop().unwrap();
 
         let headers = add_site.headers();
-        let view_site = &PAGES.dash.site.get_view(site.pub_id.clone());
+        let view_site = &PAGES.dash.site.get_view(site.pub_id);
         assert_eq!(
             headers.get(actix_web::http::header::LOCATION).unwrap(),
             view_site
@@ -170,13 +172,54 @@ mod tests {
         let resp = get_request!(&app, view_site, cookies.clone());
         assert_eq!(resp.status(), StatusCode::OK);
         let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
-        assert!(res.contains(&site.site_secret));
+        assert!(res.contains("****"));
         assert!(res.contains(&site.hostname));
         assert!(res.contains(&site.repo_url));
         assert!(res.contains(&site.branch));
 
         assert!(res.contains(&event.event_type.name));
         assert!(res.contains(&event.id.to_string()));
+
+        let show_deploy_secret_route = format!("{view_site}?show_deploy_secret=true");
+        let resp = get_request!(&app, &show_deploy_secret_route, cookies.clone());
+        assert_eq!(resp.status(), StatusCode::OK);
+        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
+        assert!(res.contains(&site.site_secret));
+
+        // delete site
+        let delete_site = &PAGES.dash.site.get_delete(site.pub_id);
+        let resp = get_request!(&app, delete_site, cookies.clone());
+        assert_eq!(resp.status(), StatusCode::OK);
+        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
+        assert!(res.contains(&site.hostname));
+
+        let msg = Password {
+            password: PASSWORD.into(),
+        };
+        let resp = test::call_service(
+            &app,
+            post_request!(&msg, delete_site, FORM)
+                .cookie(cookies.clone())
+                .to_request(),
+        )
+        .await;
+
+        //    delete_request!(&app, delete_site, cookies.clone(), &msg, FORM);
+        assert_eq!(resp.status(), StatusCode::FOUND);
+        let headers = resp.headers();
+        assert_eq!(
+            headers.get(actix_web::http::header::LOCATION).unwrap(),
+            PAGES.dash.home,
+        );
+
+        assert!(!utils::get_website_path(&ctx.settings, &site.hostname).exists());
+        assert_eq!(
+            ctx.db
+                .get_site_from_pub_id(site.pub_id, NAME.into())
+                .await
+                .err(),
+            Some(ServiceError::WebsiteNotFound)
+        );
 
         let _ = ctx.delete_user(NAME, PASSWORD).await;
     }

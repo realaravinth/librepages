@@ -1,4 +1,4 @@
-{% extends 'base' %}{% block title %} Add Site{% endblock title %} {% block nav
+{% extends 'base' %}{% block title %} {{ payload.site.hostname }}{% endblock title %} {% block nav
 %} {% include "auth_nav" %} {% endblock nav %} {% block main %}
 
 <main class="sites__main">
@@ -42,6 +42,7 @@
           {% endif %}
         </tr>
       </table>
+      <a href="{{ payload.delete }}"><button>Delete</button></a>
     </section>
 
     <section>

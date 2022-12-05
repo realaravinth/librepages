@@ -301,7 +301,7 @@ impl Database {
             site_secret: site.site_secret,
             branch: site.branch,
             hostname: site.hostname,
-            owner: owner,
+            owner,
             repo_url: site.repo_url,
             pub_id,
         };

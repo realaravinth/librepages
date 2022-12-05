@@ -16,6 +16,7 @@
  */
 use actix_web::web;
 use serde::{Deserialize, Serialize};
+use tokio::fs;
 use tokio::sync::oneshot;
 use uuid::Uuid;
 
@@ -28,6 +29,7 @@ use crate::page_config;
 use crate::settings::Settings;
 use crate::subdomains::get_random_subdomain;
 use crate::utils::get_random;
+use crate::utils::get_website_path;
 
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 /// Data required to add site
@@ -92,6 +94,20 @@ impl Ctx {
             self.db
                 .log_event(&page.domain, &db::EVENT_TYPE_UPDATE)
                 .await
+        } else {
+            Err(ServiceError::WebsiteNotFound)
+        }
+    }
+
+    pub async fn delete_site(&self, owner: String, site_id: Uuid) -> ServiceResult<()> {
+        if let Ok(db_site) = self.db.get_site_from_pub_id(site_id, owner).await {
+            let path = get_website_path(&self.settings, &db_site.hostname);
+
+            fs::remove_dir_all(&path).await?;
+            self.db
+                .delete_site(&db_site.owner, &db_site.hostname)
+                .await?;
+            Ok(())
         } else {
             Err(ServiceError::WebsiteNotFound)
         }

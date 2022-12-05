@@ -33,7 +33,7 @@ use crate::page::Page;
 use crate::settings::Settings;
 use crate::*;
 
-pub const REPO_URL: &str = "https://github.com/mCaptcha/website/";
+pub const REPO_URL: &str = "http://localhost:8080/mCaptcha/website/";
 pub const BRANCH: &str = "gh-pages";
 
 pub async fn get_ctx() -> (Temp, Arc<Ctx>) {
@@ -104,6 +104,18 @@ macro_rules! delete_request {
             &$app,
             test::TestRequest::delete()
                 .uri($route)
+                .cookie($cookies)
+                .to_request(),
+        )
+        .await
+    };
+
+    ($app:expr, $route:expr, $cookies:expr, $serializable:expr, FORM) => {
+        test::call_service(
+            &$app,
+            test::TestRequest::delete()
+                .uri($route)
+                .set_form($serializable)
                 .cookie($cookies)
                 .to_request(),
         )

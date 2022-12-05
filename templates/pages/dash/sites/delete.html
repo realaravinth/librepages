@@ -1,0 +1,37 @@
+{% extends 'base' %}{% block title %} Delete {{ payload.site.hostname }}{% endblock title %} {% block nav
+%} {% include "auth_nav" %} {% endblock nav %} {% block main %}
+
+<main class="sites__main">
+  <div class="add-site__container">
+    <form class="auth-form" action="{{ payload.delete }}" method="post">
+      <h1>Confirm access</h1>
+      <p>
+        Please confirm access to your account to delete deployment at
+        <a href="http://{{ payload.site.hostname }}">
+          {{ payload.site.hostname }}
+        </a>
+      </p>
+
+      <label class="auth-form__label" for="password">
+        Password
+        <input
+          class="auth-form__input"
+          name="password"
+          required
+          id="password"
+          type="password"
+          {% if payload.password %}
+              value={{ payload.password }}
+          {% endif %}
+        />
+      </label>
+
+      <div class="auth-form__action-container">
+        <button class="auth-form__submit--danger" type="submit">Delete</button>
+      </div>
+    </form>
+
+  </div>
+</main>
+
+{% endblock main %}

@@ -51,7 +51,6 @@ pub mod routes {
         }
     }
 
-
     #[derive(Serialize)]
     /// Top-level routes data structure for V1 AP1
     pub struct Assets {

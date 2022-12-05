@@ -90,6 +90,8 @@ pub struct DashSite {
     pub add: &'static str,
     /// view site route
     pub view: &'static str,
+    /// delete site route
+    pub delete: &'static str,
 }
 
 impl DashSite {
@@ -97,11 +99,19 @@ impl DashSite {
     pub const fn new() -> DashSite {
         let add = "/dash/site/add";
         let view = "/dash/site/view/{deployment_pub_id}";
-        DashSite { add, view }
+        let delete = "/dash/site/delete/{deployment_pub_id}";
+        DashSite { add, view, delete }
     }
 
     pub fn get_view(&self, deployment_pub_id: Uuid) -> String {
         self.view.replace(
+            "{deployment_pub_id}",
+            deployment_pub_id.to_string().as_ref(),
+        )
+    }
+
+    pub fn get_delete(&self, deployment_pub_id: Uuid) -> String {
+        self.delete.replace(
             "{deployment_pub_id}",
             deployment_pub_id.to_string().as_ref(),
         )
