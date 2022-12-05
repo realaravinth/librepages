@@ -103,6 +103,8 @@ impl Ctx {
         if let Ok(db_site) = self.db.get_site_from_pub_id(site_id, owner).await {
             let path = get_website_path(&self.settings, &db_site.hostname);
 
+            // TODO fire delete event, but must figure out way to erect tombstone. Events link to
+            // sites, so deleting site record isn't possible
             fs::remove_dir_all(&path).await?;
             self.db
                 .delete_site(&db_site.owner, &db_site.hostname)
