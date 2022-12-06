@@ -90,7 +90,6 @@ impl Ctx {
             if let Some(_config) = page_config::Config::load(&page.path, &page.branch) {
                 unimplemented!();
             }
-            println!("{}", page.domain);
             self.db
                 .log_event(&page.domain, &db::EVENT_TYPE_UPDATE)
                 .await
@@ -103,8 +102,10 @@ impl Ctx {
         if let Ok(db_site) = self.db.get_site_from_pub_id(site_id, owner).await {
             let path = get_website_path(&self.settings, &db_site.hostname);
 
-            // TODO fire delete event, but must figure out way to erect tombstone. Events link to
-            // sites, so deleting site record isn't possible
+            self.db
+                .log_event(&db_site.hostname, &db::EVENT_TYPE_DELETE)
+                .await?;
+
             fs::remove_dir_all(&path).await?;
             self.db
                 .delete_site(&db_site.owner, &db_site.hostname)

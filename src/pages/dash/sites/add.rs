@@ -221,6 +221,10 @@ mod tests {
             Some(ServiceError::WebsiteNotFound)
         );
 
+        let mut events = ctx.db.list_all_site_events(&site.hostname).await.unwrap();
+        let possible_delete = events.pop().unwrap();
+        assert_eq!(&possible_delete.event_type, &*crate::db::EVENT_TYPE_DELETE);
+
         let _ = ctx.delete_user(NAME, PASSWORD).await;
     }
 }
