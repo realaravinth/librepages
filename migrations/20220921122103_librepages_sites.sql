@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS librepages_sites (
     hostname VARCHAR(3000) NOT NULL UNIQUE,
     pub_id uuid NOT NULL UNIQUE,
 	ID SERIAL PRIMARY KEY NOT NULL,
+	deleted BOOLEAN DEFAULT FALSE,
 	owned_by INTEGER NOT NULL references librepages_users(ID) ON DELETE CASCADE
 );
 

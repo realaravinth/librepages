@@ -289,6 +289,8 @@ impl Database {
             WHERE pub_id = $1
             AND
                 owned_by = (SELECT ID from librepages_users WHERE name = $2)
+            AND
+                deleted = false;
             ",
             &pub_id,
             &owner,
@@ -323,6 +325,7 @@ impl Database {
             "SELECT repo_url, branch, hostname, owned_by, pub_id
             FROM librepages_sites
             WHERE site_secret = $1
+            AND deleted = false;
             ",
             site_secret,
         )
@@ -359,7 +362,8 @@ impl Database {
             InnerSite,
             "SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
-            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
+            WHERE deleted = false
+            AND owned_by = (SELECT ID FROM librepages_users WHERE name = $1 )
             AND hostname = $2;
             ",
             owner,
@@ -379,7 +383,8 @@ impl Database {
             InnerSite,
             "SELECT site_secret, repo_url, branch, hostname, pub_id
             FROM librepages_sites
-            WHERE owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
+            WHERE deleted = false
+            AND owned_by = (SELECT ID FROM librepages_users WHERE name = $1 );
             ",
             owner,
         )
@@ -394,7 +399,7 @@ impl Database {
 
     pub async fn delete_site(&self, owner: &str, hostname: &str) -> ServiceResult<()> {
         sqlx::query!(
-            "DELETE FROM librepages_sites
+            "UPDATE librepages_sites SET deleted = true
             WHERE hostname = ($1)
             AND owned_by = ( SELECT ID FROM librepages_users WHERE name = $2);
             ",
@@ -410,7 +415,7 @@ impl Database {
     /// check if hostname exists
     pub async fn hostname_exists(&self, hostname: &str) -> ServiceResult<bool> {
         let res = sqlx::query!(
-            "SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1)",
+            "SELECT EXISTS (SELECT 1 from librepages_sites WHERE hostname = $1 AND deleted = false)",
             hostname,
         )
         .fetch_one(&self.pool)
