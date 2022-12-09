@@ -21,6 +21,7 @@ actix-web-codegen-const-routes = { version = "0.1.0", tag = "0.1.0", git = "http
 argon2-creds = { branch = "master", git = "https://github.com/realaravinth/argon2-creds"}
 sqlx = { version = "0.6.1", features = ["runtime-actix-rustls", "postgres", "time", "offline", "json", "uuid"] }
 clap = { version = "3.2.20", features = ["derive"]}
+libconfig = { version = "0.1.0", git = "https://git.batsense.net/librepages/libconfig" }
 
 config = "0.13"
 git2 = "0.14.2"

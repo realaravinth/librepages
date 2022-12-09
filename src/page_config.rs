@@ -16,40 +16,10 @@
  */
 use std::path::Path;
 
+use libconfig::Config;
 use serde::{Deserialize, Serialize};
 
 use crate::git::{ContentType, GitFileMode};
-
-#[derive(Deserialize, Serialize, Debug, Eq, PartialEq, Clone)]
-pub struct Config {
-    pub source: Source,
-    pub domains: Option<Vec<String>>,
-    pub forms: Option<Forms>,
-    pub image_compression: Option<ImageCompression>,
-    pub redirects: Option<Vec<Redirects>>,
-}
-
-#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-pub struct Source {
-    production_branch: String,
-    staging: Option<String>,
-}
-
-#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-pub struct Forms {
-    pub enable: bool,
-}
-
-#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-pub struct ImageCompression {
-    pub enable: bool,
-}
-
-#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-pub struct Redirects {
-    pub from: String,
-    pub to: String,
-}
 
 #[derive(Deserialize, Debug, Serialize, PartialEq, Eq)]
 struct Policy<'a> {
@@ -70,77 +40,75 @@ enum SupportedFormat {
     Toml,
 }
 
-impl Config {
-    pub fn load<P: AsRef<Path>>(repo_path: &P, branch: &str) -> Option<Config> {
-        const POLICIES: [Policy; 2] = [
-            Policy::new("librepages.toml", SupportedFormat::Toml),
-            Policy::new("librepages.json", SupportedFormat::Json),
-        ];
+pub fn load<P: AsRef<Path>>(repo_path: &P, branch: &str) -> Option<Config> {
+    const POLICIES: [Policy; 2] = [
+        Policy::new("librepages.toml", SupportedFormat::Toml),
+        Policy::new("librepages.json", SupportedFormat::Json),
+    ];
 
-        if let Some(policy) = Self::discover(repo_path, branch, &POLICIES) {
-            //            let path = p.repo.as_ref().join(policy.rel_path);
-            //let contents = fs::read_to_string(path).await.unwrap();
+    if let Some(policy) = discover(repo_path, branch, &POLICIES) {
+        //            let path = p.repo.as_ref().join(policy.rel_path);
+        //let contents = fs::read_to_string(path).await.unwrap();
 
-            let file =
-                crate::git::read_preview_file(&repo_path.as_ref().into(), branch, policy.rel_path)
-                    .unwrap();
-            if let ContentType::Text(contents) = file.content {
-                let res = match policy.format {
-                    SupportedFormat::Json => Self::load_json(&contents),
-                    SupportedFormat::Yaml => Self::load_yaml(&contents),
-                    SupportedFormat::Toml => Self::load_toml(&contents),
-                };
-
-                return Some(res);
+        let file =
+            crate::git::read_preview_file(&repo_path.as_ref().into(), branch, policy.rel_path)
+                .unwrap();
+        if let ContentType::Text(contents) = file.content {
+            let res = match policy.format {
+                SupportedFormat::Json => load_json(&contents),
+                SupportedFormat::Yaml => load_yaml(&contents),
+                SupportedFormat::Toml => load_toml(&contents),
             };
-        }
 
-        None
+            return Some(res);
+        };
     }
-    fn discover<'a, P: AsRef<Path>>(
-        repo_path: &P,
-        branch: &str,
-        policies: &'a [Policy<'a>],
-    ) -> Option<&'a Policy<'a>> {
-        let repo = git2::Repository::open(repo_path).unwrap();
 
-        let branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
-        //    let tree = head.peel_to_tree().unwrap();
-        let branch = branch.into_reference();
-        let tree = branch.peel_to_tree().unwrap();
+    None
+}
+fn discover<'a, P: AsRef<Path>>(
+    repo_path: &P,
+    branch: &str,
+    policies: &'a [Policy<'a>],
+) -> Option<&'a Policy<'a>> {
+    let repo = git2::Repository::open(repo_path).unwrap();
 
-        for p in policies.iter() {
-            let file_exists = tree.iter().any(|x| {
-                if let Some(name) = x.name() {
-                    if policies.iter().any(|p| p.rel_path == name) {
-                        let mode: GitFileMode = x.into();
-                        matches!(mode, GitFileMode::Executable | GitFileMode::Regular)
-                    } else {
-                        false
-                    }
+    let branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
+    //    let tree = head.peel_to_tree().unwrap();
+    let branch = branch.into_reference();
+    let tree = branch.peel_to_tree().unwrap();
+
+    for p in policies.iter() {
+        let file_exists = tree.iter().any(|x| {
+            if let Some(name) = x.name() {
+                if policies.iter().any(|p| p.rel_path == name) {
+                    let mode: GitFileMode = x.into();
+                    matches!(mode, GitFileMode::Executable | GitFileMode::Regular)
                 } else {
                     false
                 }
-            });
-
-            if file_exists {
-                return Some(p);
+            } else {
+                false
             }
+        });
+
+        if file_exists {
+            return Some(p);
         }
-        None
     }
+    None
+}
 
-    fn load_toml(c: &str) -> Config {
-        toml::from_str(c).unwrap()
-    }
+fn load_toml(c: &str) -> Config {
+    toml::from_str(c).unwrap()
+}
 
-    fn load_yaml(c: &str) -> Config {
-        serde_yaml::from_str(c).unwrap()
-    }
+fn load_yaml(c: &str) -> Config {
+    serde_yaml::from_str(c).unwrap()
+}
 
-    fn load_json(c: &str) -> Config {
-        serde_json::from_str(c).unwrap()
-    }
+fn load_json(c: &str) -> Config {
+    serde_json::from_str(c).unwrap()
 }
 
 #[cfg(test)]
@@ -148,6 +116,8 @@ mod tests {
     use super::*;
     use crate::git::tests::write_file_util;
     use mktemp::Temp;
+
+    use libconfig::*;
 
     #[actix_rt::test]
     async fn page_config_test() {
@@ -167,7 +137,7 @@ mod tests {
             Some(&content),
         );
 
-        let config = Config::load(&repo_path, "master").unwrap();
+        let config = load(&repo_path, "master").unwrap();
         assert!(config.forms.as_ref().unwrap().enable);
         assert!(config.image_compression.as_ref().unwrap().enable);
         assert_eq!(config.source.production_branch, "librepages");
