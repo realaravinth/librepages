@@ -24,6 +24,7 @@ coverage: ## Generate HTML code coverage
 dev-env: ## Download development dependencies
 	npm install
 	cargo fetch
+	./scripts/conductor.sh
 
 doc: ## Prepare documentation
 	cargo doc --no-deps --workspace --all-features
