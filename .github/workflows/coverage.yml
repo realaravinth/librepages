@@ -68,6 +68,9 @@ jobs:
 
       - name: download deps
         run: make dev-env
+        env:
+          LPCONDUCTOR_CREDS_USERNAME: "librepages_api"
+          LPCONDUCTOR_CREDS_PASSWORD: "longrandomlygeneratedpassword"
 
       - name: Apply migrations
         run: make migrate

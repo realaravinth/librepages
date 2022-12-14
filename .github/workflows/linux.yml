@@ -55,6 +55,9 @@ jobs:
 
       - name: download deps
         run: make dev-env
+        env:
+          LPCONDUCTOR_CREDS_USERNAME: "librepages_api"
+          LPCONDUCTOR_CREDS_PASSWORD: "longrandomlygeneratedpassword"
 
       - name: configure GPG key
         if: (github.ref == 'refs/heads/master' || github.event_name == 'push') && github.repository == 'realaravinth/librepages'
