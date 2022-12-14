@@ -22,6 +22,7 @@ argon2-creds = { branch = "master", git = "https://github.com/realaravinth/argon
 sqlx = { version = "0.6.1", features = ["runtime-actix-rustls", "postgres", "time", "offline", "json", "uuid"] }
 clap = { version = "3.2.20", features = ["derive"]}
 libconfig = { version = "0.1.0", git = "https://git.batsense.net/librepages/libconfig" }
+libconductor = { version = "0.1.0", git = "https://git.batsense.net/librepages/conductor/" }
 
 config = "0.13"
 git2 = "0.14.2"
@@ -32,8 +33,7 @@ serde_json = "1"
 pretty_env_logger = "0.4"
 
 lazy_static = "1.4"
-
-url = "2.2"
+url = { version = "2.2", features = ["serde"] }
 urlencoding = "2.1.0"
 
 derive_more = "0.99"
@@ -52,6 +52,7 @@ tracing-actix-web = "0.6.2"
 toml = "0.5.9"
 serde_yaml = "0.9.14"
 uuid = { version = "1.2.2", features = ["serde"] }
+reqwest = { version = "0.11.13", features = ["json"] }
 
 [dependencies.cache-buster]
 git = "https://github.com/realaravinth/cache-buster"

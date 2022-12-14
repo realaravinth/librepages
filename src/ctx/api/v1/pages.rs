@@ -61,12 +61,15 @@ impl Ctx {
         self.db.add_site(&db_site).await?;
         let page = Page::from_site(&self.settings, db_site);
         page.update(&page.branch)?;
-        if let Some(_config) = page_config::load(&page.path, &page.branch) {
-            unimplemented!();
-        }
         self.db
             .log_event(&page.domain, &db::EVENT_TYPE_CREATE)
             .await?;
+        self.conductor.new_site(page.clone()).await?;
+
+        if let Some(config) = page_config::load(&page.path, &page.branch) {
+            self.conductor.tx_config(config).await?;
+            unimplemented!("Parse and store custom domains in DB");
+        }
         Ok(page)
     }
 
@@ -87,8 +90,9 @@ impl Ctx {
                 .unwrap();
             }
             rx.await.unwrap()?;
-            if let Some(_config) = page_config::load(&page.path, &page.branch) {
-                unimplemented!();
+            if let Some(config) = page_config::load(&page.path, &page.branch) {
+                self.conductor.tx_config(config).await?;
+                unimplemented!("Parse and store custom domains in DB");
             }
             self.db
                 .log_event(&page.domain, &db::EVENT_TYPE_UPDATE)
@@ -110,6 +114,7 @@ impl Ctx {
             self.db
                 .delete_site(&db_site.owner, &db_site.hostname)
                 .await?;
+            self.conductor.delete_site(db_site.hostname).await?;
             Ok(())
         } else {
             Err(ServiceError::WebsiteNotFound)

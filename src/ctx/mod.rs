@@ -24,12 +24,15 @@ use tracing::info;
 
 pub mod api;
 
+use crate::conductor::Conductor;
+
 pub type ArcCtx = Arc<Ctx>;
 
 #[derive(Clone)]
 pub struct Ctx {
     pub settings: Settings,
     pub db: Database,
+    pub conductor: Conductor,
     /// credential-procession policy
     pub creds: ArgonConfig,
 }
@@ -49,6 +52,7 @@ impl Ctx {
     pub async fn new(settings: Settings) -> Arc<Self> {
         let creds = Self::get_creds();
         let c = creds.clone();
+        let conductor = Conductor::new(settings.clone());
 
         #[allow(unused_variables)]
         let init = thread::spawn(move || {
@@ -65,6 +69,7 @@ impl Ctx {
             settings,
             db,
             creds,
+            conductor,
         })
     }
 }
