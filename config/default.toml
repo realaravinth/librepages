@@ -3,6 +3,9 @@ allow_registration = true
 # source code of your copy of pages server.
 source_code = "https://github.com/realaravinth/pages"
 support_email = "support@librepages.example.org"
+conductors = [
+{ username = "librepages_api", api_key = "longrandomlygeneratedpassword", url = "http://localhost:5000"}
+]
 
 [server]
 # The port at which you want Pages to listen to
@@ -15,7 +18,6 @@ ip= "0.0.0.0"
 workers = 2
 domain = "localhost"
 cookie_secret = "94b2b2732626fdb7736229a7c777cb451e6304c147c4549f30"
-
 
 [page]
 base_path = "/tmp/librepages-defualt-config/"

@@ -82,6 +82,14 @@ pub struct Settings {
     pub source_code: String,
     pub database: Database,
     pub page: PageConfig,
+    pub conductors: Vec<Conductor>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Conductor {
+    pub username: String,
+    pub api_key: String,
+    pub url: Url,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
