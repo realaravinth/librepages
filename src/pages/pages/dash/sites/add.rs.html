@@ -170,6 +170,64 @@
 <span id="170">170</span>
 <span id="171">171</span>
 <span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -260,15 +318,16 @@
         repo_url: payload.repo_url,
         owner,
     };
-    <span class="kw">let </span>_page = ctx
+    <span class="kw">let </span>page = ctx
         .add_site(msg)
         .<span class="kw">await
         </span>.map_err(|e| PageError::new(Add::new(<span class="kw-2">&amp;</span>ctx.settings), e))<span class="question-mark">?</span>;
 
-    <span class="comment">// TODO: redirect to deployment view
-
-    </span><span class="prelude-val">Ok</span>(HttpResponse::Found()
-        .append_header((http::header::LOCATION, PAGES.dash.home))
+    <span class="prelude-val">Ok</span>(HttpResponse::Found()
+        .append_header((
+            http::header::LOCATION,
+            PAGES.dash.site.get_view(page.pub_id),
+        ))
         .finish())
 }
 
@@ -282,7 +341,9 @@
     <span class="kw">use </span>actix_web::http::StatusCode;
     <span class="kw">use </span>actix_web::test;
 
+    <span class="kw">use </span><span class="kw">crate</span>::ctx::api::v1::auth::Password;
     <span class="kw">use </span><span class="kw">crate</span>::ctx::ArcCtx;
+    <span class="kw">use </span><span class="kw">crate</span>::errors::ServiceError;
     <span class="kw">use </span><span class="kw">crate</span>::pages::dash::sites::add::TemplateAddSite;
     <span class="kw">use </span><span class="kw">crate</span>::tests;
     <span class="kw">use crate</span>::<span class="kw-2">*</span>;
@@ -303,7 +364,7 @@
         <span class="kw">let _ </span>= ctx.delete_user(NAME, PASSWORD).<span class="kw">await</span>;
         <span class="kw">let </span>(<span class="kw">_</span>, signin_resp) = ctx.register_and_signin(NAME, EMAIL, PASSWORD).<span class="kw">await</span>;
         <span class="kw">let </span>cookies = <span class="macro">get_cookie!</span>(signin_resp);
-        <span class="kw">let </span>app = <span class="macro">get_app!</span>(ctx).<span class="kw">await</span>;
+        <span class="kw">let </span>app = <span class="macro">get_app!</span>(ctx.clone()).<span class="kw">await</span>;
 
         <span class="kw">let </span>resp = <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span>app, PAGES.dash.site.add, cookies.clone());
         <span class="macro">assert_eq!</span>(resp.status(), StatusCode::OK);
@@ -323,23 +384,78 @@
         )
         .<span class="kw">await</span>;
         <span class="macro">assert_eq!</span>(add_site.status(), StatusCode::FOUND);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>site = ctx.db.list_all_sites(NAME).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>site = site.pop().unwrap();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>event = ctx.db.list_all_site_events(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>event = event.pop().unwrap();
+
         <span class="kw">let </span>headers = add_site.headers();
+        <span class="kw">let </span>view_site = <span class="kw-2">&amp;</span>PAGES.dash.site.get_view(site.pub_id);
         <span class="macro">assert_eq!</span>(
             headers.get(actix_web::http::header::LOCATION).unwrap(),
-            <span class="kw-2">&amp;</span>PAGES.dash.home
+            view_site
         );
 
-        <span class="comment">//        let page = ctx.add_test_site(NAME.into()).await;
-        //
-        //        let resp = get_request!(&amp;app, PAGES.dash.home, cookies.clone());
-        //        assert_eq!(resp.status(), StatusCode::OK);
-        //        let res = String::from_utf8(test::read_body(resp).await.to_vec()).unwrap();
-        //        println!(&quot;after adding site: {res}&quot;);
-        //        assert!(!res.contains(&quot;Nothing here&quot;));
-        //        assert!(res.contains(&amp;page.domain));
-        //        assert!(res.contains(&amp;page.repo));
-        //
-        </span><span class="kw">let _ </span>= ctx.delete_user(NAME, PASSWORD).<span class="kw">await</span>;
+        <span class="comment">// view site
+        </span><span class="kw">let </span>resp = <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span>app, view_site, cookies.clone());
+        <span class="macro">assert_eq!</span>(resp.status(), StatusCode::OK);
+        <span class="kw">let </span>res = String::from_utf8(test::read_body(resp).<span class="kw">await</span>.to_vec()).unwrap();
+        <span class="macro">assert!</span>(res.contains(<span class="string">&quot;****&quot;</span>));
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>site.hostname));
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>site.repo_url));
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>site.branch));
+
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>event.event_type.name));
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>event.id.to_string()));
+
+        <span class="kw">let </span>show_deploy_secret_route = <span class="macro">format!</span>(<span class="string">&quot;{view_site}?show_deploy_secret=true&quot;</span>);
+        <span class="kw">let </span>resp = <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span>app, <span class="kw-2">&amp;</span>show_deploy_secret_route, cookies.clone());
+        <span class="macro">assert_eq!</span>(resp.status(), StatusCode::OK);
+        <span class="kw">let </span>res = String::from_utf8(test::read_body(resp).<span class="kw">await</span>.to_vec()).unwrap();
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>site.site_secret));
+
+        <span class="comment">// delete site
+        </span><span class="kw">let </span>delete_site = <span class="kw-2">&amp;</span>PAGES.dash.site.get_delete(site.pub_id);
+        <span class="kw">let </span>resp = <span class="macro">get_request!</span>(<span class="kw-2">&amp;</span>app, delete_site, cookies.clone());
+        <span class="macro">assert_eq!</span>(resp.status(), StatusCode::OK);
+        <span class="kw">let </span>res = String::from_utf8(test::read_body(resp).<span class="kw">await</span>.to_vec()).unwrap();
+        <span class="macro">assert!</span>(res.contains(<span class="kw-2">&amp;</span>site.hostname));
+
+        <span class="kw">let </span>msg = Password {
+            password: PASSWORD.into(),
+        };
+        <span class="kw">let </span>resp = test::call_service(
+            <span class="kw-2">&amp;</span>app,
+            <span class="macro">post_request!</span>(<span class="kw-2">&amp;</span>msg, delete_site, FORM)
+                .cookie(cookies.clone())
+                .to_request(),
+        )
+        .<span class="kw">await</span>;
+
+        <span class="comment">//    delete_request!(&amp;app, delete_site, cookies.clone(), &amp;msg, FORM);
+        </span><span class="macro">assert_eq!</span>(resp.status(), StatusCode::FOUND);
+        <span class="kw">let </span>headers = resp.headers();
+        <span class="macro">assert_eq!</span>(
+            headers.get(actix_web::http::header::LOCATION).unwrap(),
+            PAGES.dash.home,
+        );
+
+        <span class="macro">assert!</span>(!utils::get_website_path(<span class="kw-2">&amp;</span>ctx.settings, <span class="kw-2">&amp;</span>site.hostname).exists());
+        <span class="macro">assert_eq!</span>(
+            ctx.db
+                .get_site_from_pub_id(site.pub_id, NAME.into())
+                .<span class="kw">await
+                </span>.err(),
+            <span class="prelude-val">Some</span>(ServiceError::WebsiteNotFound)
+        );
+
+        <span class="kw">let </span><span class="kw-2">mut </span>events = ctx.db.list_all_site_events(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span>.unwrap();
+        <span class="kw">let </span>possible_delete = events.pop().unwrap();
+        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>possible_delete.event_type, <span class="kw-2">&amp;*</span><span class="kw">crate</span>::db::EVENT_TYPE_DELETE);
+
+        <span class="kw">let _ </span>= ctx.delete_user(NAME, PASSWORD).<span class="kw">await</span>;
     }
 }
 </code></pre></div>

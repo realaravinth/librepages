@@ -163,36 +163,6 @@
 <span id="163">163</span>
 <span id="164">164</span>
 <span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-<span id="180">180</span>
-<span id="181">181</span>
-<span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
-<span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -211,40 +181,10 @@
  */
 </span><span class="kw">use </span>std::path::Path;
 
+<span class="kw">use </span>libconfig::Config;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
 
 <span class="kw">use </span><span class="kw">crate</span>::git::{ContentType, GitFileMode};
-
-<span class="attribute">#[derive(Deserialize, Serialize, Debug, Eq, PartialEq, Clone)]
-</span><span class="kw">pub struct </span>Config {
-    <span class="kw">pub </span>source: Source,
-    <span class="kw">pub </span>domains: <span class="prelude-ty">Option</span>&lt;Vec&lt;String&gt;&gt;,
-    <span class="kw">pub </span>forms: <span class="prelude-ty">Option</span>&lt;Forms&gt;,
-    <span class="kw">pub </span>image_compression: <span class="prelude-ty">Option</span>&lt;ImageCompression&gt;,
-    <span class="kw">pub </span>redirects: <span class="prelude-ty">Option</span>&lt;Vec&lt;Redirects&gt;&gt;,
-}
-
-<span class="attribute">#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-</span><span class="kw">pub struct </span>Source {
-    production_branch: String,
-    staging: <span class="prelude-ty">Option</span>&lt;String&gt;,
-}
-
-<span class="attribute">#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-</span><span class="kw">pub struct </span>Forms {
-    <span class="kw">pub </span>enable: bool,
-}
-
-<span class="attribute">#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-</span><span class="kw">pub struct </span>ImageCompression {
-    <span class="kw">pub </span>enable: bool,
-}
-
-<span class="attribute">#[derive(Deserialize, Serialize, PartialEq, Eq, Debug, Clone)]
-</span><span class="kw">pub struct </span>Redirects {
-    <span class="kw">pub </span>from: String,
-    <span class="kw">pub </span>to: String,
-}
 
 <span class="attribute">#[derive(Deserialize, Debug, Serialize, PartialEq, Eq)]
 </span><span class="kw">struct </span>Policy&lt;<span class="lifetime">&#39;a</span>&gt; {
@@ -265,77 +205,75 @@
     Toml,
 }
 
-<span class="kw">impl </span>Config {
-    <span class="kw">pub fn </span>load&lt;P: AsRef&lt;Path&gt;&gt;(repo_path: <span class="kw-2">&amp;</span>P, branch: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;Config&gt; {
-        <span class="kw">const </span>POLICIES: [Policy; <span class="number">2</span>] = [
-            Policy::new(<span class="string">&quot;librepages.toml&quot;</span>, SupportedFormat::Toml),
-            Policy::new(<span class="string">&quot;librepages.json&quot;</span>, SupportedFormat::Json),
-        ];
+<span class="kw">pub fn </span>load&lt;P: AsRef&lt;Path&gt;&gt;(repo_path: <span class="kw-2">&amp;</span>P, branch: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;Config&gt; {
+    <span class="kw">const </span>POLICIES: [Policy; <span class="number">2</span>] = [
+        Policy::new(<span class="string">&quot;librepages.toml&quot;</span>, SupportedFormat::Toml),
+        Policy::new(<span class="string">&quot;librepages.json&quot;</span>, SupportedFormat::Json),
+    ];
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(policy) = <span class="self">Self</span>::discover(repo_path, branch, <span class="kw-2">&amp;</span>POLICIES) {
-            <span class="comment">//            let path = p.repo.as_ref().join(policy.rel_path);
-            //let contents = fs::read_to_string(path).await.unwrap();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(policy) = discover(repo_path, branch, <span class="kw-2">&amp;</span>POLICIES) {
+        <span class="comment">//            let path = p.repo.as_ref().join(policy.rel_path);
+        //let contents = fs::read_to_string(path).await.unwrap();
 
-            </span><span class="kw">let </span>file =
-                <span class="kw">crate</span>::git::read_preview_file(<span class="kw-2">&amp;</span>repo_path.as_ref().into(), branch, policy.rel_path)
-                    .unwrap();
-            <span class="kw">if let </span>ContentType::Text(contents) = file.content {
-                <span class="kw">let </span>res = <span class="kw">match </span>policy.format {
-                    SupportedFormat::Json =&gt; <span class="self">Self</span>::load_json(<span class="kw-2">&amp;</span>contents),
-                    SupportedFormat::Yaml =&gt; <span class="self">Self</span>::load_yaml(<span class="kw-2">&amp;</span>contents),
-                    SupportedFormat::Toml =&gt; <span class="self">Self</span>::load_toml(<span class="kw-2">&amp;</span>contents),
-                };
-
-                <span class="kw">return </span><span class="prelude-val">Some</span>(res);
+        </span><span class="kw">let </span>file =
+            <span class="kw">crate</span>::git::read_preview_file(<span class="kw-2">&amp;</span>repo_path.as_ref().into(), branch, policy.rel_path)
+                .unwrap();
+        <span class="kw">if let </span>ContentType::Text(contents) = file.content {
+            <span class="kw">let </span>res = <span class="kw">match </span>policy.format {
+                SupportedFormat::Json =&gt; load_json(<span class="kw-2">&amp;</span>contents),
+                SupportedFormat::Yaml =&gt; load_yaml(<span class="kw-2">&amp;</span>contents),
+                SupportedFormat::Toml =&gt; load_toml(<span class="kw-2">&amp;</span>contents),
             };
-        }
 
-        <span class="prelude-val">None
-    </span>}
-    <span class="kw">fn </span>discover&lt;<span class="lifetime">&#39;a</span>, P: AsRef&lt;Path&gt;&gt;(
-        repo_path: <span class="kw-2">&amp;</span>P,
-        branch: <span class="kw-2">&amp;</span>str,
-        policies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Policy&lt;<span class="lifetime">&#39;a</span>&gt;],
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Policy&lt;<span class="lifetime">&#39;a</span>&gt;&gt; {
-        <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
+            <span class="kw">return </span><span class="prelude-val">Some</span>(res);
+        };
+    }
 
-        <span class="kw">let </span>branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
-        <span class="comment">//    let tree = head.peel_to_tree().unwrap();
-        </span><span class="kw">let </span>branch = branch.into_reference();
-        <span class="kw">let </span>tree = branch.peel_to_tree().unwrap();
+    <span class="prelude-val">None
+</span>}
+<span class="kw">fn </span>discover&lt;<span class="lifetime">&#39;a</span>, P: AsRef&lt;Path&gt;&gt;(
+    repo_path: <span class="kw-2">&amp;</span>P,
+    branch: <span class="kw-2">&amp;</span>str,
+    policies: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>[Policy&lt;<span class="lifetime">&#39;a</span>&gt;],
+) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>Policy&lt;<span class="lifetime">&#39;a</span>&gt;&gt; {
+    <span class="kw">let </span>repo = git2::Repository::open(repo_path).unwrap();
 
-        <span class="kw">for </span>p <span class="kw">in </span>policies.iter() {
-            <span class="kw">let </span>file_exists = tree.iter().any(|x| {
-                <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = x.name() {
-                    <span class="kw">if </span>policies.iter().any(|p| p.rel_path == name) {
-                        <span class="kw">let </span>mode: GitFileMode = x.into();
-                        <span class="macro">matches!</span>(mode, GitFileMode::Executable | GitFileMode::Regular)
-                    } <span class="kw">else </span>{
-                        <span class="bool-val">false
-                    </span>}
+    <span class="kw">let </span>branch = repo.find_branch(branch, git2::BranchType::Local).unwrap();
+    <span class="comment">//    let tree = head.peel_to_tree().unwrap();
+    </span><span class="kw">let </span>branch = branch.into_reference();
+    <span class="kw">let </span>tree = branch.peel_to_tree().unwrap();
+
+    <span class="kw">for </span>p <span class="kw">in </span>policies.iter() {
+        <span class="kw">let </span>file_exists = tree.iter().any(|x| {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(name) = x.name() {
+                <span class="kw">if </span>policies.iter().any(|p| p.rel_path == name) {
+                    <span class="kw">let </span>mode: GitFileMode = x.into();
+                    <span class="macro">matches!</span>(mode, GitFileMode::Executable | GitFileMode::Regular)
                 } <span class="kw">else </span>{
                     <span class="bool-val">false
                 </span>}
-            });
+            } <span class="kw">else </span>{
+                <span class="bool-val">false
+            </span>}
+        });
 
-            <span class="kw">if </span>file_exists {
-                <span class="kw">return </span><span class="prelude-val">Some</span>(p);
-            }
+        <span class="kw">if </span>file_exists {
+            <span class="kw">return </span><span class="prelude-val">Some</span>(p);
         }
-        <span class="prelude-val">None
-    </span>}
-
-    <span class="kw">fn </span>load_toml(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
-        toml::from_str(c).unwrap()
     }
+    <span class="prelude-val">None
+</span>}
 
-    <span class="kw">fn </span>load_yaml(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
-        serde_yaml::from_str(c).unwrap()
-    }
+<span class="kw">fn </span>load_toml(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
+    toml::from_str(c).unwrap()
+}
 
-    <span class="kw">fn </span>load_json(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
-        serde_json::from_str(c).unwrap()
-    }
+<span class="kw">fn </span>load_yaml(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
+    serde_yaml::from_str(c).unwrap()
+}
+
+<span class="kw">fn </span>load_json(c: <span class="kw-2">&amp;</span>str) -&gt; Config {
+    serde_json::from_str(c).unwrap()
 }
 
 <span class="attribute">#[cfg(test)]
@@ -343,6 +281,8 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::git::tests::write_file_util;
     <span class="kw">use </span>mktemp::Temp;
+
+    <span class="kw">use </span>libconfig::<span class="kw-2">*</span>;
 
     <span class="attribute">#[actix_rt::test]
     </span><span class="kw">async fn </span>page_config_test() {
@@ -362,7 +302,7 @@
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>content),
         );
 
-        <span class="kw">let </span>config = Config::load(<span class="kw-2">&amp;</span>repo_path, <span class="string">&quot;master&quot;</span>).unwrap();
+        <span class="kw">let </span>config = load(<span class="kw-2">&amp;</span>repo_path, <span class="string">&quot;master&quot;</span>).unwrap();
         <span class="macro">assert!</span>(config.forms.as_ref().unwrap().enable);
         <span class="macro">assert!</span>(config.image_compression.as_ref().unwrap().enable);
         <span class="macro">assert_eq!</span>(config.source.production_branch, <span class="string">&quot;librepages&quot;</span>);

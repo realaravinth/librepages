@@ -30,6 +30,17 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -49,18 +60,29 @@
 </span><span class="kw">use </span>actix_web::<span class="kw-2">*</span>;
 
 <span class="kw">use </span><span class="kw">super</span>::get_auth_middleware;
+<span class="kw">pub use </span><span class="kw">super</span>::home::TemplateSite;
 <span class="kw">pub use super</span>::{context, Footer, TemplateFile, PAGES, PAYLOAD_KEY, TEMPLATES};
 
 <span class="kw">pub mod </span>add;
+<span class="kw">pub mod </span>delete;
+<span class="kw">pub mod </span>view;
 
 <span class="kw">pub fn </span>register_templates(t: <span class="kw-2">&amp;mut </span>tera::Tera) {
     add::DASH_SITE_ADD
         .register(t)
         .expect(add::DASH_SITE_ADD.name);
+    view::DASH_SITE_VIEW
+        .register(t)
+        .expect(view::DASH_SITE_VIEW.name);
+    delete::DASH_SITE_DELETE
+        .register(t)
+        .expect(delete::DASH_SITE_DELETE.name);
 }
 
 <span class="kw">pub fn </span>services(cfg: <span class="kw-2">&amp;mut </span>web::ServiceConfig) {
     add::services(cfg);
+    view::services(cfg);
+    delete::services(cfg);
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../../../" data-current-crate="pages" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

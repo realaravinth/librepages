@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":[["CSS",""],["MOBILE_CSS",""]]};
+window.SIDEBAR_ITEMS = {"struct":[["CSS",""],["EYE",""],["EYE_OFF",""],["MOBILE_CSS",""]]};

@@ -188,6 +188,14 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -272,6 +280,14 @@
     <span class="kw">pub </span>source_code: String,
     <span class="kw">pub </span>database: Database,
     <span class="kw">pub </span>page: PageConfig,
+    <span class="kw">pub </span>conductors: Vec&lt;Conductor&gt;,
+}
+
+<span class="attribute">#[derive(Debug, Clone, Serialize, Deserialize)]
+</span><span class="kw">pub struct </span>Conductor {
+    <span class="kw">pub </span>username: String,
+    <span class="kw">pub </span>api_key: String,
+    <span class="kw">pub </span>url: Url,
 }
 
 <span class="attribute">#[derive(Debug, Clone, Serialize, Deserialize)]

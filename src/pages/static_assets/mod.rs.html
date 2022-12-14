@@ -54,6 +54,23 @@
 <span id="54">54</span>
 <span id="55">55</span>
 <span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
+<span id="62">62</span>
+<span id="63">63</span>
+<span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -91,6 +108,21 @@
     <span class="macro">lazy_static! </span>{
         <span class="kw">pub static </span><span class="kw-2">ref </span>ASSETS: Assets = Assets::new();
     }
+    <span class="attribute">#[derive(Serialize)]
+    </span><span class="kw">pub struct </span>Svg {
+        <span class="kw">pub </span>eye_off: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        <span class="kw">pub </span>eye: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    }
+
+    <span class="kw">impl </span>Svg {
+        <span class="doccomment">/// create new instance of Routes
+        </span><span class="kw">pub fn </span>new() -&gt; Svg {
+            Svg {
+                eye: <span class="kw-2">&amp;</span>static_files::assets::CSS,
+                eye_off: <span class="kw-2">&amp;</span>static_files::assets::CSS,
+            }
+        }
+    }
 
     <span class="attribute">#[derive(Serialize)]
     </span><span class="doccomment">/// Top-level routes data structure for V1 AP1
@@ -98,6 +130,7 @@
         <span class="doccomment">/// Authentication routes
         </span><span class="kw">pub </span>css: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
         <span class="kw">pub </span>mobile_css: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+        <span class="kw">pub </span>svg: Svg,
     }
 
     <span class="kw">impl </span>Assets {
@@ -106,6 +139,7 @@
             Assets {
                 css: <span class="kw-2">&amp;</span>static_files::assets::CSS,
                 mobile_css: <span class="kw-2">&amp;</span>static_files::assets::CSS,
+                svg: Svg::new(),
             }
         }
     }

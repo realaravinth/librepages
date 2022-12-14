@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["SupportedFormat",""]],"struct":[["Config",""],["Forms",""],["ImageCompression",""],["Policy",""],["Redirects",""],["Source",""]]};
+window.SIDEBAR_ITEMS = {"enum":[["SupportedFormat",""]],"fn":[["discover",""],["load",""],["load_json",""],["load_toml",""],["load_yaml",""]],"struct":[["Policy",""]]};

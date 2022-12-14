@@ -97,6 +97,30 @@
 <span id="97">97</span>
 <span id="98">98</span>
 <span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -115,6 +139,7 @@
  */
 </span><span class="kw">use </span>actix_web::web;
 <span class="kw">use </span>serde::{Deserialize, Serialize};
+<span class="kw">use </span>tokio::fs;
 <span class="kw">use </span>tokio::sync::oneshot;
 <span class="kw">use </span>uuid::Uuid;
 
@@ -127,6 +152,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::settings::Settings;
 <span class="kw">use </span><span class="kw">crate</span>::subdomains::get_random_subdomain;
 <span class="kw">use </span><span class="kw">crate</span>::utils::get_random;
+<span class="kw">use </span><span class="kw">crate</span>::utils::get_website_path;
 
 <span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 </span><span class="doccomment">/// Data required to add site
@@ -158,12 +184,15 @@
         <span class="self">self</span>.db.add_site(<span class="kw-2">&amp;</span>db_site).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>page = Page::from_site(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, db_site);
         page.update(<span class="kw-2">&amp;</span>page.branch)<span class="question-mark">?</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
-            <span class="macro">unimplemented!</span>();
-        }
         <span class="self">self</span>.db
             .log_event(<span class="kw-2">&amp;</span>page.domain, <span class="kw-2">&amp;</span>db::EVENT_TYPE_CREATE)
             .<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="self">self</span>.conductor.new_site(page.clone()).<span class="kw">await</span><span class="question-mark">?</span>;
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+            <span class="self">self</span>.conductor.tx_config(config).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="macro">unimplemented!</span>(<span class="string">&quot;Parse and store custom domains in DB&quot;</span>);
+        }
         <span class="prelude-val">Ok</span>(page)
     }
 
@@ -184,14 +213,33 @@
                 </span>.unwrap();
             }
             rx.<span class="kw">await</span>.unwrap()<span class="question-mark">?</span>;
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(_config) = page_config::Config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
-                <span class="macro">unimplemented!</span>();
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(config) = page_config::load(<span class="kw-2">&amp;</span>page.path, <span class="kw-2">&amp;</span>page.branch) {
+                <span class="self">self</span>.conductor.tx_config(config).<span class="kw">await</span><span class="question-mark">?</span>;
+                <span class="macro">unimplemented!</span>(<span class="string">&quot;Parse and store custom domains in DB&quot;</span>);
             }
-            <span class="macro">println!</span>(<span class="string">&quot;{}&quot;</span>, page.domain);
             <span class="self">self</span>.db
                 .log_event(<span class="kw-2">&amp;</span>page.domain, <span class="kw-2">&amp;</span>db::EVENT_TYPE_UPDATE)
                 .<span class="kw">await
         </span>} <span class="kw">else </span>{
+            <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)
+        }
+    }
+
+    <span class="kw">pub async fn </span>delete_site(<span class="kw-2">&amp;</span><span class="self">self</span>, owner: String, site_id: Uuid) -&gt; ServiceResult&lt;()&gt; {
+        <span class="kw">if let </span><span class="prelude-val">Ok</span>(db_site) = <span class="self">self</span>.db.get_site_from_pub_id(site_id, owner).<span class="kw">await </span>{
+            <span class="kw">let </span>path = get_website_path(<span class="kw-2">&amp;</span><span class="self">self</span>.settings, <span class="kw-2">&amp;</span>db_site.hostname);
+
+            <span class="self">self</span>.db
+                .log_event(<span class="kw-2">&amp;</span>db_site.hostname, <span class="kw-2">&amp;</span>db::EVENT_TYPE_DELETE)
+                .<span class="kw">await</span><span class="question-mark">?</span>;
+
+            fs::remove_dir_all(<span class="kw-2">&amp;</span>path).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="self">self</span>.db
+                .delete_site(<span class="kw-2">&amp;</span>db_site.owner, <span class="kw-2">&amp;</span>db_site.hostname)
+                .<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="self">self</span>.conductor.delete_site(db_site.hostname).<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(())
+        } <span class="kw">else </span>{
             <span class="prelude-val">Err</span>(ServiceError::WebsiteNotFound)
         }
     }

@@ -141,6 +141,20 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -183,8 +197,20 @@
 
 <span class="attribute">#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>TemplateSite {
-    site: Site,
-    last_update: <span class="prelude-ty">Option</span>&lt;TemplateSiteEvent&gt;,
+    <span class="kw">pub </span>site: Site,
+    <span class="kw">pub </span>view: String,
+    <span class="kw">pub </span>last_update: <span class="prelude-ty">Option</span>&lt;TemplateSiteEvent&gt;,
+}
+
+<span class="kw">impl </span>TemplateSite {
+    <span class="kw">pub fn </span>new(site: Site, last_update: <span class="prelude-ty">Option</span>&lt;TemplateSiteEvent&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">let </span>view = PAGES.dash.site.get_view(site.pub_id);
+        <span class="self">Self </span>{
+            site,
+            last_update,
+            view,
+        }
+    }
 }
 
 <span class="kw">impl </span>CtxError <span class="kw">for </span>Home {
@@ -199,7 +225,6 @@
         <span class="kw">let </span>ctx = RefCell::new(context(settings));
         <span class="kw">if let </span><span class="prelude-val">Some</span>(sites) = sites {
             ctx.borrow_mut().insert(PAYLOAD_KEY, sites);
-            <span class="macro">println!</span>(<span class="string">&quot;{:#?}&quot;</span>, sites)
         }
         <span class="self">Self </span>{ ctx }
     }
@@ -216,9 +241,12 @@
     <span class="kw">let </span><span class="kw-2">mut </span>sites = Vec::with_capacity(db_sites.len());
     <span class="kw">for </span>site <span class="kw">in </span>db_sites {
         <span class="comment">// TODO: impl method on DB to get latest &quot;update&quot; event
-        </span><span class="kw">let </span><span class="kw-2">mut </span>events = ctx.db.list_all_site_events(<span class="kw-2">&amp;</span>site.hostname).<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>last_update = events.pop().map(|event| event.into());
-        sites.push(TemplateSite { site, last_update });
+        </span><span class="kw">let </span>last_update = ctx
+            .db
+            .get_latest_update_event(<span class="kw-2">&amp;</span>site.hostname)
+            .<span class="kw">await</span><span class="question-mark">?
+            </span>.map(|e| e.into());
+        sites.push(TemplateSite::new(site, last_update));
     }
     <span class="prelude-val">Ok</span>(sites)
 }

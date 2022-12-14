@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":[["DBType",""]],"struct":[["Database",""],["PageConfig",""],["Server",""],["Settings",""]]};
+window.SIDEBAR_ITEMS = {"enum":[["DBType",""]],"struct":[["Conductor",""],["Database",""],["PageConfig",""],["Server",""],["Settings",""]]};

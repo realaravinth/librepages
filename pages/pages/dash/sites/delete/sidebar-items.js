@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":[["DASH_SITE_DELETE",""],["SHOW_DEPLOY_SECRET_KEY",""]],"fn":[["services",""]],"struct":[["Delete",""],["DeleteOptions",""],["TemplateSiteWithEvents",""],["get_delete_site",""],["post_delete_site",""]]};

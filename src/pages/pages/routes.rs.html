@@ -114,6 +114,27 @@
 <span id="114">114</span>
 <span id="115">115</span>
 <span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -132,6 +153,7 @@
  */
 </span><span class="kw">use </span>actix_auth_middleware::{Authentication, GetLoginRoute};
 <span class="kw">use </span>serde::<span class="kw-2">*</span>;
+<span class="kw">use </span>uuid::Uuid;
 
 <span class="doccomment">/// constant [Pages](Pages) instance
 </span><span class="kw">pub const </span>PAGES: Pages = Pages::new();
@@ -201,15 +223,35 @@
 <span class="attribute">#[derive(Serialize)]
 </span><span class="doccomment">/// Dashboard Site routes
 </span><span class="kw">pub struct </span>DashSite {
-    <span class="doccomment">/// home route
+    <span class="doccomment">/// add site route
     </span><span class="kw">pub </span>add: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="doccomment">/// view site route
+    </span><span class="kw">pub </span>view: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    <span class="doccomment">/// delete site route
+    </span><span class="kw">pub </span>delete: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
 }
 
 <span class="kw">impl </span>DashSite {
     <span class="doccomment">/// create new instance of DashSite route
     </span><span class="kw">pub const fn </span>new() -&gt; DashSite {
         <span class="kw">let </span>add = <span class="string">&quot;/dash/site/add&quot;</span>;
-        DashSite { add }
+        <span class="kw">let </span>view = <span class="string">&quot;/dash/site/view/{deployment_pub_id}&quot;</span>;
+        <span class="kw">let </span>delete = <span class="string">&quot;/dash/site/delete/{deployment_pub_id}&quot;</span>;
+        DashSite { add, view, delete }
+    }
+
+    <span class="kw">pub fn </span>get_view(<span class="kw-2">&amp;</span><span class="self">self</span>, deployment_pub_id: Uuid) -&gt; String {
+        <span class="self">self</span>.view.replace(
+            <span class="string">&quot;{deployment_pub_id}&quot;</span>,
+            deployment_pub_id.to_string().as_ref(),
+        )
+    }
+
+    <span class="kw">pub fn </span>get_delete(<span class="kw-2">&amp;</span><span class="self">self</span>, deployment_pub_id: Uuid) -&gt; String {
+        <span class="self">self</span>.delete.replace(
+            <span class="string">&quot;{deployment_pub_id}&quot;</span>,
+            deployment_pub_id.to_string().as_ref(),
+        )
     }
 }
 

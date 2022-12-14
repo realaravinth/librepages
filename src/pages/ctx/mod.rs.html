@@ -68,6 +68,11 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><pre class="rust"><code><span class="comment">/*
  * Copyright (C) 2022  Aravinth Manivannan &lt;realaravinth@batsense.net&gt;
  *
@@ -94,12 +99,15 @@
 
 <span class="kw">pub mod </span>api;
 
+<span class="kw">use </span><span class="kw">crate</span>::conductor::Conductor;
+
 <span class="kw">pub type </span>ArcCtx = Arc&lt;Ctx&gt;;
 
 <span class="attribute">#[derive(Clone)]
 </span><span class="kw">pub struct </span>Ctx {
     <span class="kw">pub </span>settings: Settings,
     <span class="kw">pub </span>db: Database,
+    <span class="kw">pub </span>conductor: Conductor,
     <span class="doccomment">/// credential-procession policy
     </span><span class="kw">pub </span>creds: ArgonConfig,
 }
@@ -119,6 +127,7 @@
     <span class="kw">pub async fn </span>new(settings: Settings) -&gt; Arc&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>creds = <span class="self">Self</span>::get_creds();
         <span class="kw">let </span>c = creds.clone();
+        <span class="kw">let </span>conductor = Conductor::new(settings.clone());
 
         <span class="attribute">#[allow(unused_variables)]
         </span><span class="kw">let </span>init = thread::spawn(<span class="kw">move </span>|| {
@@ -135,6 +144,7 @@
             settings,
             db,
             creds,
+            conductor,
         })
     }
 }
