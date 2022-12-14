@@ -27,6 +27,7 @@ use tracing::info;
 use tracing_actix_web::TracingLogger;
 
 mod api;
+mod conductor;
 mod ctx;
 mod db;
 mod errors;
