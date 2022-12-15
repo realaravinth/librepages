@@ -23,6 +23,7 @@ use sqlx::types::time::OffsetDateTime;
 use sqlx::ConnectOptions;
 use sqlx::PgPool;
 use tracing::error;
+use url::Url;
 use uuid::Uuid;
 
 use crate::errors::*;
@@ -621,6 +622,43 @@ impl Database {
         }
         Ok(events)
     }
+
+    pub async fn new_gitea_instance(&self, payload: &AddGiteaInstance) -> ServiceResult<()> {
+        sqlx::query!(
+            "INSERT INTO librepages_gitea_instances
+            (url , client_id, client_secret) VALUES ($1, $2, $3)",
+            &payload.url.as_str(),
+            payload.client_id,
+            payload.client_secret,
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+        Ok(())
+    }
+
+    pub async fn delete_gitea_instance(&self, url: &Url) -> ServiceResult<()> {
+        sqlx::query!(
+            "DELETE FROM librepages_gitea_instances WHERE url = ($1)",
+            url.as_str()
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+        Ok(())
+    }
+
+    pub async fn get_gitea_password(&self, url: &Url) -> ServiceResult<GiteaInstance> {
+        let res = sqlx::query_as!(
+            GiteaInstance,
+            "SELECT client_id, client_secret FROM librepages_gitea_instances WHERE url = ($1)",
+            url.as_str()
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::GiteaInstanceNotFound))?;
+        Ok(res)
+    }
 }
 struct InnerSite {
     site_secret: String,
@@ -731,6 +769,19 @@ pub struct LibrePagesEvent {
     pub id: Uuid,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct GiteaInstance {
+    pub client_id: String,
+    pub client_secret: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct AddGiteaInstance {
+    pub url: Url,
+    pub client_id: String,
+    pub client_secret: String,
+}
+
 fn now_unix_time_stamp() -> OffsetDateTime {
     OffsetDateTime::now_utc()
 }
@@ -769,6 +820,8 @@ fn map_register_err(e: sqlx::Error) -> ServiceError {
                 ServiceError::UsernameTaken
             } else if msg.contains("librepages_users_email_key") {
                 ServiceError::EmailTaken
+            } else if msg.contains("librepages_gitea_instances_url_key") {
+                ServiceError::GiteaInstanceRegistered
             } else {
                 error!("{}", msg);
                 ServiceError::InternalServerError
@@ -1027,5 +1080,46 @@ mod tests {
 
         // test if hostname exists. Should be false
         assert!(!db.hostname_exists(&site.hostname).await.unwrap());
+    }
+
+    #[actix_rt::test]
+    pub async fn test_gitea_instance_methods() {
+        let settings = Settings::new().unwrap();
+        let pool_options = PgPoolOptions::new().max_connections(1);
+        let db = ConnectionOptions::Fresh(Fresh {
+            pool_options,
+            url: settings.database.url.clone(),
+            disable_logging: !settings.debug,
+        })
+        .connect()
+        .await
+        .unwrap();
+        assert!(db.ping().await);
+
+        let url = Url::parse("https://test_gitea_instance_methods.example.org").unwrap();
+        let client_id = "longid";
+        let client_secret = "longsecret";
+
+        let _ = db.delete_gitea_instance(&url).await;
+
+        let payload = AddGiteaInstance {
+            client_secret: client_secret.into(),
+            client_id: client_id.into(),
+            url: url.clone(),
+        };
+        db.new_gitea_instance(&payload).await.unwrap();
+        assert_eq!(
+            db.new_gitea_instance(&payload).await.err(),
+            Some(ServiceError::GiteaInstanceRegistered)
+        );
+
+        let res = db.get_gitea_password(&url).await.unwrap();
+        assert_eq!(res.client_id, client_id);
+        assert_eq!(res.client_secret, client_secret);
+        db.delete_gitea_instance(&url).await.unwrap();
+        assert_eq!(
+            db.get_gitea_password(&url).await.err(),
+            Some(ServiceError::GiteaInstanceNotFound)
+        );
     }
 }

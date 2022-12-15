@@ -178,6 +178,14 @@ pub enum ServiceError {
     #[display(fmt = "Passwords don't match")]
     /// passwords don't match
     PasswordsDontMatch,
+
+    /// Gitea instance is registered
+    #[display(fmt = "Gitea instance is registered")]
+    GiteaInstanceRegistered,
+
+    /// Gitea instance not found
+    #[display(fmt = "Gitea instance not found")]
+    GiteaInstanceNotFound,
 }
 
 impl From<ParseError> for ServiceError {
@@ -252,6 +260,9 @@ impl ResponseError for ServiceError {
             ServiceError::ClosedForRegistration => StatusCode::FORBIDDEN, //FORBIDDEN,
             ServiceError::NotAnEmail => StatusCode::BAD_REQUEST,       //BADREQUEST,
             ServiceError::WrongPassword => StatusCode::UNAUTHORIZED,   //UNAUTHORIZED,
+            //
+            ServiceError::GiteaInstanceRegistered => StatusCode::BAD_REQUEST,
+            ServiceError::GiteaInstanceNotFound => StatusCode::NOT_FOUND,
         }
     }
 }
