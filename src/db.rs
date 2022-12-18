@@ -26,6 +26,7 @@ use tracing::error;
 use url::Url;
 use uuid::Uuid;
 
+use crate::ctx::gitea::OIDCConfiguration;
 use crate::errors::*;
 
 /// Connect to databse
@@ -659,6 +660,66 @@ impl Database {
         .map_err(|e| map_row_not_found_err(e, ServiceError::GiteaInstanceNotFound))?;
         Ok(res)
     }
+
+    pub async fn new_gitea_oidc_configuration(
+        &self,
+        url: &Url,
+        payload: &OIDCConfiguration,
+    ) -> ServiceResult<()> {
+        sqlx::query!(
+            "INSERT INTO librepages_gitea_oidc_configuration
+            (
+                gitea_instance, authorization_endpoint,
+                 token_endpoint, userinfo_endpoint,
+                 introspection_endpoint
+             ) VALUES (
+                 (SELECT ID FROM librepages_gitea_instances WHERE url = $1)
+                 , $2, $3, $4, $5
+             )",
+            &url.as_str(),
+            &payload.authorization_endpoint.as_str(),
+            &payload.token_endpoint.as_str(),
+            &payload.userinfo_endpoint.as_str(),
+            &payload.introspection_endpoint.as_str(),
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(map_register_err)?;
+        Ok(())
+    }
+
+    pub async fn get_gitea_oidc_configuration(
+        &self,
+        url: &Url,
+    ) -> ServiceResult<OIDCConfiguration> {
+        struct OIDCConfigurationInner {
+            authorization_endpoint: String,
+            token_endpoint: String,
+            userinfo_endpoint: String,
+            introspection_endpoint: String,
+        }
+        let res = sqlx::query_as!(
+            OIDCConfigurationInner,
+            "SELECT
+                authorization_endpoint, token_endpoint,
+                userinfo_endpoint, introspection_endpoint
+            FROM
+                librepages_gitea_oidc_configuration
+            WHERE
+                gitea_instance = (SELECT ID FROM librepages_gitea_instances WHERE url = $1)",
+            url.as_str()
+        )
+        .fetch_one(&self.pool)
+        .await
+        .map_err(|e| map_row_not_found_err(e, ServiceError::GiteaInstanceNotFound))?;
+        let res = OIDCConfiguration {
+            authorization_endpoint: Url::parse(&res.authorization_endpoint)?,
+            token_endpoint: Url::parse(&res.token_endpoint)?,
+            userinfo_endpoint: Url::parse(&res.userinfo_endpoint)?,
+            introspection_endpoint: Url::parse(&res.introspection_endpoint)?,
+        };
+        Ok(res)
+    }
 }
 struct InnerSite {
     site_secret: String,
@@ -769,13 +830,13 @@ pub struct LibrePagesEvent {
     pub id: Uuid,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct GiteaInstance {
     pub client_id: String,
     pub client_secret: String,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct AddGiteaInstance {
     pub url: Url,
     pub client_id: String,
@@ -820,7 +881,12 @@ fn map_register_err(e: sqlx::Error) -> ServiceError {
                 ServiceError::UsernameTaken
             } else if msg.contains("librepages_users_email_key") {
                 ServiceError::EmailTaken
-            } else if msg.contains("librepages_gitea_instances_url_key") {
+            } else if msg.contains("librepages_gitea_instances_url_key")
+                || msg.contains("librepages_gitea_oidc_configuration_authorization_endpoint_key")
+                || msg.contains("librepages_gitea_oidc_configuration_token_endpoint_key")
+                || msg.contains("librepages_gitea_oidc_configuration_userinfo_endpoint_key")
+                || msg.contains("librepages_gitea_oidc_configuration_introspection_endpoint_key")
+            {
                 ServiceError::GiteaInstanceRegistered
             } else {
                 error!("{}", msg);
@@ -1116,6 +1182,31 @@ mod tests {
         let res = db.get_gitea_password(&url).await.unwrap();
         assert_eq!(res.client_id, client_id);
         assert_eq!(res.client_secret, client_secret);
+
+        let oidc_config = OIDCConfiguration {
+            authorization_endpoint: Url::parse("https://example.org/authorization_endpoint")
+                .unwrap(),
+            token_endpoint: Url::parse("https://example.org/token_endpoint").unwrap(),
+            userinfo_endpoint: Url::parse("https://exapmle.org/userinfo_endpoint").unwrap(),
+            introspection_endpoint: Url::parse("https://exapmle.org/introspection_endpoint")
+                .unwrap(),
+        };
+
+        db.new_gitea_oidc_configuration(&url, &oidc_config)
+            .await
+            .unwrap();
+        assert_eq!(
+            db.new_gitea_oidc_configuration(&url, &oidc_config)
+                .await
+                .err(),
+            Some(ServiceError::GiteaInstanceRegistered)
+        );
+
+        assert_eq!(
+            db.get_gitea_oidc_configuration(&url).await.unwrap(),
+            oidc_config
+        );
+
         db.delete_gitea_instance(&url).await.unwrap();
         assert_eq!(
             db.get_gitea_password(&url).await.err(),
