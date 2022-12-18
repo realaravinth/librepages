@@ -20,9 +20,11 @@ use std::thread;
 use crate::db::*;
 use crate::settings::Settings;
 use argon2_creds::{Config as ArgonConfig, ConfigBuilder as ArgonConfigBuilder, PasswordPolicy};
+use reqwest::Client;
 use tracing::info;
 
 pub mod api;
+pub mod gitea;
 
 use crate::conductor::Conductor;
 
@@ -35,6 +37,7 @@ pub struct Ctx {
     pub conductor: Conductor,
     /// credential-procession policy
     pub creds: ArgonConfig,
+    client: Client,
 }
 
 impl Ctx {
@@ -65,11 +68,13 @@ impl Ctx {
         #[cfg(not(debug_assertions))]
         init.join();
 
+        let client = Client::new();
         Arc::new(Self {
             settings,
             db,
             creds,
             conductor,
+            client,
         })
     }
 }
