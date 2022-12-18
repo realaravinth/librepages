@@ -1,0 +1,62 @@
+{% extends 'authbase' %} 
+{% block login %}
+<h2>Add Gitea Instance</h2>
+<form action="{{ page.auth.gitea.add }}" method="POST" class="auth-form" accept-charset="utf-8">
+	{% include "error_comp" %}
+
+
+  <label class="auth-form__label" for="url">
+    Gitea URL
+    <input 
+        class="auth-form__input"
+        name="url"
+        autofocus
+        required
+        id="url"
+        type="url"
+      {% if payload.url %}
+          value={{ payload.url }}
+      {% endif %}
+    />
+  </label>
+
+  <label class="auth-form__label" for="client_id">
+    Client ID
+    <input 
+        class="auth-form__input"
+        name="client_id"
+        autofocus
+        required
+        id="client_id"
+        type="text"
+      {% if payload.client_id %}
+          value={{ payload.client_id }}
+      {% endif %}
+    />
+  </label>
+
+  <label class="auth-form__label" for="client_secret">
+    Client Secret
+    <input
+      class="auth-form__input"
+      name="client_secret"
+      required
+      id="client_secret"
+      type="password"
+      {% if payload.client_secret %}
+          value={{ payload.client_secret }}
+      {% endif %}
+    />
+  </label>
+  <div class="auth-form__action-container">
+    <button class="auth-form__submit" type="submit">Login</button>
+  </div>
+</form>
+
+<!--
+<p class="auth-form__alt-action">
+  New to LibrePages?
+  <a href="{{ page.auth.register }}">Create an account </a>
+</p>
+-->
+{% endblock %}

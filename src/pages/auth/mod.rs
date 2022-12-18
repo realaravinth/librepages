@@ -19,6 +19,7 @@ use actix_web::*;
 
 pub use super::{context, Footer, TemplateFile, PAGES, PAYLOAD_KEY, TEMPLATES};
 
+pub mod gitea;
 pub mod login;
 pub mod register;
 #[cfg(test)]
@@ -30,12 +31,14 @@ pub fn register_templates(t: &mut tera::Tera) {
     for template in [AUTH_BASE, login::LOGIN, register::REGISTER].iter() {
         template.register(t).expect(template.name);
     }
+    gitea::register_templates(t);
 }
 
 pub fn services(cfg: &mut web::ServiceConfig) {
     cfg.service(signout);
     register::services(cfg);
     login::services(cfg);
+    gitea::services(cfg);
 }
 
 #[actix_web_codegen_const_routes::get(

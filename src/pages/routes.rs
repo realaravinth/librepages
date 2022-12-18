@@ -42,6 +42,25 @@ impl Pages {
 }
 
 #[derive(Serialize)]
+/// Gitea authentication routes
+pub struct Gitea {
+    /// add Gitea instance route
+    pub add: &'static str,
+    /// search Gitea instance route
+    pub search: &'static str,
+
+}
+
+impl Gitea {
+    /// create new instance of Authentication route
+    pub const fn new() -> Self {
+        let add = "/gitea/add";
+        let search = "/gitea/search";
+        Self { add, search }
+    }
+}
+
+#[derive(Serialize)]
 /// Authentication routes
 pub struct Auth {
     /// logout route
@@ -50,6 +69,8 @@ pub struct Auth {
     pub login: &'static str,
     /// registration route
     pub register: &'static str,
+    /// gitea authentication routes
+    pub gitea: Gitea,
 }
 
 impl Auth {
@@ -58,10 +79,12 @@ impl Auth {
         let login = "/login";
         let logout = "/logout";
         let register = "/join";
+        let gitea = Gitea::new();
         Auth {
             logout,
             login,
             register,
+            gitea,
         }
     }
 }
