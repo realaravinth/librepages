@@ -1,0 +1,72 @@
+pipeline:
+  backend:
+    image: rust
+    environment:
+      - DATABASE_URL=postgres://postgres:password@database:5432/postgres
+    commands:
+      - curl -fsSL https://deb.nodesource.com/setup_16.x | bash - &&\
+      - apt update && apt-get -y --no-install-recommends install nodejs
+      - rustup component add rustfmt
+      - rustup component add clippy
+        # rewrite conducotr configuration
+      - sed 's%url = "http:\/\/localhost:5000"%http:\/\/librepages-conductor:5000%' config/default.toml
+      - make dev-env
+      - make migrate
+      - make lint
+      - make
+      - make test
+      - make release
+
+  build_docker_img:
+    image: plugins/docker
+    when:
+      event: [pull_request]
+    settings:
+      dry_run: true
+      repo: realaravinth/librepages
+      tags: latest
+
+  build_and_publish_docker_img:
+    image: plugins/docker
+    when:
+      event: [push, tag, deployment]
+    settings:
+      username: realaravinth
+      password:
+        from_secret: DOCKER_TOKEN
+      repo: realaravinth/librepages
+      tags: latest
+
+  publish_bins:
+    image: rust
+    when:
+      event: [push, tag, deployment]
+    commands:
+      - apt update
+      - apt-get -y --no-install-recommends install gpg tar curl wget
+      - echo -n "$RELEASE_BOT_GPG_SIGNING_KEY" | gpg --batch --import --pinentry-mode loopback
+      - ./scripts/bin-publish.sh publish master latest $DUMBSERVE_PASSWORD
+    secrets: [RELEASE_BOT_GPG_SIGNING_KEY, DUMBSERVE_PASSWORD, GPG_PASSWORD]
+
+services:
+  database:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+
+  librepages-conductor:
+    command: conductor serve
+    environment:
+      - LPCONDUCTOR__SOURCE_CODE="https://git.batsense.net/LibrePages/conductor"
+      - LPCONDUCTOR_SERVER__PROXY_HAS_TLS=false
+      - LPCONDUCTOR_DEBUG="false"
+      - LPCONDUCTOR_CONDUCTOR="dummy"
+      - LPCONDUCTOR_SERVER_URL_PREFIX=""
+      - LPCONDUCTOR_SERVER_DOMAIN="librepages.test"
+      - LPCONDUCTOR_SERVER_IP="0.0.0.0"
+      - LPCONDUCTOR_SERVER_PROXY_HAS_TLS="false"
+      - LPCONDUCTOR_SERVER_PORT=7000
+      - LPCONDUCTOR_SOURCE_CODE="https://example.org"
+      - LPCONDUCTOR_CREDS_USERNAME="librepages_api"
+      - LPCONDUCTOR_CREDS_PASSWORD="longrandomlygeneratedpassword"
+      - PORT="5000"

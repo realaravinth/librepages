@@ -14,6 +14,6 @@ authors = ["realaravinth <realaravinth@batsense.net>"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cache-buster = { version = "0.2.0", git = "https://git.batsense.net/LibrePages/cache-buster" }
+cache-buster = { version = "0.2.0", git = "https://github.com/realaravinth/cache-buster" }
 serde = { version = "1", features  = ["derive"] }
 serde_json = "1"
