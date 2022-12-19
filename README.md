@@ -6,9 +6,6 @@
 
 </p>
 
-[![Build](https://github.com/realaravinth/pages/actions/workflows/linux.yml/badge.svg)](https://github.com/realaravinth/pages/actions/workflows/linux.yml)
-[![dependency status](https://deps.rs/repo/github/realaravinth/pages/status.svg)](https://deps.rs/repo/github/realaravinth/pages)
-[![codecov](https://codecov.io/gh/realaravinth/pages/branch/master/graph/badge.svg)](https://codecov.io/gh/realaravinth/pages)
 
 </div>
 

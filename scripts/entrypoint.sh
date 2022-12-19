@@ -15,4 +15,4 @@ else
 	useradd --uid $USER_ID -b /home -m -s /bin/bash $LIBREPAGES_USER
 fi
 
-su $LIBREPAGES_USER  -c 'pages'
+su $LIBREPAGES_USER  -c 'librepages'

@@ -19,11 +19,11 @@ RUN cd utils/cache-bust && cargo run
 RUN cargo build --release
 
 FROM debian:bullseye-slim
-#RUN useradd -ms /bin/bash -u 1000 pages
-#RUN mkdir -p /var/www/pages && chown pages /var/www/pages
+#RUN useradd -ms /bin/bash -u 1000 librepages
+#RUN mkdir -p /var/www/librepages && chown librepages /var/www/librepages
 RUN apt-get update && apt-get install -y ca-certificates
 COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x  /usr/local/bin/entrypoint.sh
-COPY --from=rust /src/target/release/pages /usr/local/bin/
+COPY --from=rust /src/target/release/librepages /usr/local/bin/
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

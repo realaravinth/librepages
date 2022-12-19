@@ -1,7 +1,7 @@
 debug = true
 allow_registration = true
 # source code of your copy of pages server.
-source_code = "https://github.com/realaravinth/pages"
+source_code = "https://git.batsense.net/LibrePages/pages"
 support_email = "support@librepages.example.org"
 conductors = [
 { username = "librepages_api", api_key = "longrandomlygeneratedpassword", url = "http://localhost:5000"}

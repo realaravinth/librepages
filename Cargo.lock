@@ -1427,6 +1427,49 @@ dependencies = [
 ]
 
 [[package]]
+name = "librepages"
+version = "0.1.0"
+dependencies = [
+ "actix-auth-middleware",
+ "actix-http",
+ "actix-identity",
+ "actix-rt",
+ "actix-web",
+ "actix-web-codegen-const-routes",
+ "argon2-creds",
+ "cache-buster",
+ "clap",
+ "config",
+ "derive_more",
+ "futures",
+ "git2",
+ "lazy_static",
+ "libconductor",
+ "libconfig",
+ "mime",
+ "mime_guess",
+ "mktemp",
+ "num_cpus",
+ "num_enum",
+ "pretty_env_logger",
+ "rand",
+ "reqwest",
+ "rust-embed",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sqlx",
+ "tera",
+ "tokio",
+ "toml",
+ "tracing",
+ "tracing-actix-web",
+ "url",
+ "urlencoding",
+ "uuid 1.2.2",
+]
+
+[[package]]
 name = "libssh2-sys"
 version = "0.2.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1740,49 +1783,6 @@ name = "os_str_bytes"
 version = "6.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b7820b9daea5457c9f21c69448905d723fbd21136ccf521748f23fd49e723ee"
-
-[[package]]
-name = "pages"
-version = "0.1.0"
-dependencies = [
- "actix-auth-middleware",
- "actix-http",
- "actix-identity",
- "actix-rt",
- "actix-web",
- "actix-web-codegen-const-routes",
- "argon2-creds",
- "cache-buster",
- "clap",
- "config",
- "derive_more",
- "futures",
- "git2",
- "lazy_static",
- "libconductor",
- "libconfig",
- "mime",
- "mime_guess",
- "mktemp",
- "num_cpus",
- "num_enum",
- "pretty_env_logger",
- "rand",
- "reqwest",
- "rust-embed",
- "serde",
- "serde_json",
- "serde_yaml",
- "sqlx",
- "tera",
- "tokio",
- "toml",
- "tracing",
- "tracing-actix-web",
- "url",
- "urlencoding",
- "uuid 1.2.2",
-]
 
 [[package]]
 name = "parking_lot"

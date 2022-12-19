@@ -31,14 +31,14 @@ doc: ## Prepare documentation
 
 docker: ## Build docker images
 	docker build \
-		-t realaravinth/pages:master \
-		-t realaravinth/pages:latest \
-		-t realaravinth/pages:0.1.0 .
+		-t realaravinth/librepages:master \
+		-t realaravinth/librepages:latest \
+		-t realaravinth/librepages:0.1.0 .
 
 docker-publish: docker ## Build and publish docker images
-	docker push realaravinth/pages:master 
-	docker push realaravinth/pages:latest
-	docker push realaravinth/pages:0.1.0
+	docker push realaravinth/librepages:master 
+	docker push realaravinth/librepages:latest
+	docker push realaravinth/librepages:0.1.0
 
 lint: ## Lint codebase
 	cargo fmt -v --all -- --emit files

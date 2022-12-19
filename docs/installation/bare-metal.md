@@ -3,10 +3,10 @@
 The process is tedious, most of this will be automated with a script in
 the future.
 
-## 1. Create new user for running `pages`:
+## 1. Create new user for running `librepages`:
 
 ```bash
-sudo useradd -b /srv -m -s /usr/bin/zsh pages
+sudo useradd -b /srv -m -s /usr/bin/zsh librepages
 ```
 
 ## 2. Install Runtime dependencies
@@ -19,11 +19,11 @@ On Debian-based systems, run:
 sudo apt install nginx
 ```
 
-## 3. Build `Pages`
+## 3. Build `librepages`
 
 ### i. Install Build Dependencies
 
-To build `pages`, you need the following dependencies:
+To build `librepages`, you need the following dependencies:
 
 1. [Git](https://packages.debian.org/bullseye/git)
 2. [pkg-config](https://packages.debian.org/bullseye/pkg-config)
@@ -71,23 +71,23 @@ Install binary and copy demo configuration file into default configuration
 lookup path(`/etc/static-pages/config.toml`)
 
 ```bash
-sudo cp ./target/release/pages /usr/local/bin/ && \
+sudo cp ./target/release/librepages /usr/local/bin/ && \
 	sudo mkdir /etc/static-pages && \
 	sudo cp config/default.toml /etc/static-pages/config.toml
 ```
 
 ## 4. Systemd service configuration:
 
-### i. Copy the following to `/etc/systemd/system/pages.service`:
+### i. Copy the following to `/etc/systemd/system/librepages.service`:
 
 ```systemd
 [Unit]
-Description=pages: Auto-deploy static websites from git repositories
+Description=librepages: Auto-deploy static websites from git repositories
 
 [Service]
 Type=simple
-User=pages
-ExecStart=/usr/local/bin/pages
+User=librepages
+ExecStart=/usr/local/bin/librepages
 Restart=on-failure
 RestartSec=1
 MemoryDenyWriteExecute=true
@@ -107,13 +107,13 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload && \
-	sudo systemctl enable pages && \ # Auto startup during boot
-	sudo systemctl start pages
+	sudo systemctl enable librepages && \ # Auto startup during boot
+	sudo systemctl start librepages
 ```
 
-## 5. Optionally configure Nginx to reverse proxy requests to Pages
+## 5. Optionally configure Nginx to reverse proxy requests to LibrePages
 
 **NOTE: This sections includes instructions to reverse proxy requests to
-Pages API, not the websites managed by Pages.**
+LibrePages API, not the websites managed by librepages.**
 
-See [here](../../config/pages-nginx-config) for sample Nginx configuration.
+See [here](../../config/librepages-nginx-config) for sample Nginx configuration.

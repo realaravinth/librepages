@@ -1,12 +1,12 @@
 [package]
-name = "pages"
+name = "librepages"
 version = "0.1.0"
 edition = "2021"
 build = "build.rs"
-homepage = "https://github.com/realaravinth/pages"
-repository = "https://github.com/realaravinth/pages"
-documentation = "https://github.con/realaravinth/pages"
-readme = "https://github.com/realaravinth/pages/blob/master/README.md"
+homepage = "https://git.batsense.net/LibrePages/librepages"
+repository = "https://git.batsense.net/LibrePages/librepages"
+documentation = "https://git.batsense.net/LibrePages/librepages"
+readme = "https://git.batsense.net/LibrePages/librepages/blob/master/README.md"
 license = "AGPLv3 or later version"
 authors = ["realaravinth <realaravinth@batsense.net>"]
 
