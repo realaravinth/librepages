@@ -1,3 +1,3 @@
 (function() {var implementors = {
-"pages":[["impl GetLoginRoute for <a class=\"struct\" href=\"pages/api/v1/routes/struct.Routes.html\" title=\"struct pages::api::v1::routes::Routes\">Routes</a>"],["impl GetLoginRoute for <a class=\"struct\" href=\"pages/pages/routes/struct.Pages.html\" title=\"struct pages::pages::routes::Pages\">Pages</a>"]]
+"librepages":[["impl GetLoginRoute for <a class=\"struct\" href=\"librepages/api/v1/routes/struct.Routes.html\" title=\"struct librepages::api::v1::routes::Routes\">Routes</a>"],["impl GetLoginRoute for <a class=\"struct\" href=\"librepages/pages/routes/struct.Pages.html\" title=\"struct librepages::pages::routes::Pages\">Pages</a>"]]
 };if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

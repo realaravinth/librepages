@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["pages"];
+window.ALL_CRATES = ["librepages"];
